@@ -62,7 +62,7 @@ services:
     ports:
       - "9991-9993:9991-9993"
     volumes: 
-      - app/license/12.5:/app/license
+      - ../app/license/12.5:/app/license
     depends_on:
       - db_sports2020
       - db_repl
