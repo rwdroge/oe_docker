@@ -1,0 +1,55 @@
+FROM adoptopenjdk/openjdk11:jdk-11.0.8_10-centos AS install 
+
+RUN yum install sysvinit-tools -y && \
+    yum clean all
+
+ADD PROGRESS_OE_12.5.1_LNX_64.tar.gz /install/openedge
+
+COPY response125.ini /install/openedge/response.ini
+ENV TERM xterm
+RUN /install/openedge/proinst -b /install/openedge/response.ini -l /install/install_oe.log -n && \
+    rm /usr/dlc/progress.cfg
+
+FROM adoptopenjdk/openjdk11:jdk-11.0.8_10-centos
+
+RUN yum install sysvinit-tools -y && \
+    yum clean all && \
+    mkdir /usr/dlc && \
+    mkdir /usr/wrk
+
+COPY --from=install /usr/dlc /usr/dlc
+COPY --from=install /usr/wrk /usr/wrk
+
+WORKDIR /usr/dlc/bin
+
+RUN chown root _* && \
+    chmod 4755 _* 
+
+ENV TERM xterm   
+ENV DLC=/usr/dlc
+ENV WRKDIR=/usr/wrk
+ENV PATH=$PATH:$DLC:$DLC/bin
+
+RUN groupadd -g 1000 openedge && \
+   useradd -r -u 1000 -g openedge openedge
+
+# create directories and files as root
+RUN mkdir /app/ && \
+    mkdir /app/pas && \
+    mkdir /app/license/ && \
+    # hand them over to user 'openedge'
+    chown -R openedge:openedge /app/ && \
+    chown -R openedge:openedge /usr/dlc/servers/pasoe && \
+    rm -rf /usr/dlc/src && \
+    rm -rf /usr/dlc/empty && \
+    rm -rf /usr/dlc/sports* && \
+    rm -rf /usr/dlc/isports* && \
+    rm -rf /usr/dlc/demo
+
+USER openedge
+
+ENV PROCFG=/app/license/progress.cfg
+VOLUME /app/license
+
+
+

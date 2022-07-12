@@ -1,0 +1,69 @@
+version: '3.4'
+
+services:
+  #load balancer config
+  traefik:
+    image: traefik:2.5
+    command:
+      - --entrypoints.web.address=:80
+      - --api.insecure=true
+      - --providers.docker
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - c:/docker/openedge/traefik/logs:/var/log/traefik
+      # - c:/docker/openedge/traefik/config/traefik.toml:/traefik.toml
+      
+  db_exact:
+    image: rwdroge/openedge_db_exact:12.4.1
+    container_name: oedb_exact
+    environment:
+      - DB_BROKER_PORT=37001
+      - DB_MINPORT=4000
+      - DB_MAXPORT=5000
+    ports:
+      - "37001:37001"
+      - "4000-5000:4000-5000"
+    volumes: 
+      - c:/docker/openedge/app/license/12.4:/app/license
+
+  db_edis:
+    image: rwdroge/openedge_db_edis:12.4.1
+    container_name: oedb_edis
+    environment:
+      - DB_BROKER_PORT=37002
+      - DB_MINPORT=3000
+      - DB_MAXPORT=3999
+    ports:
+      - "37002:37002"
+      - "3000-3999:3000-3999"
+    volumes: 
+      - c:/docker/openedge/app/license/12.4:/app/license
+
+  pas_exact:
+    image: rwdroge/openedge_pas_exact:12.5
+    volumes: 
+      - c:/docker/openedge/app/license/12.5:/app/license
+    depends_on:
+      - db_edis
+      - db_exact
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pas_exact.rule=Host(`exactfinancials.com`)"
+      - "traefik.http.services.pas_exact.loadbalancer.server.port=8220"
+      - "traefik.http.routers.pas_exact.entrypoints=web"
+      - "traefik.http.services.pas_exact.loadbalancer.healthcheck.port=8899"
+      - "traefik.http.services.pas_exact.loadbalancer.healthcheck.scheme=http"
+      - "traefik.http.services.pas_exact.loadbalancer.healthcheck.path=/health"
+      - "traefik.http.services.pas_exact.loadbalancer.healthcheck.interval=10s"
+      - "traefik.http.services.pas_exact.loadbalancer.healthcheck.timeout=2s"
+
+      
+
+
+    
+
+
+      

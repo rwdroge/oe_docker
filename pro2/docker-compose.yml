@@ -1,0 +1,82 @@
+version: '3.4'
+
+services:
+       
+  db_sports2020:
+    image: rwdroge/openedge_db_sports2020:12.5.1
+    container_name: db_sports2020
+    environment:
+      - DB_BROKER_PORT=37001
+      - DB_MINPORT=4000
+      - DB_MAXPORT=4200
+    ports:
+      - "37001:37001"
+      - "4000-4200:4000-4200"
+    volumes: 
+      - /app/license/12.5:/app/license
+      - db-data:/psc/wrk/sports2020
+      
+  db_repl:
+    image: rwdroge/openedge_db_repl:12.5.1
+    container_name: db_repl
+    environment:
+      - DB_BROKER_PORT=37002
+      - DB_MINPORT=4250
+      - DB_MAXPORT=4350
+    ports:
+      - "37002:37002"
+      - "4250-4350:4250-4350"
+    volumes: 
+      - /app/license/12.5:/app/license
+      - /db_repl/artifacts:/psc/wrk/repl
+      
+  db_pro2:
+    image: rwdroge/openedge_db_pro2:12.5.1
+    container_name: db_pro2
+    environment:
+      - DB_BROKER_PORT=37003
+      - DB_MINPORT=4450
+      - DB_MAXPORT=4550
+    ports:
+      - "37003:37003"
+      - "4450-4550:4450-4550"
+    volumes: 
+      - /app/license/12.5:/app/license
+      - /db_pro2/artifacts:/psc/wrk/pro2
+      
+
+  db_oracle:
+    image: rwdroge/oracle_database:19.3.0-standard
+    container_name: db_oracle
+    ports:
+      - "1521:1521"
+      - "5500:5500"
+    environment:
+      - ORACLE_PWD=ruben
+    volumes:
+      - /db_oracle/docker-images/oradata:/opt/oracle/oradata
+
+  pas_pro2:
+    image: rwdroge/openedge_pas_pro2:6.3
+    container_name: pas_pro2
+    ports:
+      - "9991-9993:9991-9993"
+    volumes: 
+      - app/license/12.5:/app/license
+    depends_on:
+      - db_sports2020
+      - db_repl
+      - db_pro2
+      - db_oracle
+
+volumes: 
+  db-data: 
+    external: true
+  
+      
+
+
+    
+
+
+      

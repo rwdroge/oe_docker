@@ -1,0 +1,45 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# license files
+*.cfg
+
+# private projects
+/binaries
+/exact_db
+/exact_pas
+/kafka
+/traefik
+
+
+
+
+
+/pro2/db_oracle/docker-images/*
+!/pro2/db_oracle/
+
+
+
+
+
+
+
+
+
+
+
+
+
+# unused files
+docker-compose-amazon.yml
+.dockerignore
+
+# OE Setups (tar.gz and response files except for sample)
+*.tar.gz
+*.ini
+*.bin
+*.zip
+!sample_response.ini
+
+
+
+

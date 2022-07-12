@@ -1,0 +1,34 @@
+# Copyright(c): Progress Software Inc. 
+# PF File auto generated on 01/19/2021
+# Example PF File for Database Connections for Pro2 Tool
+# Actual .pf file should be named after the logical name
+#  for the Source database connection.
+
+# Source Databases go here (Required for MSS/ORACLE/PROGRESS as target type).
+-db sports2020 -ld sports2020 -H db_sports2020 -S 37001 
+
+# Schema Holder Databases go here.
+# If not built yet then just comment out all lines. (Required for MSS/ORA/PROGRESS as target type)
+-db /install/pro2/db/db_oraclesh -ld db_oraclesh -RO
+
+# Schema Images go here.
+# If not imported yet, then just comment out all lines. 
+-db pro2oracle  		    # Required MSS/ORA
+-ld pro2oracle					# Required MSS/ORA
+  
+    # Required MSS/ORA value should be (MSS/ORACLE)
+	# For Oracle Target type need to enter username and password
+	
+-dt ORACLE -U pro2@ORCLPDB1 -P pro2
+  -Dsrv QT_CACHE_SIZE,30000  			#Required for MSS and ORA target type in other type just comment it 
+  -Dsrv TXN_ISOLATION,1      			#Required for MSS target type in other type just comment it
+# -Dsrv BINDING,0 						#Removed for v11
+  -Dsrv AUTOCOMMIT,1            		#Required for MSS target type only
+  -Dsrv PRGRS_PREPCACHE,100				#Required for MSS target type only
+  -Dsrv MSS_PRESERVE_CURS,1				#Required for MSS target type only
+  -Dsrv PRGRS_LOCK_ERRORS,08501			#Required for MSS target type only
+  -Dsrv logginglevel,0,svub,1   		#This will reduce the DataServer Log output Required for ORA/MSS
+  
+	#Added below to release locks earlier
+  -Dsrv PRGRS_NATIVE_LOCKWAIT,0 		#Required for MSS target type only
+  -Dsrv PRGRS_NOWAIT_OVERRIDE,1   		#Required for MSS target type only
