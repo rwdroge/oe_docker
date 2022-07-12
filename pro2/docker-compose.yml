@@ -13,7 +13,7 @@ services:
       - "37001:37001"
       - "4000-4200:4000-4200"
     volumes: 
-      - /app/license/12.5:/app/license
+      - ../app/license/12.5:/app/license
       - db-data:/psc/wrk/sports2020
       
   db_repl:
@@ -27,7 +27,7 @@ services:
       - "37002:37002"
       - "4250-4350:4250-4350"
     volumes: 
-      - /app/license/12.5:/app/license
+      - ../app/license/12.5:/app/license
       - /db_repl/artifacts:/psc/wrk/repl
       
   db_pro2:
@@ -41,7 +41,7 @@ services:
       - "37003:37003"
       - "4450-4550:4450-4550"
     volumes: 
-      - /app/license/12.5:/app/license
+      - ../app/license/12.5:/app/license
       - /db_pro2/artifacts:/psc/wrk/pro2
       
 
