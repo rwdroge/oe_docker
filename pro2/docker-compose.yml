@@ -28,7 +28,7 @@ services:
       - "4250-4350:4250-4350"
     volumes: 
       - ../app/license/12.5:/app/license
-      - db_repl/artifacts:/psc/wrk/repl
+      - ./db_repl/artifacts:/psc/wrk/repl
       
   db_pro2:
     image: rwdroge/openedge_db_pro2:12.5.1
@@ -42,7 +42,7 @@ services:
       - "4450-4550:4450-4550"
     volumes: 
       - ../app/license/12.5:/app/license
-      - db_pro2/artifacts:/psc/wrk/pro2
+      - ./db_pro2/artifacts:/psc/wrk/pro2
       
 
   db_oracle:
