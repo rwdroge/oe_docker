@@ -54,7 +54,7 @@ services:
     environment:
       - ORACLE_PWD=ruben
     volumes:
-      - /db_oracle/docker-images/oradata:/opt/oracle/oradata
+      - /db_oracle/oradata:/opt/oracle/oradata
 
   pas_pro2:
     image: rwdroge/openedge_pas_pro2:6.3
