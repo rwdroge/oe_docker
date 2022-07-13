@@ -49,7 +49,7 @@ services:
       
 
   db_oracle:
-    image: rwdroge/oracle_database:19.3.0-standard
+    image: rwdroge/oracle_database:19.3.0-test
     container_name: db_oracle
     user: oracle
     ports:
