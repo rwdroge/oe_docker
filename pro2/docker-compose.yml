@@ -4,6 +4,7 @@ services:
        
   db_sports2020:
     image: rwdroge/openedge_db_sports2020:12.5.1
+    user: pscadmin
     container_name: db_sports2020
     environment:
       - DB_BROKER_PORT=37001
@@ -19,6 +20,7 @@ services:
   db_repl:
     image: rwdroge/openedge_db_repl:12.5.1
     container_name: db_repl
+    user: pscadmin
     environment:
       - DB_BROKER_PORT=37002
       - DB_MINPORT=4250
@@ -33,6 +35,7 @@ services:
   db_pro2:
     image: rwdroge/openedge_db_pro2:12.5.1
     container_name: db_pro2
+    user: pscadmin
     environment:
       - DB_BROKER_PORT=37003
       - DB_MINPORT=4450
@@ -48,6 +51,7 @@ services:
   db_oracle:
     image: rwdroge/oracle_database:19.3.0-standard
     container_name: db_oracle
+    user: oracle
     ports:
       - "1521:1521"
       - "5500:5500"
