@@ -15,7 +15,7 @@ services:
       - "4000-4200:4000-4200"
     volumes: 
       - ../app/license/12.5:/app/license
-      - ./db_sports2020/artifacts:/psc/wrk/sports2020
+      
       
   db_repl:
     image: rwdroge/openedge_db_repl:12.5.1
@@ -73,9 +73,6 @@ services:
       - db_pro2
       - db_oracle
 
-volumes: 
-  db-data: 
-    external: true
   
       
 
