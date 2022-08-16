@@ -14,7 +14,7 @@ USER root
 RUN mkdir /install/ && \
     mkdir -p /opt/oracle && \
     mkdir -p /opt/oraInventory && \
-    apk add libaio && \
+    apk add libaio libnsl && \
     apk add unzip && \
     addgroup -g 54321 oinstall && \
     addgroup -g 54322 dba && \
@@ -85,6 +85,5 @@ USER openedge
 
 ENV PROCFG=/app/license/progress.cfg
 VOLUME /app/license
-
 
 
