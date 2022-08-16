@@ -21,14 +21,14 @@
 	
 -dt ORACLE -U pro2@ORCLPDB1 -P pro2
   -Dsrv QT_CACHE_SIZE,30000  			#Required for MSS and ORA target type in other type just comment it 
-  -Dsrv TXN_ISOLATION,1      			#Required for MSS target type in other type just comment it
+#  -Dsrv TXN_ISOLATION,1      			#Required for MSS target type in other type just comment it
 # -Dsrv BINDING,0 						#Removed for v11
-  -Dsrv AUTOCOMMIT,1            		#Required for MSS target type only
-  -Dsrv PRGRS_PREPCACHE,100				#Required for MSS target type only
-  -Dsrv MSS_PRESERVE_CURS,1				#Required for MSS target type only
-  -Dsrv PRGRS_LOCK_ERRORS,08501			#Required for MSS target type only
+#  -Dsrv AUTOCOMMIT,1            		#Required for MSS target type only
+#  -Dsrv PRGRS_PREPCACHE,100				#Required for MSS target type only
+#  -Dsrv MSS_PRESERVE_CURS,1				#Required for MSS target type only
+#  -Dsrv PRGRS_LOCK_ERRORS,08501			#Required for MSS target type only
   -Dsrv logginglevel,0,svub,1   		#This will reduce the DataServer Log output Required for ORA/MSS
   
 	#Added below to release locks earlier
-  -Dsrv PRGRS_NATIVE_LOCKWAIT,0 		#Required for MSS target type only
-  -Dsrv PRGRS_NOWAIT_OVERRIDE,1   		#Required for MSS target type only
+#  -Dsrv PRGRS_NATIVE_LOCKWAIT,0 		#Required for MSS target type only
+#  -Dsrv PRGRS_NOWAIT_OVERRIDE,1   		#Required for MSS target type only

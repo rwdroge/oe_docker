@@ -1,4 +1,4 @@
-FROM rwdroge/openedge_pas_base:12.5.0
+FROM rwdroge/openedge_pas_base:12.5.2
 
 USER root
 

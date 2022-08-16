@@ -1,5 +1,5 @@
 FROM adoptopenjdk/openjdk11:x86_64-alpine-jdk-11.0.14.1_1-slim AS openedge
-ADD ./binaries/PROGRESS_OE_12.5.1_LNX_64.tar.gz /install/openedge
+ADD ./binaries/PROGRESS_OE_12.5.2_LNX_64.tar.gz /install/openedge
 
 COPY response125.ini /install/openedge/response.ini
 

@@ -1,4 +1,4 @@
-FROM rwdroge/openedge_pas_orads:12.5.0
+FROM rwdroge/openedge_pas_orads:12.5.2
 
 USER root
 
@@ -17,13 +17,15 @@ RUN ./Pro2-6.3.0.bin -i Silent -f response.properties && \
     chown -R openedge:openedge /install/pro2 -R && \
     rm -rf Pro2-6.3.0.bin
 
-USER openedge
-
 WORKDIR /install/pro2/bprepl/Scripts
 
 COPY replProc.pf sports2020.pf ./ 
 COPY schemaholder/* /install/pro2/db
 COPY start.sh /install/pro2/start.sh 
+
+RUN chmod +x /install/pro2/start.sh
+
+USER openedge
 
 RUN /install/pro2/Pro2Web/bin/oeprop.sh +AppServer.SessMgr.Pro2Web.agentStartupParam="-T ../temp -pf /install/pro2/bprepl/Scripts/replProc.pf" 
 
