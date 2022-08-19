@@ -3,7 +3,7 @@ version: '3.4'
 services:
        
   db_sports2020:
-    image: rwdroge/openedge_db_sports2020:12.5.1
+    image: rwdroge/openedge_db_sports2020:12.5.2
     user: pscadmin
     container_name: db_sports2020
     environment:
@@ -18,7 +18,7 @@ services:
       
       
   db_repl:
-    image: rwdroge/openedge_db_repl:12.5.1
+    image: rwdroge/openedge_db_repl:12.5.2
     container_name: db_repl
     user: pscadmin
     environment:
@@ -33,7 +33,7 @@ services:
       - ./db_repl/artifacts:/psc/wrk/repl
       
   db_pro2:
-    image: rwdroge/openedge_db_pro2:12.5.1
+    image: rwdroge/openedge_db_pro2:12.5.2
     container_name: db_pro2
     user: pscadmin
     environment:

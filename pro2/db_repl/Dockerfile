@@ -1,6 +1,6 @@
 FROM adoptopenjdk/openjdk11:latest AS builder-jdk
 
-FROM store/progresssoftware/oedb:12.5.1_adv-ent
+FROM store/progresssoftware/oedb:12.5.2_adv-ent
 USER pscadmin
 
 COPY --chown=pscadmin:pscadmin ./license/progress.cfg /psc/dlc/progress.cfg
