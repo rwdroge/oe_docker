@@ -41,7 +41,8 @@ COPY ./pro2/tnsnames.ora /opt/oracle/client/network/admin/tnsnames.ora
 
 FROM adoptopenjdk/openjdk11:x86_64-alpine-jdk-11.0.14.1_1-slim
 
-RUN mkdir /usr/dlc && \
+RUN apk add libaio libnsl && \
+    mkdir /usr/dlc && \
     mkdir /usr/wrk && \ 
     mkdir /opt/oracle && \
     mkdir /opt/oraInventory
@@ -50,7 +51,6 @@ COPY --from=openedge /usr/dlc /usr/dlc
 COPY --from=openedge /usr/wrk /usr/wrk
 COPY --from=oracle /opt/oracle /opt/oracle
 COPY --from=oracle /opt/oraInventory /opt/oraInventory
-
 
 WORKDIR /usr/dlc/bin
 
