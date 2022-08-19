@@ -3255,3 +3255,228 @@
 [2022/04/13@09:29:15.121+0000] P-29         T-29    I BROKER   : (16869) Removed shared memory with segment_id: 0 
 [2022/04/13@09:29:15.122+0000] P-29         T-29    I BROKER   : (334)   Multi-user session end. 
 [2022/04/13@09:29:16.104+0000] P-38         T-38    I SHUT    2: (453)   Logout by pscadmin on batch. 
+
+                Thu Aug 18 07:38:10 2022
+[2022/08/18@07:38:10.919+0000] P-29         T-29    I BROKER  0: (333)   Multi-user session begin. 
+[2022/08/18@07:38:10.946+0000] P-29         T-29    I BROKER  0: (15321) Before Image Log Initialization at block 182  offset 1521. 
+[2022/08/18@07:38:11.013+0000] P-29         T-29    I BROKER  0: (452)   Login by pscadmin on batch. 
+[2022/08/18@07:38:11.014+0000] P-29         T-29    I BROKER  0: (5644)  Started for 37003 using TCP IPV4 address 0.0.0.0, pid 29. 
+[2022/08/18@07:38:12.034+0000] P-29         T-29    I BROKER  0: (19117) This installation is licensed to: PSC by /psc/dlc/progress.cfg 
+[2022/08/18@07:38:12.055+0000] P-29         T-29    I BROKER  0: (19116) Product: SNMP Adapter installed with serial number: 6230333 expiration: None. 
+[2022/08/18@07:38:12.066+0000] P-29         T-29    I BROKER  0: (19116) Product: Progress Dev AS for OE installed with serial number: 6230330 expiration: None. 
+[2022/08/18@07:38:12.080+0000] P-29         T-29    I BROKER  0: (19116) Product: OE DataServer for Orac installed with serial number: 6230322 expiration: None. 
+[2022/08/18@07:38:12.243+0000] P-29         T-29    I BROKER  0: (19116) Product: OE Adv. Ent. RDBMS installed with serial number: 6230326 expiration: None. 
+[2022/08/18@07:38:12.338+0000] P-29         T-29    I BROKER  0: (19116) Product: Client Networking installed with serial number: 6230313 expiration: None. 
+[2022/08/18@07:38:12.406+0000] P-29         T-29    I BROKER  0: (19116) Product: 4GL Development System installed with serial number: 6230312 expiration: None. 
+[2022/08/18@07:38:12.425+0000] P-29         T-29    I BROKER  0: (19116) Product: Query/RESULTS installed with serial number: 6230332 expiration: None. 
+[2022/08/18@07:38:12.434+0000] P-29         T-29    I BROKER  0: (19116) Product: OE Auth Gateway installed with serial number: 6230314 expiration: None. 
+[2022/08/18@07:38:12.436+0000] P-29         T-29    I BROKER  0: (19116) Product: Progress ProdAS for OE installed with serial number: 6230331 expiration: None. 
+[2022/08/18@07:38:12.437+0000] P-29         T-29    I BROKER  0: (19116) Product: PASOE Lite installed with serial number: 6230329 expiration: None. 
+[2022/08/18@07:38:12.439+0000] P-29         T-29    I BROKER  0: (4234)  Progress OpenEdge Release 12.5 build 1181 SP01 on Linux 2d77021ebc2f 5.10.16.3-microsoft-standard-WSL2 #1 SMP Fri Apr 2 22:23:49 UTC 2021 x86_64. 
+[2022/08/18@07:38:12.441+0000] P-29         T-29    I BROKER  0: (19552) Broker with server num 0 logged in. 
+[2022/08/18@07:38:12.444+0000] P-29         T-29    I BROKER  0: (4281)  Server started by pscadmin on batch. 
+[2022/08/18@07:38:12.458+0000] P-29         T-29    I BROKER  0: (6574)  Started using pid: 29. 
+[2022/08/18@07:38:12.463+0000] P-29         T-29    I BROKER  0: (9426)  Large database file access has been enabled. 
+[2022/08/18@07:38:12.465+0000] P-29         T-29    I BROKER  0: (15219) Encryption enabled: 0 
+[2022/08/18@07:38:12.466+0000] P-29         T-29    I BROKER  0: (15824) Multi-tenancy enabled: 0 
+[2022/08/18@07:38:12.467+0000] P-29         T-29    I BROKER  0: (15824) Table Partitioning enabled: 0 
+[2022/08/18@07:38:12.469+0000] P-29         T-29    I BROKER  0: (15824) Authentication Gateway enabled: 0 
+[2022/08/18@07:38:12.470+0000] P-29         T-29    I BROKER  0: (19388) LRU mechanism enabled. 
+[2022/08/18@07:38:12.471+0000] P-29         T-29    I BROKER  0: (4282)  Parameter File: /deploy/scripts/config/startup.pf. 
+[2022/08/18@07:38:12.473+0000] P-29         T-29    I BROKER  0: (9336)  Created shared memory with segment_id: 0 
+[2022/08/18@07:38:12.474+0000] P-29         T-29    I BROKER  0: (4250)  Before-Image Cluster Size: 524288 
+[2022/08/18@07:38:12.475+0000] P-29         T-29    I BROKER  0: (4251)  Before-Image Block Size: 8192 
+[2022/08/18@07:38:12.475+0000] P-29         T-29    I BROKER  0: (4255)  After-Image Block Size: 8192. 
+[2022/08/18@07:38:12.477+0000] P-29         T-29    I BROKER  0: (13873) After-image Management Archival Directory List (-aiarcdir): Not Enabled 
+[2022/08/18@07:38:12.477+0000] P-29         T-29    I BROKER  0: (13874) Create After-image Management Archival Directory(s) (-aiarcdircreate): Not Enabled 
+[2022/08/18@07:38:12.478+0000] P-29         T-29    I BROKER  0: (13872) After-image Management Archival Interval (-aiarcinterval): -1 
+[2022/08/18@07:38:12.479+0000] P-29         T-29    I BROKER  0: (4256)  Number of After-Image Buffers (-aibufs): 64 
+[2022/08/18@07:38:12.480+0000] P-29         T-29    I BROKER  0: (4254)  After-Image Stall (-aistall): Not Enabled 
+[2022/08/18@07:38:12.481+0000] P-29         T-29    I BROKER  0: (17555) Starting index number for statistics range (-baseindex): 1 
+[2022/08/18@07:38:12.482+0000] P-29         T-29    I BROKER  0: (19091) Starting LOB number for statistics range (-baselob): 1 
+[2022/08/18@07:38:12.483+0000] P-29         T-29    I BROKER  0: (17554) Starting table number for statistics range (-basetable): 1 
+[2022/08/18@07:38:12.484+0000] P-29         T-29    I BROKER  0: (18406) Starting index number per user for statistics range (-baseuserindex): 1 
+[2022/08/18@07:38:12.485+0000] P-29         T-29    I BROKER  0: (19092) Starting LOB number per user for statistics range (-baseuserlob): 1 
+[2022/08/18@07:38:12.486+0000] P-29         T-29    I BROKER  0: (18404) Starting table number per user for statistics range (-baseusertable): 1 
+[2022/08/18@07:38:12.487+0000] P-29         T-29    I BROKER  0: (4252)  Number of Before-Image Buffers (-bibufs): 64 
+[2022/08/18@07:38:12.488+0000] P-29         T-29    I BROKER  0: (20052) BI Scan Time (-biscantime): 10 seconds 
+[2022/08/18@07:38:12.489+0000] P-29         T-29    I BROKER  0: (6552)  BI File Threshold Stall (-bistall): Disabled 
+[2022/08/18@07:38:12.490+0000] P-29         T-29    I BROKER  0: (9238)  BI File Threshold size (-bithold): 0.0   Bytes 
+[2022/08/18@07:38:12.491+0000] P-29         T-29    I BROKER  0: (6573)  Database Blocksize (-blocksize): 4096 
+[2022/08/18@07:38:12.492+0000] P-29         T-29    I BROKER  0: (12812) BIW writer delay (-bwdelay): 0 
+[2022/08/18@07:38:12.493+0000] P-29         T-29    I BROKER  0: (12813) Allowed index cursors (-c): 84 
+[2022/08/18@07:38:12.494+0000] P-29         T-29    I BROKER  0: (18495) CDC cache size (-cdcsize): 200k bytes 
+[2022/08/18@07:38:12.495+0000] P-29         T-29    I BROKER  0: (12265) SSL Certificate Store Path (-certstorepath): Not Enabled 
+[2022/08/18@07:38:12.496+0000] P-29         T-29    I BROKER  0: (4264)  Character Set (-cpinternal): ISO8859-15 
+[2022/08/18@07:38:12.497+0000] P-29         T-29    I BROKER  0: (19442) C stack print option (-cstackPrintopt): 0 
+[2022/08/18@07:38:12.498+0000] P-29         T-29    I BROKER  0: (4235)  Physical Database Name (-db): pro2 
+[2022/08/18@07:38:12.499+0000] P-29         T-29    I BROKER  0: (19519) Number of DB Notification Operations (-dbnotifyops): 16 
+[2022/08/18@07:38:12.500+0000] P-29         T-29    I BROKER  0: (19511) DB Notification Time (-dbnotifytime): 30 seconds 
+[2022/08/18@07:38:12.500+0000] P-29         T-29    I BROKER  0: (18558) Diagnostic directory (-diagDir): Not Enabled 
+[2022/08/18@07:38:12.501+0000] P-29         T-29    I BROKER  0: (18576) Diagnostic events value (-diagEvent): LockTable:0,BiThold:0,SysErr:0 
+[2022/08/18@07:38:12.502+0000] P-29         T-29    I BROKER  0: (18560) Diagnostic event level (-diagEvtLevel): 0 
+[2022/08/18@07:38:12.503+0000] P-29         T-29    I BROKER  0: (18561) Diagnostic field separator (-diagFS): ' ' 
+[2022/08/18@07:38:12.505+0000] P-29         T-29    I BROKER  0: (18579) Diagnostic data format (-diagFormat): csv 
+[2022/08/18@07:38:12.506+0000] P-29         T-29    I BROKER  0: (18562) Diagnostic pause length (-diagPause): 0 
+[2022/08/18@07:38:12.508+0000] P-29         T-29    I BROKER  0: (18563) Diagnostic prefix value (-diagPrefix): diagEvent_ 
+[2022/08/18@07:38:12.518+0000] P-29         T-29    I BROKER  0: (18580) Diagnostic procedure (-diagProc): Not Enabled 
+[2022/08/18@07:38:12.523+0000] P-29         T-29    I BROKER  0: (4238)  Direct I/O (-directio): Not Enabled 
+[2022/08/18@07:38:12.524+0000] P-29         T-29    I BROKER  0: (4236)  Database Type (-dt): PROGRESS 
+[2022/08/18@07:38:12.525+0000] P-29         T-29    I BROKER  0: (15218) Encryption cache size (-ecsize): 1000 
+[2022/08/18@07:38:12.527+0000] P-29         T-29    I BROKER  0: (12814) Group delay (-groupdelay): 10 
+[2022/08/18@07:38:12.527+0000] P-29         T-29    I BROKER  0: (4242)  Hash Table Entries (-hash): 887 
+[2022/08/18@07:38:12.528+0000] P-29         T-29    I BROKER  0: (19195) Buffer pool hash table latch percentage (-hashLatchFactor): 10 
+[2022/08/18@07:38:12.529+0000] P-29         T-29    I BROKER  0: (4244)  Crash Recovery (-i): Enabled 
+[2022/08/18@07:38:12.530+0000] P-29         T-29    I BROKER  0: (17557) Number of indexes included in statistics collection (-indexrangesize): 50 
+[2022/08/18@07:38:12.531+0000] P-29         T-29    I BROKER  0: (14268) TCP/IP Version (-ipver): IPV4 
+[2022/08/18@07:38:12.532+0000] P-29         T-29    I BROKER  0: (12263) SSL Key Alias Name (-keyalias): Not Enabled 
+[2022/08/18@07:38:12.533+0000] P-29         T-29    I BROKER  0: (19216) Database log file archive directory (-lgArchiveDir): Not Enabled 
+[2022/08/18@07:38:12.534+0000] P-29         T-29    I BROKER  0: (19215) Archive database log file before truncation (-lgArchiveEnable): Not Enabled 
+[2022/08/18@07:38:12.534+0000] P-29         T-29    I BROKER  0: (19213) Frequency of database log file truncation (-lgTruncateFrequency): -1 
+[2022/08/18@07:38:12.538+0000] P-29         T-29    I BROKER  0: (19214) The maximum size the database log file can grow before truncation (-lgTruncateSize): 0MB 
+[2022/08/18@07:38:12.539+0000] P-29         T-29    I BROKER  0: (19212) Time of day for the database log file truncation (-lgTruncateTime): 00:00 
+[2022/08/18@07:38:12.540+0000] P-29         T-29    I BROKER  0: (19137) Limit .lg file payload (-limitLgPayload): Not Enabled 
+[2022/08/18@07:38:12.541+0000] P-29         T-29    I BROKER  0: (12815) Lock table hash table size (-lkhash): 1237 
+[2022/08/18@07:38:12.541+0000] P-29         T-29    I BROKER  0: (17805) Original Lock Release Algorithm (-lkrela): Not Enabled 
+[2022/08/18@07:38:12.542+0000] P-29         T-29    I BROKER  0: (19090) Number of LOBs included in statistics collection (-lobrangesize): 50 
+[2022/08/18@07:38:12.543+0000] P-29         T-29    I BROKER  0: (17560) Number of LRU force skips (-lruskips): 100 
+[2022/08/18@07:38:12.544+0000] P-29         T-29    I BROKER  0: (17561) Number of LRU2 force skips (-lru2skips): 100 
+[2022/08/18@07:38:12.545+0000] P-29         T-29    I BROKER  0: (13953) Maximum Area Number (-maxArea): 32000 
+[2022/08/18@07:38:12.546+0000] P-29         T-29    I BROKER  0: (5649)  Maximum Port for Auto Servers (-maxport): 4550 
+[2022/08/18@07:38:12.547+0000] P-29         T-29    I BROKER  0: (12540) Size of JTA transaction table (-maxxids):  100 
+[2022/08/18@07:38:12.548+0000] P-29         T-29    I BROKER  0: (5648)  Minimum Port for Auto Servers (-minport): 4450 
+[2022/08/18@07:38:12.549+0000] P-29         T-29    I BROKER  0: (17564) Multi-tenancy partition cache size (-mtpmsize): 1024 
+[2022/08/18@07:38:12.550+0000] P-29         T-29    I BROKER  0: (12821) Use muxlatches (-mux): 1 
+[2022/08/18@07:38:12.551+0000] P-29         T-29    I BROKER  0: (4260)  Maximum Number of Users (-n): 21 
+[2022/08/18@07:38:12.551+0000] P-29         T-29    I BROKER  0: (17566) Minimum time to nap at first -spin exhaustion (-nap): 10 
+[2022/08/18@07:38:12.552+0000] P-29         T-29    I BROKER  0: (17565) Maximum time to nap at -spin exhaustion (-napmax): 250 
+[2022/08/18@07:38:12.553+0000] P-29         T-29    I BROKER  0: (18522) SSL No Host Verify (-nohostverify): Not Enabled 
+[2022/08/18@07:38:12.554+0000] P-29         T-29    I BROKER  0: (17807) Disable LRU mechanism (-nolru): Not Enabled 
+[2022/08/18@07:38:12.556+0000] P-29         T-29    I BROKER  0: (12273) SSL No Session Cache (-nosessioncache): Not Enabled 
+[2022/08/18@07:38:12.557+0000] P-29         T-29    I BROKER  0: (18521) SSL No Session Reuse (-nosessionreuse): Not Enabled 
+[2022/08/18@07:38:12.558+0000] P-29         T-29    I BROKER  0: (16689) Login Governor (-nGovernor): 0 of 32000 
+[2022/08/18@07:38:12.559+0000] P-29         T-29    I BROKER  0: (18398) Number of checkpoint statistics to record (-numCheckpointStats): 32 
+[2022/08/18@07:38:12.559+0000] P-29         T-29    I BROKER  0: (19122) Omit .lg file messages (-omitLgMsgs):  
+[2022/08/18@07:38:12.560+0000] P-29         T-29    I BROKER  0: (8527)  Storage object cache size (-omsize): 1024 
+[2022/08/18@07:38:12.561+0000] P-29         T-29    I BROKER  0: (13870) Database Service Manager - IPC Queue Size (-pica): 128.0 KBytes 
+[2022/08/18@07:38:12.562+0000] P-29         T-29    I BROKER  0: (19347) Maximum nap time when blocked to access PICA queue (-picanap): 1 ms. 
+[2022/08/18@07:38:12.563+0000] P-29         T-29    I BROKER  0: (17802) Shared memory segments locked (-pinshm): Not Enabled 
+[2022/08/18@07:38:12.564+0000] P-29         T-29    I BROKER  0: (16953) Use pollset mechanism for client/server (-pollset): Not Enabled 
+[2022/08/18@07:38:12.564+0000] P-29         T-29    I BROKER  0: (16955) Delay first prefetch message (-prefetchDelay): Enabled 
+[2022/08/18@07:38:12.565+0000] P-29         T-29    I BROKER  0: (16956) Prefetch message fill percentage (-prefetchFactor): 100 
+[2022/08/18@07:38:12.566+0000] P-29         T-29    I BROKER  0: (16957) Minimum records in prefetch msg (-prefetchNumRecs): 64 
+[2022/08/18@07:38:12.567+0000] P-29         T-29    I BROKER  0: (16958) Suspension queue poll priority (-prefetchPriority): 1 
+[2022/08/18@07:38:12.568+0000] P-29         T-29    I BROKER  0: (17568) APW queue scan cycle time in milliseconds (-pwqdelay): 100 
+[2022/08/18@07:38:12.569+0000] P-29         T-29    I BROKER  0: (17569) APW minimum queue length before write (-pwqmin): 1 
+[2022/08/18@07:38:12.570+0000] P-29         T-29    I BROKER  0: (17570) APW buffer scan cycle time in seconds (-pwsdelay): 1 
+[2022/08/18@07:38:12.570+0000] P-29         T-29    I BROKER  0: (17571) APW maximum number of buffers to scan per cycle (-pwscan): 5 
+[2022/08/18@07:38:12.572+0000] P-29         T-29    I BROKER  0: (17572) APW maximum number of buffers to write per cycle (-pwwmax): 25 
+[2022/08/18@07:38:12.574+0000] P-29         T-29    I BROKER  0: (4247)  Before-Image File I/O (-r -R): Reliable 
+[2022/08/18@07:38:12.575+0000] P-29         T-29    I BROKER  0: (17563) Record free chain search depth factor (-recspacesearchdepth): 5 
+[2022/08/18@07:38:12.576+0000] P-29         T-29    I BROKER  0: (19133) Schema Lock Wait Queue (-schlockwq): Not Enabled 
+[2022/08/18@07:38:12.577+0000] P-29         T-29    I BROKER  0: (18478) Security cache size (-secsize): 512 
+[2022/08/18@07:38:12.578+0000] P-29         T-29    I BROKER  0: (6526)  Number of Semaphore Sets (-semsets): 3 
+[2022/08/18@07:38:12.579+0000] P-29         T-29    I BROKER  0: (12264) SSL Session Timeout (-sessiontimeout): 0 
+[2022/08/18@07:38:12.580+0000] P-29         T-29    I BROKER  0: (13924) Maximum Shared Memory Segment Size (-shmsegsize): 1024 Mb 
+[2022/08/18@07:38:12.581+0000] P-29         T-29    I BROKER  0: (4243)  Current Spin Lock Tries (-spin): 48000 
+[2022/08/18@07:38:12.581+0000] P-29         T-29    I BROKER  0: (17803) SSL Encryption for TCP/IP connections (-ssl): Not Enabled 
+[2022/08/18@07:38:12.582+0000] P-29         T-29    I BROKER  0: (19329) Database server side join support (-ssj): Enabled 
+[2022/08/18@07:38:12.583+0000] P-29         T-29    I BROKER  0: (20402) STS Socket Reuse (-stsSocketReuse): Yes 
+[2022/08/18@07:38:12.584+0000] P-29         T-29    I BROKER  0: (18525) STS Debug Logging Level default (-stslogginglevel): 0 
+[2022/08/18@07:38:12.585+0000] P-29         T-29    I BROKER  0: (17556) Number of tables included in statistics collection (-tablerangesize): 50 
+[2022/08/18@07:38:12.585+0000] P-29         T-29    I BROKER  0: (19151) Threaded database server (-threadedServer): Enabled 
+[2022/08/18@07:38:12.586+0000] P-29         T-29    I BROKER  0: (19159) Thread stack size for threaded database servers (-threadedServerStack): 512Kb 
+[2022/08/18@07:38:12.588+0000] P-29         T-29    I BROKER  0: (18407) Number of indexes per user included in statistics collection (-userindexrangesize): 50 
+[2022/08/18@07:38:12.589+0000] P-29         T-29    I BROKER  0: (19089) Number of lobs per user included in statistics collection (-userlobrangesize): 50 
+[2022/08/18@07:38:12.591+0000] P-29         T-29    I BROKER  0: (18118) User Notification Time (-usernotifytime): 600 seconds 
+[2022/08/18@07:38:12.592+0000] P-29         T-29    I BROKER  0: (18405) Number of tables per user included in statistics collection (-usertablerangesize): 50 
+[2022/08/18@07:38:12.593+0000] P-29         T-29    I BROKER  0: (14017) Area block consistency check in area "" (-AreaCheck): Not Enabled 
+[2022/08/18@07:38:12.594+0000] P-29         T-29    I BROKER  0: (4239)  Number of Database Buffers (-B): 3000 
+[2022/08/18@07:38:12.594+0000] P-29         T-29    I BROKER  0: (17562) Number of Alternate Database Buffers (-B2): 0 
+[2022/08/18@07:38:12.595+0000] P-29         T-29    I BROKER  0: (9422)  Maximum private buffers per user (-Bpmax): 64 
+[2022/08/18@07:38:12.596+0000] P-29         T-29    I BROKER  0: (14016) Database block consistency check (-DbCheck): Not Enabled 
+[2022/08/18@07:38:12.597+0000] P-29         T-29    I BROKER  0: (13869) Database Service Manager - Service(s) to start (-DBService): Not Enabled 
+[2022/08/18@07:38:12.598+0000] P-29         T-29    I BROKER  0: (10535) Enhanced Read-Only mode (-ERO): Not Enabled 
+[2022/08/18@07:38:12.599+0000] P-29         T-29    I BROKER  0: (4237)  Force Access (-F): Not Enabled 
+[2022/08/18@07:38:12.600+0000] P-29         T-29    I BROKER  0: (4249)  Before-Image Truncate Interval (-G): 0 
+[2022/08/18@07:38:12.601+0000] P-29         T-29    I BROKER  0: (4261)  Host Name (-H): 2d77021ebc2f 
+[2022/08/18@07:38:12.601+0000] P-29         T-29    I BROKER  0: (14018) Index block consistency check in index "", partitionID -32767(-IndexCheck): Not Enabled 
+[2022/08/18@07:38:12.603+0000] P-29         T-29    I BROKER  0: (4241)  Current Size of Lock Table (-L): 8192 
+[2022/08/18@07:38:12.604+0000] P-29         T-29    I BROKER  0: (16688) Lock Governor (-LGovernor): 0% 
+[2022/08/18@07:38:12.605+0000] P-29         T-29    I BROKER  0: (4257)  Maximum Number of Clients Per Server (-Ma): 5 
+[2022/08/18@07:38:12.606+0000] P-29         T-29    I BROKER  0: (14015) Memory overwrite check (-MemCheck): Not Enabled 
+[2022/08/18@07:38:12.607+0000] P-29         T-29    I BROKER  0: (4245)  Delay of Before-Image Flush (-Mf): 3 
+[2022/08/18@07:38:12.608+0000] P-29         T-29    I BROKER  0: (4259)  Minimum Clients Per Server (-Mi): 1 
+[2022/08/18@07:38:12.609+0000] P-29         T-29    I BROKER  0: (12818) Message Buffer Size (-Mm): 8192 
+[2022/08/18@07:38:12.610+0000] P-29         T-29    I BROKER  0: (4258)  Maximum Number of Servers (-Mn): 5 
+[2022/08/18@07:38:12.611+0000] P-29         T-29    I BROKER  0: (12819) Servers per Protocol (-Mp): 0 
+[2022/08/18@07:38:12.612+0000] P-29         T-29    I BROKER  0: (5647)  Maximum Servers Per Broker (-Mpb): 0 
+[2022/08/18@07:38:12.613+0000] P-29         T-29    I BROKER  0: (4240)  Excess Shared Memory Size (-Mxs): 42 
+[2022/08/18@07:38:12.613+0000] P-29         T-29    I BROKER  0: (4263)  Network Type (-N): TCP 
+[2022/08/18@07:38:12.614+0000] P-29         T-29    I BROKER  0: (16954) Server network message wait time (-Nmsgwait): 2 
+[2022/08/18@07:38:12.616+0000] P-29         T-29    I BROKER  0: (10357) Pending client connection timeout (-PendConnTime): 0 
+[2022/08/18@07:38:12.617+0000] P-29         T-29    I BROKER  0: (4262)  Service Name (-S): 37003 
+[2022/08/18@07:38:12.618+0000] P-29         T-29    I BROKER  0: (17804) Broker server group support (-ServerType): BOTH 
+[2022/08/18@07:38:12.619+0000] P-29         T-29    I BROKER  0: (19342) SQL Autonomous Update Statistics (-SQLAutoStats): OFF 
+[2022/08/18@07:38:12.622+0000] P-29         T-29    I BROKER  0: (10028) SQL Server Max Open Cursors (-SQLCursors): 50 
+[2022/08/18@07:38:12.623+0000] P-29         T-29    I BROKER  0: (20037) SQL Enable Core Generation (-SQLEnableCoreGeneration): OFF 
+[2022/08/18@07:38:12.624+0000] P-29         T-29    I BROKER  0: (20038) SQL Failure Driven Log (-SQLFailureDrivenLog): OFF 
+[2022/08/18@07:38:12.625+0000] P-29         T-29    I BROKER  0: (17567) Number of seconds for a SQL client to wait for a lock conflict to be resolved (-SQLLockWaitTimeout): 5. 
+[2022/08/18@07:38:12.626+0000] P-29         T-29    I BROKER  0: (19134) SQL rowid identifier (-SQLQuotedRowid): Standard 
+[2022/08/18@07:38:12.627+0000] P-29         T-29    I BROKER  0: (10026) SQL Server Stack Size (-SQLStack): 1000 
+[2022/08/18@07:38:12.628+0000] P-29         T-29    I BROKER  0: (10027) SQL Server Statement Cache Size (-SQLStmtCache): 100 
+[2022/08/18@07:38:12.629+0000] P-29         T-29    I BROKER  0: (10029) Size [1K byte units] of SQL Server temp table buffer (-SQLTempBuff): 1000 
+[2022/08/18@07:38:12.629+0000] P-29         T-29    I BROKER  0: (10030) Size [1K byte units] of SQL Server temp table disk storage (-SQLTempDisk): 500000 
+[2022/08/18@07:38:12.631+0000] P-29         T-29    I BROKER  0: (10031) Size [1K byte units] of SQL Server temp table data page (-SQLTempPageSize): 8 
+[2022/08/18@07:38:12.633+0000] P-29         T-29    I BROKER  0: (17955) Authorized data truncation (-SQLTruncateTooLarge): OFF 
+[2022/08/18@07:38:12.634+0000] P-29         T-29    I BROKER  0: (18156) SQL Autonomous Schema Update (-SQLWidthUpdate): OFF 
+[2022/08/18@07:38:12.635+0000] P-29         T-29    I BROKER  0: (14019) Record block consistency check in table "", partitionID -32767(-TableCheck): Not Enabled 
+[2022/08/18@07:38:12.640+0000] P-29         T-29    I BROKER  0: (17717) TXE Lock retry limit (-TXERetryLimit): 0 
+[2022/08/18@07:38:12.641+0000] P-29         T-29    I BROKER  0: (13896) TXE Commit lock skip limit (-TXESkipLimit): 10000 
+[2022/08/18@07:38:12.672+0000] P-29         T-29    I BROKER  0: (10836) Database connections are not allowed at this time. 
+[2022/08/18@07:38:12.675+0000] P-29         T-29    I BROKER  0: (10471) Database connections have been enabled. 
+[2022/08/18@07:38:44.735+0000] P-35         T-34    I TSRV    1: (452)   Login by pscadmin on batch. 
+[2022/08/18@07:38:45.129+0000] P-35         T-34    I TSRV    1: (19552) Server with server num 1 logged in. 
+[2022/08/18@07:38:45.171+0000] P-35         T-34    I TSRV    1: (5646)  Started on port 4459 using TCP IPV4 address 0.0.0.0, pid 35. 
+[2022/08/18@07:38:46.454+0000] P-35         T-37    I TSRV    1: (742)   Login usernum 2, userid root client type ABL , on 5fff7257a9ac batch using TCP/IP IPV4 address 172.25.0.6. 
+[2022/08/18@07:38:46.472+0000] P-35         T-37    I TSRV    1: (7129)  Usr 2 set name to root. 
+[2022/08/18@07:38:46.484+0000] P-35         T-37    I TSRV    1: (17961) User 2 set tty to 5fff7257a9ac batch. 
+[2022/08/18@07:38:47.722+0000] P-35         T-37    I TSRV    1: (7129)  Usr 2 set name to root. 
+[2022/08/18@07:39:24.020+0000] P-39         T-38    I TSRV    3: (452)   Login by pscadmin on batch. 
+[2022/08/18@07:39:24.175+0000] P-39         T-38    I TSRV    3: (19552) Server with server num 2 logged in. 
+[2022/08/18@07:39:24.178+0000] P-39         T-38    I TSRV    3: (5646)  Started on port 4460 using TCP IPV4 address 0.0.0.0, pid 39. 
+[2022/08/18@07:39:25.323+0000] P-39         T-41    I TSRV    3: (742)   Login usernum 4, userid root client type PASA, on 5fff7257a9ac batch using TCP/IP IPV4 address 172.25.0.6 0:5fff7257a9ac:462:AS-ResourceMgr. 
+[2022/08/18@07:39:25.390+0000] P-39         T-41    I TSRV    3: (7129)  Usr 4 set name to root. 
+[2022/08/18@07:39:25.472+0000] P-39         T-41    I TSRV    3: (17961) User 4 set tty to 5fff7257a9ac batch. 
+[2022/08/18@07:39:25.537+0000] P-39         T-41    I TSRV    3: (7129)  Usr 4 set name to root. 
+[2022/08/18@07:39:28.096+0000] P-39         T-41    I TSRV    3: (739)   Logout usernum 4, userid root, on 5fff7257a9ac batch. 
+[2022/08/18@07:39:29.826+0000] P-39         T-41    I TSRV    3: (742)   Login usernum 4, userid root client type PASN, on 5fff7257a9ac batch using TCP/IP IPV4 address 172.25.0.6 0:5fff7257a9ac:462:AS-4. 
+[2022/08/18@07:39:29.857+0000] P-39         T-41    I TSRV    3: (7129)  Usr 4 set name to root. 
+[2022/08/18@07:39:29.950+0000] P-39         T-41    I TSRV    3: (17961) User 4 set tty to 5fff7257a9ac batch. 
+[2022/08/18@07:39:30.097+0000] P-39         T-41    I TSRV    3: (7129)  Usr 4 set name to root. 
+[2022/08/18@07:39:33.448+0000] P-43         T-42    I TSRV    5: (452)   Login by pscadmin on batch. 
+[2022/08/18@07:39:33.467+0000] P-43         T-42    I TSRV    5: (19552) Server with server num 3 logged in. 
+[2022/08/18@07:39:33.471+0000] P-43         T-42    I TSRV    5: (5646)  Started on port 4461 using TCP IPV4 address 0.0.0.0, pid 43. 
+[2022/08/18@07:39:33.712+0000] P-45         T-44    I TSRV    6: (452)   Login by pscadmin on batch. 
+[2022/08/18@07:39:33.730+0000] P-45         T-44    I TSRV    6: (19552) Server with server num 4 logged in. 
+[2022/08/18@07:39:33.731+0000] P-45         T-44    I TSRV    6: (5646)  Started on port 4462 using TCP IPV4 address 0.0.0.0, pid 45. 
+[2022/08/18@07:39:33.755+0000] P-35         T-46    I TSRV    1: (742)   Login usernum 7, userid root client type PASN, on 5fff7257a9ac batch using TCP/IP IPV4 address 172.25.0.6 0:5fff7257a9ac:462:AS-10. 
+[2022/08/18@07:39:33.756+0000] P-35         T-46    I TSRV    1: (7129)  Usr 7 set name to root. 
+[2022/08/18@07:39:33.756+0000] P-35         T-46    I TSRV    1: (17961) User 7 set tty to 5fff7257a9ac batch. 
+[2022/08/18@07:39:33.786+0000] P-35         T-46    I TSRV    1: (7129)  Usr 7 set name to root. 
+[2022/08/18@07:39:34.024+0000] P-39         T-47    I TSRV    3: (742)   Login usernum 8, userid root client type PASN, on 5fff7257a9ac batch using TCP/IP IPV4 address 172.25.0.6 0:5fff7257a9ac:462:AS-7. 
+[2022/08/18@07:39:34.024+0000] P-39         T-47    I TSRV    3: (7129)  Usr 8 set name to root. 
+[2022/08/18@07:39:34.027+0000] P-39         T-47    I TSRV    3: (17961) User 8 set tty to 5fff7257a9ac batch. 
+[2022/08/18@07:39:34.089+0000] P-39         T-47    I TSRV    3: (7129)  Usr 8 set name to root. 
+[2022/08/18@07:39:34.494+0000] P-43         T-49    I TSRV    5: (742)   Login usernum 9, userid root client type PASN, on 5fff7257a9ac batch using TCP/IP IPV4 address 172.25.0.6 0:5fff7257a9ac:462:AS-8. 
+[2022/08/18@07:39:34.498+0000] P-43         T-49    I TSRV    5: (7129)  Usr 9 set name to root. 
+[2022/08/18@07:39:34.498+0000] P-43         T-49    I TSRV    5: (17961) User 9 set tty to 5fff7257a9ac batch. 
+[2022/08/18@07:39:34.522+0000] P-43         T-49    I TSRV    5: (7129)  Usr 9 set name to root. 
+[2022/08/18@07:39:34.796+0000] P-45         T-51    I TSRV    6: (742)   Login usernum 10, userid root client type PASN, on 5fff7257a9ac batch using TCP/IP IPV4 address 172.25.0.6 0:5fff7257a9ac:462:AS-9. 
+[2022/08/18@07:39:34.809+0000] P-45         T-51    I TSRV    6: (7129)  Usr 10 set name to root. 
+[2022/08/18@07:39:34.815+0000] P-45         T-51    I TSRV    6: (17961) User 10 set tty to 5fff7257a9ac batch. 
+[2022/08/18@07:39:34.848+0000] P-45         T-51    I TSRV    6: (7129)  Usr 10 set name to root. 
+[2022/08/18@07:40:56.824+0000] P-43         T-52    I TSRV    5: (742)   Login usernum 11, userid root client type PASN, on 5fff7257a9ac batch using TCP/IP IPV4 address 172.25.0.6 0:5fff7257a9ac:462:AS-11. 
+[2022/08/18@07:40:56.825+0000] P-43         T-52    I TSRV    5: (7129)  Usr 11 set name to root. 
+[2022/08/18@07:40:56.825+0000] P-43         T-52    I TSRV    5: (17961) User 11 set tty to 5fff7257a9ac batch. 
+[2022/08/18@07:40:56.846+0000] P-43         T-52    I TSRV    5: (7129)  Usr 11 set name to root. 
