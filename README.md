@@ -34,11 +34,11 @@ Setup Environment:
 -	Generate Code
     -	[Optional]: show generated code in brepl/repl_mproc (bulkload) and brepl/repl_proc (replication) using an interactive Docker session into the pas_pro2 container:
       
-      > docker exec -it <container_id> /bin/sh
+      ```docker exec -it <container_id> /bin/sh```
     
-      > ls /install/pro2/bprepl/repl_mproc
+      ```ls /install/pro2/bprepl/repl_mproc```
     
-      > ls /install/pro2/bprepl/repl_proc
+      ```ls /install/pro2/bprepl/repl_proc```
 
 -	Go to [Actions > Jobs > Scheduled Jobs]
 -	Select the job of type ‘CDC Threads’ and choose ‘Run Now’
