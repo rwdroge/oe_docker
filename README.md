@@ -3,9 +3,9 @@
 ## Pro2Oracle Docker Demo Environment
 ### Prerequisites:
 -	Docker installed
-o	Docker Desktop for Windows
-o	WSL2 (Windows Subsystem for Linux)
-o	Or: Linux VM with Docker installed
+    -	Docker Desktop for Windows
+    -	WSL2 (Windows Subsystem for Linux)
+    -	Or: Linux VM with Docker installed
 -	Docker-Compose installed
 
 ### Containers:
