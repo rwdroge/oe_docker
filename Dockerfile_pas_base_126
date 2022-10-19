@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk11:jdk-11.0.8_10-centos AS install 
+FROM eclipse-temurin:17.0.4.1_1-jdk-centos7 AS install 
 
 RUN yum install sysvinit-tools -y && \
     yum clean all
@@ -10,7 +10,7 @@ ENV TERM xterm
 RUN /install/openedge/proinst -b /install/openedge/response.ini -l /install/install_oe.log -n && \
     rm /usr/dlc/progress.cfg
 
-FROM adoptopenjdk/openjdk11:jdk-11.0.8_10-centos
+FROM eclipse-temurin:17.0.4.1_1-jdk-centos7
 
 RUN yum install sysvinit-tools -y && \
     yum clean all && \

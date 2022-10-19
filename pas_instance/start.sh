@@ -1,5 +1,5 @@
 #!/bin/bash
-logfile=/install/pro2/Pro2Web/logs/Pro2Web.agent.log
+logfile=/app/pas/prodpas/logs/prodpas.agent.log
 touch $logfile
-/install/pro2/Pro2Web/bin/tcman.sh start -v
+/app/pas/prodpas/bin/tcman.sh start -v
 tail -f $logfile
