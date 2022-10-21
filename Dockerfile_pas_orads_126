@@ -57,14 +57,11 @@ RUN yum install sysvinit-tools net-tools -y && \
 COPY --from=openedge /usr/dlc /usr/dlc
 COPY --from=openedge /usr/wrk /usr/wrk
 COPY --from=openedge /etc/openedge.d /etc/openedge.d
+COPY --from=openedge /etc/openedge /etc/openedge
+COPY --from=openedge /etc/progress /etc/progress
+
 COPY --from=oracle /opt/oracle /opt/oracle
 COPY --from=oracle /opt/oraInventory /opt/oraInventory
-
-
-
-WORKDIR /etc/openedge.d
-
-RUN ls -all
 
 USER root
 
@@ -99,7 +96,8 @@ RUN mkdir /app/ && \
 
 USER openedge
 
-ENV PROCFG=/app/license/progress.cfg
-VOLUME /app/license
+#removed because of ESAM (expects progress.cfg in DLC directory)
+#ENV PROCFG=/app/license/progress.cfg
+VOLUME /user/dlc/progress.cfg
 
 

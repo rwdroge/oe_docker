@@ -19,6 +19,9 @@ RUN yum install sysvinit-tools -y && \
 
 COPY --from=install /usr/dlc /usr/dlc
 COPY --from=install /usr/wrk /usr/wrk
+COPY --from=install /etc/openedge.d /etc/openedge.d
+COPY --from=install /etc/openedge /etc/openedge
+COPY --from=install /etc/progress /etc/progress
 
 WORKDIR /usr/dlc/bin
 
@@ -36,7 +39,6 @@ RUN groupadd -g 1000 openedge && \
 # create directories and files as root
 RUN mkdir /app/ && \
     mkdir /app/pas && \
-    mkdir /app/license/ && \
     # hand them over to user 'openedge'
     chown -R openedge:openedge /app/ && \
     chown -R openedge:openedge /usr/dlc/servers/pasoe && \
@@ -48,8 +50,9 @@ RUN mkdir /app/ && \
 
 USER openedge
 
-ENV PROCFG=/app/license/progress.cfg
-VOLUME /app/license
+#Removed because ESAM is checking for progress.cfg in DLC
+#ENV PROCFG=/app/license/progress.cfg
+VOLUME /usr/dlc/progress.cfg
 
 
 

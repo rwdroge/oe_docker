@@ -3,7 +3,7 @@ version: '3.4'
 services:
        
   db_sports2020:
-    image: rwdroge/openedge_db_sports2020:12.5.2
+    image: rwdroge/openedge_db_sports2020:12.5.1
     user: pscadmin
     container_name: db_sports2020
     environment:
@@ -18,7 +18,7 @@ services:
       
       
   db_repl:
-    image: rwdroge/openedge_db_repl:12.5.2
+    image: rwdroge/openedge_db_repl:12.5.1
     container_name: db_repl
     user: pscadmin
     environment:
@@ -33,7 +33,7 @@ services:
       - ./db_repl/artifacts:/psc/wrk/repl
       
   db_pro2:
-    image: rwdroge/openedge_db_pro2:12.5.2
+    image: rwdroge/openedge_db_pro2:12.5.1
     container_name: db_pro2
     user: pscadmin
     environment:
@@ -61,12 +61,12 @@ services:
       - ./db_oracle/oradata:/opt/oracle/oradata
 
   pas_pro2:
-    image: rwdroge/openedge_pas_pro2:6.3
+    image: rwdroge/openedge_pas_pro2:6.4
     container_name: pas_pro2
     ports:
       - "9991-9993:9991-9993"
     volumes: 
-      - ../app/license/12.5:/app/license
+      - ../app/license/12.6/progress.cfg:/usr/dlc/progress.cfg
     depends_on:
       - db_sports2020
       - db_repl
