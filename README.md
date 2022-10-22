@@ -20,6 +20,7 @@ One mapping is defined for the Benefits table, but no CDC-mapping has been done 
 Setup Environment:
 -	Clone repository (https://github.com/rwdroge/oe_demos_docker)
 -	Navigate to Pro2 folder
+-   Put your valid progress.cfg file into the designated folder
 -	CMD > docker-compose up
 
 ### Demo Script:
