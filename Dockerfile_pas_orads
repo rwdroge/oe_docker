@@ -83,7 +83,8 @@ RUN mkdir /app/ && \
 
 USER openedge
 
-ENV PROCFG=/app/license/progress.cfg
-VOLUME /app/license
+#Removed due to ESAM checking for progress.cfg within DLC
+#ENV PROCFG=/app/license/progress.cfg
+VOLUME /usr/dlc/progress.cfg
 
 
