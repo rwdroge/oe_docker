@@ -2,9 +2,6 @@ FROM rwdroge/openedge_pas_orads:12.6
 
 USER root
 
-ENV LD_LIBRARY_PATH=/opt/oracle/client/lib
-ENV ORACLE_HOME=/opt/oracle/client
-
 ADD ./binaries/Pro2-6.4.0.bin response.properties /install/pro2/
 
 WORKDIR /install/pro2
@@ -14,6 +11,9 @@ RUN ./Pro2-6.4.0.bin -i Silent -f response.properties && \
     rm -rf Pro2-6.4.0.bin
 
 WORKDIR /install/pro2/bprepl/Scripts
+
+ENV LD_LIBRARY_PATH=/opt/oracle/client/lib
+ENV ORACLE_HOME=/opt/oracle/client
 
 COPY replProc.pf sports2020.pf ./ 
 COPY schemaholder/* /install/pro2/db

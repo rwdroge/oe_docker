@@ -1,0 +1,4 @@
+# Provide DB parameters in this file
+#  -Mn 10 -Mpb 4 -Ma 10 -Mi 3 -S 37000 -minport 9001 -maxport 9004 -ServerType 4GL
+-m3 -n 200 -Mn 10 -Mpb 20 -Ma 15 -Mi 5 -S 37010 -minport 14001 -maxport 14100 -ServerType SQL
+

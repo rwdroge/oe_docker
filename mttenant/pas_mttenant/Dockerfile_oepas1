@@ -1,0 +1,12 @@
+FROM rwdroge/openedge_pas_instance:12.6
+
+USER openedge 
+COPY ./start.sh /app/pas/start.sh 
+
+ADD ./oepas1.tar /usr/wrk/ 
+
+
+RUN pasman register oepas1 /usr/wrk/oepas1
+
+CMD ["/app/pas/start.sh"]
+

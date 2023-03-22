@@ -49,7 +49,7 @@ services:
       
 
   db_oracle:
-    image: rwdroge/oracle_database:19.3.0-test
+    image: container-registry.oracle.com/database/enterprise
     container_name: db_oracle
     user: oracle
     ports:
@@ -57,8 +57,13 @@ services:
       - "5500:5500"
     environment:
       - ORACLE_PWD=ruben
+      - ORACLE_SID=ORCLCDB
+      - ORACLE_PDB=ORCLPDB1
     volumes:
-      - ./db_oracle/oradata:/opt/oracle/oradata
+     # - ./db_oracle/oradata:/opt/oracle/oradata
+      - ./db_oracle/scripts:/opt/oracle/scripts/setup
+
+
 
   pas_pro2:
     image: rwdroge/openedge_pas_pro2:6.4

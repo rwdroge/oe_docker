@@ -3,9 +3,9 @@ FROM eclipse-temurin:17.0.4.1_1-jdk-centos7 AS openedge
 RUN yum install sysvinit-tools -y && \
     yum clean all
 
-ADD ../binaries/PROGRESS_OE_12.6_LNX_64.tar.gz /install/openedge
+ADD ../binaries/bundle.tar /install/openedge
 
-COPY response126-pro2.ini /install/openedge/response.ini
+COPY response126-pro2-mini.ini /install/openedge/response.ini
 ENV TERM xterm
 RUN /install/openedge/proinst -b /install/openedge/response.ini -l /install/install_oe.log -n && \
     rm /usr/dlc/progress.cfg
@@ -99,5 +99,9 @@ USER openedge
 #removed because of ESAM (expects progress.cfg in DLC directory)
 #ENV PROCFG=/app/license/progress.cfg
 VOLUME /user/dlc/progress.cfg
+
+ADD start.sh /app/pas
+
+CMD [ "/app/pas/start.sh" ]
 
 

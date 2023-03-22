@@ -1,0 +1,43 @@
+version: '3.4'
+
+services:
+       
+  db_mttenant:
+    image: rdroge/openedge_db_mttenant:12.6
+    user: pscadmin
+    container_name: db_mttenant
+    environment:
+      - DB_BROKER_PORT=37000
+      - DB_MINPORT=4100
+      - DB_MAXPORT=4200
+    ports:
+      - "37000:37000"
+      - "37010:37010"
+      - "14001-14100:14001-14100"
+      - "4100-4200:4100-4200"
+    volumes: 
+    # map local cfg file to cfg file in the image
+      - ../mttenant/db_mttenant/conf/progress.cfg:/psc/dlc/progress.cfg
+    # uncomment this line if you want to persist your database files locally
+    # - ./artifacts:/psc/wrk/mttenant
+      
+  pas_mttenant:
+    image: rdroge/openedge_pas_oepas1:12.6
+    user: openedge
+    container_name: pas_mttenant
+    ports:
+      - "8330-8332:8330-8332"
+    volumes: 
+      - ../mttenant/db_mttenant/conf/progress.cfg:/app/license/progress.cfg
+      - ../mttenant/db_mttenant/conf/progress.cfg:/usr/dlc/progress.cfg
+    depends_on:
+      - db_mttenant
+
+  
+      
+
+
+    
+
+
+      

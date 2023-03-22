@@ -1,0 +1,21 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# license files
+*.cfg
+
+.dockerignore
+
+# OE Setups (tar.gz and response files except for sample)
+*.tar.gz
+*.ini
+*.bin
+*.zip
+!sample_response.ini
+*.lic
+*.lg
+*.r
+
+
+
+
+
