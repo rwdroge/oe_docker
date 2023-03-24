@@ -1,16 +1,16 @@
 FROM adoptopenjdk/openjdk11:latest AS builder-jdk
 
-FROM store/progresssoftware/oedb:12.5.2_adv-ent
+FROM progresssoftware/prgs-oedb:12.6.0_adv-ent
 USER pscadmin
 
-COPY --chown=pscadmin:pscadmin ./license/progress.cfg /psc/dlc/progress.cfg
+COPY --chown=pscadmin:pscadmin ./conf/progress.cfg /psc/dlc/progress.cfg
 
 ARG JDK_DOCKER_IMAGE_JAVA_LOCATION=/opt/java/openjdk
 COPY --from=builder-jdk --chown=pscadmin:pscadmin ${JDK_DOCKER_IMAGE_JAVA_LOCATION} /usr/java/ 
 COPY --chown=pscadmin:pscadmin ./artifacts /deploy/artifacts/ 
-COPY --chown=pscadmin:pscadmin ./abl-triggers /deploy/abl-triggers/ 
+#COPY --chown=pscadmin:pscadmin ./abl-triggers /deploy/abl-triggers/ 
 COPY --chown=pscadmin:pscadmin ./conf /deploy/scripts/config/ 
-COPY --chown=pscadmin:pscadmin ./hook-script.sh ./scripts /deploy/scripts/ 
+COPY --chown=pscadmin:pscadmin ./scripts /deploy/scripts/ 
      
 RUN chmod +x /deploy/scripts -R
 ARG DB_CREATE_METHOD=externalDB
@@ -25,5 +25,7 @@ ENV DB_CREATE_METHOD=${DB_CREATE_METHOD} \
 # creates the relevant OpenEdge Database
 RUN /deploy/scripts/create-db.sh && \   
     /deploy/scripts/hook-script.sh
+
+RUN rm /psc/dlc/progress.cfg
 
 CMD ["/bin/sh", "-c", "/deploy/scripts/start-db-server.sh"]

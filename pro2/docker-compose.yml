@@ -3,7 +3,7 @@ version: '3.4'
 services:
        
   db_sports2020:
-    image: rwdroge/openedge_db_sports2020:12.5.1
+    image: rdroge/openedge_db_sports2020:12.6
     user: pscadmin
     container_name: db_sports2020
     environment:
@@ -14,11 +14,11 @@ services:
       - "37001:37001"
       - "4000-4200:4000-4200"
     volumes: 
-      - ../app/license/12.5:/app/license
+      - ../app/license/12.6:/app/license
       
       
   db_repl:
-    image: rwdroge/openedge_db_repl:12.5.1
+    image: rdroge/openedge_db_repl:12.6
     container_name: db_repl
     user: pscadmin
     environment:
@@ -29,11 +29,11 @@ services:
       - "37002:37002"
       - "4250-4350:4250-4350"
     volumes: 
-      - ../app/license/12.5:/app/license
+      - ../app/license/12.6:/app/license
       - ./db_repl/artifacts:/psc/wrk/repl
       
   db_pro2:
-    image: rwdroge/openedge_db_pro2:12.5.1
+    image: rdroge/openedge_db_pro2:12.6
     container_name: db_pro2
     user: pscadmin
     environment:
@@ -44,7 +44,7 @@ services:
       - "37003:37003"
       - "4450-4550:4450-4550"
     volumes: 
-      - ../app/license/12.5:/app/license
+      - ../app/license/12.6:/app/license
       - ./db_pro2/artifacts:/psc/wrk/pro2
       
 
@@ -66,7 +66,7 @@ services:
 
 
   pas_pro2:
-    image: rwdroge/openedge_pas_pro2:6.4
+    image: rdroge/openedge_pas_pro2:6.4
     container_name: pas_pro2
     ports:
       - "9991-9993:9991-9993"
