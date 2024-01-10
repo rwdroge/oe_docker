@@ -17,4 +17,4 @@ jobs:
       with:
         name: dist
         path:
-          mttenant/pas_mttenant/dist  
+          /tmp/dist  
