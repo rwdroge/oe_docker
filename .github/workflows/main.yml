@@ -12,3 +12,9 @@ jobs:
       uses: gradle/gradle-build-action@v2
     - name: Execute Gradle build
       run: ./gradlew build
+    - name: Store artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: dist
+        path:
+          mttenant/pas_mttenant/dist  

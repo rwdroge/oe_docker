@@ -27,6 +27,7 @@ task compileCode(type: ABLCompile){
 	include('**/*.cls')
 	include('**/*.p')
 	include('**/*.w')
+	rcodeDir('mttenant/pas_mttenant/dist')
 	avmOptions{
 		tty.enabled = true
 	}
