@@ -1,16 +1,16 @@
-FROM adoptopenjdk/openjdk11:jdk-11.0.8_10-centos AS install 
+FROM eclipse-temurin:17.0.4.1_1-jdk-centos7 AS install 
 
 RUN yum install sysvinit-tools -y && \
     yum clean all
 
-ADD ../binaries/PROGRESS_OE_12.6_LNX_64.tar.gz /install/openedge
+ADD ../binaries/PROGRESS_OE_12.7_LNX_64.tar.gz /install/openedge
 
-COPY response126-pro2.ini /install/openedge/response.ini
+COPY response127.ini /install/openedge/response.ini
 ENV TERM xterm
 RUN /install/openedge/proinst -b /install/openedge/response.ini -l /install/install_oe.log -n && \
     rm /usr/dlc/progress.cfg
 
-FROM adoptopenjdk/openjdk11:jdk-11.0.8_10-centos
+FROM eclipse-temurin:17.0.4.1_1-jdk-centos7
 
 RUN yum install sysvinit-tools -y && \
     yum clean all && \
@@ -19,6 +19,9 @@ RUN yum install sysvinit-tools -y && \
 
 COPY --from=install /usr/dlc /usr/dlc
 COPY --from=install /usr/wrk /usr/wrk
+COPY --from=install /etc/openedge.d /etc/openedge.d
+COPY --from=install /etc/openedge /etc/openedge
+COPY --from=install /etc/progress /etc/progress
 
 WORKDIR /usr/dlc/bin
 
@@ -36,7 +39,6 @@ RUN groupadd -g 1000 openedge && \
 # create directories and files as root
 RUN mkdir /app/ && \
     mkdir /app/pas && \
-    mkdir /app/license/ && \
     # hand them over to user 'openedge'
     chown -R openedge:openedge /app/ && \
     chown -R openedge:openedge /usr/dlc/servers/pasoe && \
@@ -47,7 +49,9 @@ RUN mkdir /app/ && \
     rm -rf /usr/dlc/demo
 
 USER openedge
-# ENV PROCFG=/app/license/progress.cfg
+
+#Removed because ESAM is checking for progress.cfg in DLC
+#ENV PROCFG=/app/license/progress.cfg
 
 
 
