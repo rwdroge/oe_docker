@@ -4,7 +4,8 @@ on:
     branches: [ main ]
 jobs:
   gradle:
-    runs-on: rdroge/jenkins-agent:jdk17oe127
+    runs-on: ubuntu-latest
+    container: rdroge/jenkins-agent:jdk17oe127
     steps:
     - uses: actions/checkout@v4
     - name: Setup Gradle
