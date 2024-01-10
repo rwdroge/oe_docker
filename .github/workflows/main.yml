@@ -4,7 +4,7 @@ on:
     branches: [ main ]
     paths: 
       - mttenant/**
-        .github/workflows/*.yml
+      - .github/workflows/*.yml
 
 jobs:
   gradle:
