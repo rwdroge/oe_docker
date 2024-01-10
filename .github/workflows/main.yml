@@ -1,5 +1,7 @@
 name: Run Gradle on PRs
-on: pull_request
+on:
+  push:
+    branches: [ main ]
 jobs:
   gradle:
     runs-on: rdroge/jenkins-agent:jdk17oe127
