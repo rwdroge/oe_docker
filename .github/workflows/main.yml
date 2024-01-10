@@ -43,5 +43,5 @@ jobs:
         with:
           context: "{{defaultContext}}:mttenant:pas_mttenant}}"
           push: true
-          tags: rdroge/openedge_pas_mttenant:$OE_VERSION
+          tags: rdroge/openedge_pas_mttenant:${{ vars.OE_VERSION }}
 
