@@ -21,6 +21,7 @@ jobs:
         path:
           /tmp/dist
   docker:
+    needs: gradle
     runs-on: ubuntu-latest
     steps:
       - 
