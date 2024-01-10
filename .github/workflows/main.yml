@@ -1,0 +1,11 @@
+name: Run Gradle on PRs
+on: pull_request
+jobs:
+  gradle:
+    runs-on: rdroge/jenkins-agent:jdk17oe127
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup Gradle
+      uses: gradle/gradle-build-action@v2
+    - name: Execute Gradle build
+      run: ./gradlew build
