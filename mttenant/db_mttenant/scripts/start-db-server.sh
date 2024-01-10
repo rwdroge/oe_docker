@@ -72,6 +72,9 @@ trap 'shutdown_gracefully' SIGTERM SIGINT
 
 # start fluent-bit process
 /usr/local/bin/fluent-bit -c /etc/fluent-bit/fluent-bit.conf &
+
+# start oecc agent process
+/usr/oecc_agent/oeccagent start &
 # keep the container running
 tail -f /dev/null &
 # This is required such that a trap on main process is triggered

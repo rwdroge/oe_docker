@@ -1,6 +1,6 @@
 FROM eclipse-temurin:17.0.3_7-jdk-centos7 AS builder-jdk
 
-FROM progresssoftware/prgs-oedb:12.6.0_adv-ent
+FROM progresssoftware/prgs-oedb:12.7.0_adv-ent
 USER root
 # Needs a valid license file for building the container image (creating the db)
 COPY --chown=pscadmin:pscadmin ./conf/progress.cfg /psc/dlc/progress.cfg

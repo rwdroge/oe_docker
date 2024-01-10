@@ -27,6 +27,7 @@ services:
     container_name: pas_mttenant
     ports:
       - "8330-8332:8330-8332"
+      - "9901:8899"
     volumes: 
       - ../mttenant/db_mttenant/conf/progress.cfg:/app/license/progress.cfg
       - ../mttenant/db_mttenant/conf/progress.cfg:/usr/dlc/progress.cfg

@@ -1,5 +1,6 @@
 #!/bin/bash
-logfile=/usr/wrk/oepas1/logs/oepas1.agent.log
+logfile=/app/pas/prodpas/logs/prodpas.agent.log
 touch $logfile
-/usr/wrk/oepas1/bin/tcman.sh start -v
+/app/pas/prodpas/bin/tcman.sh start -v &
+/usr/oecc_agent/oeccagent start    
 tail -f $logfile
