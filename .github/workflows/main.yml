@@ -41,7 +41,7 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v5
         with:
-          context: "{{defaultContext}}:mttenant/pas_mttenant}}"
+          context: "{{defaultContext}}:mttenant/pas_mttenant"
           push: true
           tags: rdroge/openedge_pas_mttenant:${{ vars.OE_VERSION }}
 
