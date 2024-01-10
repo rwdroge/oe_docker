@@ -16,9 +16,9 @@ abl {
 }
 
 task createSports2020(type: CreateDB){
-	dbName = 'sports2020'
+	dbName = 'mttenant'
 	sourceDb = "${dlcHome}/sports2020"
-	outputDir = "${buildDir}/db/sports2020"
+	outputDir = "${buildDir}/db/mttenant"
 }
 
 task compileCode(type: ABLCompile){
@@ -32,7 +32,7 @@ task compileCode(type: ABLCompile){
 		tty.enabled = true
 	}
 	dbConnection {
-		dbName="${buildDir}/db/sports2020/sports2020"
+		dbName="${buildDir}/db/mttenant/mttenant"
 		connectionParameters = "-1"
     }
 }
