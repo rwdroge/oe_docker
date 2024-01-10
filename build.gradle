@@ -22,8 +22,8 @@ task createSports2020(type: CreateDB){
 }
 
 task compileCode(type: ABLCompile){
-	source('src')
-	propath("src")
+	source('mttenant/pas_mttenant/src')
+	propath("mttenant/pas_mttenant/src")
 	include('**/*.cls')
 	include('**/*.p')
 	include('**/*.w')
