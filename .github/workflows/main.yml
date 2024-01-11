@@ -42,7 +42,7 @@ jobs:
         uses: actions/download-artifact@v3
       - run: |
           echo ${{ github.workspace }} 
-          ls
+          ls ${{ github.workspace }}/dist
       -
         name: Build and push
         uses: docker/build-push-action@v5
