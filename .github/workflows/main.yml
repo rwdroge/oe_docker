@@ -40,9 +40,7 @@ jobs:
       -
         name: Download all workflow run artifacts
         uses: actions/download-artifact@v3
-      - run: |
-          echo ${{ github.workspace }} 
-          ls ${{ github.workspace }}/dist
+
       -
         name: Build and push
         uses: docker/build-push-action@v5
