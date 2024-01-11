@@ -1,0 +1,20 @@
+services:
+  jenkins:
+    container_name: jenkins-master 
+    networks: 
+      - dev-ops
+    image: jenkins/jenkins:lts
+    ports:
+      - "8080:8080"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+  ssh-agent:
+    networks: 
+      - dev-ops
+    image: jenkins/ssh-agent
+
+volumes:
+  jenkins_home:
+
+networks:
+  dev-ops:
