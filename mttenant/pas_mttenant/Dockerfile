@@ -5,7 +5,7 @@ USER openedge
 RUN /app/pas/prodpas/bin/tcman.sh deploy -a mttenant /usr/dlc/servers/pasoe/extras/oeabl.war prodpas
 
 COPY dist/ /app/pas/prodpas/openedge 
-COPY dist/webhandlers/mttenantHandler.r /app/pas/prodpas/webapps/mttenant/WEB-INF/openedge/mttenantHandler.r
+COPY dist/mttenantHandler.r /app/pas/prodpas/webapps/mttenant/WEB-INF/openedge/mttenantHandler.r
 COPY conf/startup.pf /app/pas/prodpas/conf 
 COPY conf/ABLDomainRegistry.keystore /app/pas/prodpas/conf
 COPY conf/oeablSecurity.properties /app/pas/prodpas/conf/merge.properties
