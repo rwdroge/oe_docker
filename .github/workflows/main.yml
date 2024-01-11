@@ -35,6 +35,9 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
+        name: Checkout Everything again
+        uses: actions/checkout@v4
+      -
         name: Download all workflow run artifacts
         uses: actions/download-artifact@v3
       - run: |
