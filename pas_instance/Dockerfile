@@ -1,4 +1,4 @@
-FROM rwdroge/openedge_pas_base:12.6
+FROM rdroge/openedge_pas_base:12.7.0
 
 USER openedge
 
