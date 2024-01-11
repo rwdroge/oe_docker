@@ -43,7 +43,7 @@ jobs:
         with:
           path: ${{ github.workspace }}/mttenant/pas_mttenant/dist
       - run: 
-          ls ${{ github.workspace }}/mttenant/pas_mttenant
+          ls ${{ github.workspace }}/mttenant/pas_mttenant/dist
       -
         name: Build and push
         uses: docker/build-push-action@v5
