@@ -40,8 +40,10 @@ jobs:
       -
         name: Download all workflow run artifacts
         uses: actions/download-artifact@v3
+        with:
+          path: ${{ github.workspace }}/mttenant/pas_mttenant/dist
       - run: 
-          ls ${{ github.workspace }}/dist
+          ls ${{ github.workspace }}/mttenant/pas_mttenant
       -
         name: Build and push
         uses: docker/build-push-action@v5
