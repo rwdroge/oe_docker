@@ -37,11 +37,14 @@ jobs:
       -
         name: Download all workflow run artifacts
         uses: actions/download-artifact@v3
+        run: |
+          echo ${{ github.workspace }} 
+          ls
       -
         name: Build and push
         uses: docker/build-push-action@v5
         with:
-          context: "$GITHUB_WORKSPACE/oe_demos_docker/mttenant/pas_mttenant"
+          context: "${{ github.workspace }}/oe_demos_docker/mttenant/pas_mttenant"
           push: true
           tags: rdroge/openedge_pas_mttenant:${{ vars.OE_VERSION }}
 
