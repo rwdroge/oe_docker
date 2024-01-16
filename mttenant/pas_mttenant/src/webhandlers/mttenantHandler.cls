@@ -131,10 +131,13 @@ class mttenantHandler inherits WebHandler:
             /* what if no customers are found and it returns an empty array (json-object is still 'customers' in that case but with an empty array instead of ttcustomer records) */
             
             do:
-                message "am i here now?".
+                
                 response:StatusCode = 200.
                 dynClass:Read(filter, output dataset-handle hDataSet).
+                //hDataSet:write-json("file", "c:\temp\hDataset.json").
                 hTempTable = hDataSet:get-buffer-handle(1):table-handle.
+                
+                hTempTable:write-json('file', '/app/pas/prodpas/temp/hTempTable.json').
                 jsonObject = new JsonObject().
                 jsonObject:read(hTempTable, true).
                 
