@@ -1,14 +1,14 @@
-FROM rdroge/openedge_pas_orads:12.6
+FROM rdroge/openedge_pas_orads:12.7.0
 
 USER root
 
-ADD ./binaries/Pro2-6.4.0.bin response.properties /install/pro2/
+ADD ./binaries/Pro2-6.5.0.bin response.properties /install/pro2/
 
 WORKDIR /install/pro2
 
-RUN ./Pro2-6.4.0.bin -i Silent -f response.properties && \  
-    chown -R openedge:openedge /install/pro2 -R && \
-    rm -rf Pro2-6.4.0.bin
+RUN ./Pro2-6.5.0.bin -i Silent -f response.properties && \  
+    chown -R pscadmin:pscadmin /install/pro2 -R && \
+    rm -rf Pro2-6.5.0.bin
 
 WORKDIR /install/pro2/bprepl/Scripts
 
@@ -18,6 +18,9 @@ ENV ORACLE_HOME=/opt/oracle/client
 COPY replProc.pf sports2020.pf ./ 
 COPY schemaholder/* /install/pro2/db
 COPY start.sh /install/pro2/start.sh 
+
+USER root
+
 CMD ["/install/pro2/start.sh"]
 
 EXPOSE 9991 9992

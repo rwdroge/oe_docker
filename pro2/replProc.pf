@@ -13,8 +13,8 @@
 
 
 # Repl and pro2 Connections
--db repl     -ld repl -H db_repl -S 37002
--db pro2  -ld pro2  -H db_pro2 -S 37003
+-db repl -ld repl -H db_repl -S 37002
+-db pro2 -ld pro2 -H db_pro2 -S 37003
 
 # Connect to another DB set (Source db, Schema holder (when appropriate) and target DB)
 # replProc.pf auto updated on 01/19/2021

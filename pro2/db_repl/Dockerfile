@@ -1,6 +1,8 @@
+ARG OE_VERSION
+
 FROM adoptopenjdk/openjdk11:latest AS builder-jdk
 
-FROM progresssoftware/prgs-oedb:12.6.0_adv-ent
+FROM progresssoftware/prgs-oedb:$OE_VERSION"_adv-ent"
 USER pscadmin
 
 COPY --chown=pscadmin:pscadmin ./conf/progress.cfg /psc/dlc/progress.cfg
@@ -24,7 +26,13 @@ ENV DB_CREATE_METHOD=${DB_CREATE_METHOD} \
 
 # creates the relevant OpenEdge Database
 RUN /deploy/scripts/create-db.sh && \   
-    /deploy/scripts/hook-script.sh
+    /deploy/scripts/hook-script.sh 
+
+USER root
+
+RUN chown pscadmin:pscadmin /psc/wrk/repl -R
+
+USER pscadmin         
 
 RUN rm /psc/dlc/progress.cfg
 
