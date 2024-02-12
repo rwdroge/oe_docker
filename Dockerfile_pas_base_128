@@ -1,0 +1,65 @@
+FROM eclipse-temurin:17.0.10_7-jdk-jammy AS install 
+
+ADD ../binaries/PROGRESS_OE_12.8_LNX_64.tar.gz /install/openedge
+
+COPY response128.ini /install/openedge/response.ini
+ENV TERM xterm
+RUN /install/openedge/proinst -b /install/openedge/response.ini -l /install/install_oe.log -n 
+    
+
+FROM eclipse-temurin:17.0.10_7-jdk-jammy
+
+RUN mkdir /usr/dlc && \
+    mkdir /usr/wrk
+
+COPY --from=install /usr/dlc /usr/dlc
+COPY --from=install /usr/wrk /usr/wrk
+COPY --from=install /etc/openedge.d /etc/openedge.d
+COPY --from=install /etc/openedge /etc/openedge
+COPY --from=install /etc/progress /etc/progress
+
+WORKDIR /usr/dlc/bin
+
+RUN chown root _* && \
+    chmod 4755 _* && \
+    chmod 755 _sql* 
+
+ENV TERM xterm   
+ENV DLC=/usr/dlc
+ENV WRKDIR=/usr/wrk
+ENV PATH=$PATH:$DLC:$DLC/bin
+
+RUN groupadd -g 1000 openedge && \
+   useradd -r -u 1000 -g openedge openedge
+
+# create directories and files as root
+RUN mkdir /app/ && \
+    mkdir /app/pas && \
+    chown -R openedge:openedge /app/ 
+
+    # hand them over to user 'openedge'
+WORKDIR /app/pas
+ADD start.sh /app/pas
+# create a basic pas instance for production & enable health check
+# next to that remove some unnecessary files for this PASOE container
+RUN pasman create -p 8220 -P 8221 -s 8222 -Z prod -v prodpas && \
+    /app/pas/prodpas/bin/tcman.sh feature HealthCheck=on && \
+    chown -R openedge:openedge /usr/dlc/servers/pasoe /app/pas/prodpas && \
+    rm -rf /usr/dlc/src && \
+    rm -rf /usr/dlc/empty && \
+    rm -rf /usr/dlc/sports* && \
+    rm -rf /usr/dlc/isports* && \
+    rm -rf /usr/dlc/demo
+
+USER openedge
+# we should remove progress.cfg once we're done building for distribution
+# rm /usr/dlc/progress.cfg
+
+EXPOSE 8220 8221 8899
+
+
+
+
+
+
+
