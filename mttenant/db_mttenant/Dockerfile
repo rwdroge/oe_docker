@@ -1,7 +1,11 @@
-FROM eclipse-temurin:17.0.3_7-jdk-centos7 AS builder-jdk
+FROM eclipse-temurin:17.0.11_9-jdk-jammy AS builder-jdk
 
-FROM progresssoftware/prgs-oedb:12.7.0_adv-ent
+
+FROM progresssoftware/prgs-oedb:12.8.3_adv-ent
+
+
 USER root
+RUN microdnf install libtirpc -y
 # Needs a valid license file for building the container image (creating the db)
 COPY --chown=pscadmin:pscadmin ./conf/progress.cfg /psc/dlc/progress.cfg
 
@@ -25,7 +29,7 @@ ARG EXTERNAL_DATABASE_PATH=/psc/wrk/mttenant
 ENV DB_CREATE_METHOD=${DB_CREATE_METHOD} \
     DB_NAME=${DB_NAME} \
     EXTERNAL_DATABASE_PATH=${EXTERNAL_DATABASE_PATH} \
-    LD_LIBRARY_PATH=/usr/java/jre/lib/amd64/server/:/usr/java/jre/lib/amd64/:/usr/java/lib/server
+    LD_LIBRARY_PATH=/usr/java/jre/lib/amd64/server/:/usr/java/jre/lib/amd64/:/usr/java/lib/server:/usr/java/lib
 
 # creates the relevant OpenEdge Database
 

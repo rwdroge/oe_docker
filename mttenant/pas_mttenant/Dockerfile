@@ -1,4 +1,4 @@
-FROM rdroge/openedge_pas_instance:12.7.0
+FROM rdroge/openedge_pas_instance:12.8.3
 
 USER openedge 
 
@@ -32,6 +32,8 @@ RUN /app/pas/prodpas/bin/oeprop.sh +AppServer.allowRuntimeUpdates=1 \
     /app/pas/prodpas/bin/oeprop.sh +prodpas.ROOT.REST.adapterEnabled=0 \
     /app/pas/prodpas/bin/oeprop.sh +prodpas.ROOT.statusEnabled=1 \
     /app/pas/prodpas/bin/oeprop.sh +prodpas.mttenant.WEB.adapterEnabled=1 \
+    /app/pas/prodpas/bin/oeprop.sh +prodpas.mttenant.REST.adapterEnabled=0 \
+    /app/pas/prodpas/bin/oeprop.sh +prodpas.mttenant.SOAP.adapterEnabled=0 \
     /app/pas/prodpas/bin/oeprop.sh +prodpas.ROOT.APSV.adapterEnabled=0 \
     /app/pas/prodpas/bin/oeprop.sh +prodpas.mttenant.WEB.defaultHandler=OpenEdge.Web.CompatibilityHandler \
     /app/pas/prodpas/bin/oeprop.sh "+prodpas.mttenant.WEB.handler1=mttenantHandler: /api/{apitype}/{entityname}/{id1}/{entityname2}/{id2}" \

@@ -4,7 +4,7 @@ ARG user=jenkins
 USER root
 
 ENV DOCKERVERSION=19.03.12
-LABEL Description="This image is derived from jenkins/agent openjdk11."
+LABEL Description="This image is derived from jenkins/agent openjdk17."
 
 RUN curl -fsSLO https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKERVERSION}.tgz \
   && tar xzvf docker-${DOCKERVERSION}.tgz --strip 1 \
@@ -15,8 +15,8 @@ WORKDIR /home/${user}
 RUN mkdir /installer
 COPY ./response.ini /installer/
 WORKDIR /installer
-ADD ./binaries/PROGRESS_OE_12.7_LNX_64.tar.gz ./
-#RUN tar -xvzf /installer/PROGRESS_OE_12.7_LNX_64.tar.gz
+ADD ./binaries/PROGRESS_OE_12.8.3_LNX_64.tar.gz ./
+
 
 WORKDIR /etc
 RUN /installer/proinst -b /installer/response.ini -l ./install.log
