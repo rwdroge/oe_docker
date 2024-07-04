@@ -12,6 +12,8 @@
 /kafka
 /anticimex
 /exact
+/devcontainer
+/rcd
 
 
 
@@ -27,6 +29,7 @@ docker-compose-amazon.yml
 !sample_response.ini
 *.lic
 *.lg
+*.jar
 
 
 pro2/db_oracle/oradata/ORCLCDB/control01.ctl
@@ -43,3 +46,5 @@ pro2/db_oracle/oradata/ORCLCDB/ORCLPDB1/temp01.dbf
 pro2/db_oracle/oradata/ORCLCDB/ORCLPDB1/undotbs01.dbf
 pro2/db_oracle/oradata/ORCLCDB/ORCLPDB1/users01.dbf
 pro2/db_oracle/oradata/dbconfig/ORCLCDB/spfileORCLCDB.ora
+jenkins/agent/binaries/OpenEdge.BusinessLogic.pl
+jenkins/agent/binaries/PCT.jar

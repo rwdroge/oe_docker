@@ -1,15 +1,33 @@
-FROM eclipse-temurin:17.0.10_7-jdk-jammy AS install 
+FROM eclipse-temurin:17.0.11_9-jdk-jammy AS install 
 
-ADD ../binaries/PROGRESS_OE_12.8_LNX_64.tar.gz /install/openedge
+ADD ../binaries/PROGRESS_OE_12.8.3_LNX_64.tar.gz /install/openedge
 
 COPY response128.ini /install/openedge/response.ini
 ENV TERM xterm
 RUN /install/openedge/proinst -b /install/openedge/response.ini -l /install/install_oe.log -n 
-    
 
-FROM eclipse-temurin:17.0.10_7-jdk-jammy
+RUN rm -rf /usr/dlc/src \
+    /usr/dlc/empty* \
+    /usr/dlc/*sports* \
+    /usr/dlc/demo* \
+    /usr/dlc/gradle/ \
+    /usr/dlc/pct/ \
+    /usr/dlc/prohelp/ \
+    /usr/dlc/prolang/ \
+    /usr/dlc/javahelp/ \
+    /usr/dlc/newkw* \
+    /usr/dlc/notice.txt \
+    /usr/dlc/odbc/ \
+    /usr/dlc/oebuild/ \
+    /usr/dlc/ant/ \
+    /usr/dlc/templates/
 
-RUN mkdir /usr/dlc && \
+
+FROM eclipse-temurin:17.0.11_9-jdk-jammy
+
+RUN apt update && \
+    apt install netbase && \
+    mkdir /usr/dlc && \
     mkdir /usr/wrk
 
 COPY --from=install /usr/dlc /usr/dlc
@@ -30,7 +48,7 @@ ENV WRKDIR=/usr/wrk
 ENV PATH=$PATH:$DLC:$DLC/bin
 
 RUN groupadd -g 1000 openedge && \
-   useradd -r -u 1000 -g openedge openedge
+    useradd -r -u 1000 -g openedge openedge
 
 # create directories and files as root
 RUN mkdir /app/ && \
@@ -44,20 +62,20 @@ ADD start.sh /app/pas
 # next to that remove some unnecessary files for this PASOE container
 RUN pasman create -p 8220 -P 8221 -s 8222 -Z prod -v prodpas && \
     /app/pas/prodpas/bin/tcman.sh feature HealthCheck=on && \
-    chown -R openedge:openedge /usr/dlc/servers/pasoe /app/pas/prodpas && \
-    rm -rf /usr/dlc/src && \
-    rm -rf /usr/dlc/empty && \
-    rm -rf /usr/dlc/sports* && \
-    rm -rf /usr/dlc/isports* && \
-    rm -rf /usr/dlc/demo
+    chown -R openedge:openedge /usr/dlc/servers/pasoe /app/pas/prodpas 
+
+# we need to enable TCP 
+RUN echo 'tcp    6 TCP' >> /etc/protocols 
+    # we should remove progress.cfg once we're done building for distribution
+    # rm /usr/dlc/progress.cfg
 
 USER openedge
-# we should remove progress.cfg once we're done building for distribution
-# rm /usr/dlc/progress.cfg
 
 EXPOSE 8220 8221 8899
 
+LABEL maintainer="rdroge@progress.com"
 
+CMD [ "/app/pas/start.sh" ]
 
 
 
