@@ -1,11 +1,11 @@
-FROM eclipse-temurin:17.0.11_9-jdk-alpine-jdk-jammy AS openedge 
+FROM eclipse-temurin:17.0.11_9-jdk-jammy AS openedge 
 
 ADD ../binaries/PROGRESS_OE_12.8.3_LNX_64.tar.gz /install/openedge
 
 COPY response128-pro2-mini.ini /install/openedge/response.ini
 ENV TERM xterm
 RUN /install/openedge/proinst -b /install/openedge/response.ini -l /install/install_oe.log -n 
-    
+
 
 FROM eclipse-temurin:17.0.11_9-jdk-jammy AS oracle
 
