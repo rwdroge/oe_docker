@@ -16,6 +16,7 @@ COPY conf/spaservice.properties /app/pas/prodpas/openedge
 RUN /app/pas/prodpas/bin/oeprop.sh +AppServer.allowRuntimeUpdates=1 \
     /app/pas/prodpas/bin/oeprop.sh +AppServer.SessMgr.prodpas.agentStartupParam="-T ../temp -pf ../conf/startup.pf" \
     /app/pas/prodpas/bin/oeprop.sh +AppServer.SessMgr.prodpas.agentLoggingLevel=3 \
+    /app/pas/prodpas/bin/oeprop.sh +AppServer.SessMgr.prodpas.agentLogEntryTypes=4GLTrace,ASPlumbing,DB.Connects \
     /app/pas/prodpas/bin/oeprop.sh +AppServer.Agent.prodpas.agentShutdownProc= \
     /app/pas/prodpas/bin/oeprop.sh +AppServer.Agent.prodpas.agentStartupProc=startup/as_authstartup.p \
     /app/pas/prodpas/bin/oeprop.sh +AppServer.Agent.prodpas.agentStartupProcParam= \
