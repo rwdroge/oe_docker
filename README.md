@@ -12,7 +12,7 @@
 -	Sports2020 DB
 -	Repl DB
 -	Pro2 DB
--	Oracle DB
+-	Oracle DB (requires an Oracle Account first with License Agreement Acceptance after via https://container-registry.oracle.com)
 -	Pro2 (PASOE)
 
 Job runner is started by default and replication is setup for sports2020 source database to the Oracle database. Pro2 properties have been imported already.

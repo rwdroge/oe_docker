@@ -1,11 +1,12 @@
-FROM eclipse-temurin:17.0.11_9-jdk-jammy AS openedge 
+FROM eclipse-temurin:17.0.12_7-jdk-jammy AS openedge 
 
 ADD ../binaries/PROGRESS_OE_12.8.3_LNX_64.tar.gz /install/openedge
 
-COPY response128-pro2-mini.ini /install/openedge/response.ini
-ENV TERM xterm
+COPY response128-pro2.ini /install/openedge/response.ini
+COPY clean_oe_files.sh /install/openedge/ 
+ENV TERM=xterm
 RUN /install/openedge/proinst -b /install/openedge/response.ini -l /install/install_oe.log -n 
-
+RUN ./install/openedge/clean_oe_files.sh pasoe
 
 FROM eclipse-temurin:17.0.11_9-jdk-jammy AS oracle
 
@@ -15,38 +16,28 @@ RUN mkdir /install/ && \
     mkdir -p /opt/oracle && \
     mkdir -p /opt/oraInventory && \
     # necessary to install some additional libraries on CentOS for Oracle client (moving to Ubuntu)
-    # yum install libaio libnsl -y && \
     apt update -y && \
-    apt install unzip && \
-    groupadd -g 54321 oinstall && \
-    groupadd -g 54322 dba && \
-    groupadd -g 54323 oper && \
-    useradd -g oinstall oracle 
+    apt install unzip 
 
 COPY ./binaries/LINUX.X64_193000_client_home.zip /install/ 
 
 WORKDIR /install
 
-RUN unzip LINUX.X64_193000_client_home.zip -d /opt/oracle/client && \
-    chown -R oracle:oinstall /opt/oracle && \
-    chown -R oracle:oinstall /opt/oraInventory && \
-    chmod -R 775 /opt 
-    
+RUN unzip LINUX.X64_193000_client_home.zip -d /opt/oracle/client 
 
 WORKDIR /opt/oracle/client/lib
 RUN rm -rf libexpat.so.1 && \
     ln -s libexpat.so.1.6.8 libexpat.so.1 && \
     ldconfig /opt/oracle/client/lib
 
-USER oracle
-COPY ./pro2/tnsnames.ora /opt/oracle/client/network/admin/tnsnames.ora
-
-FROM eclipse-temurin:17.0.11_9-jdk-jammy
+FROM eclipse-temurin:17.0.12_7-jdk-jammy
  
 RUN mkdir /usr/dlc && \
     mkdir /usr/wrk && \ 
     mkdir /opt/oracle && \
-    mkdir /opt/oraInventory
+    mkdir /opt/oraInventory && \
+    apt update -y && \ 
+    apt install libaio1 libaio-dev -y
 
 COPY --from=openedge /usr/dlc /usr/dlc
 COPY --from=openedge /usr/wrk /usr/wrk
@@ -68,9 +59,16 @@ RUN chown root _* && \
     groupadd -g 54321 oinstall && \
     groupadd -g 54322 dba && \
     groupadd -g 54323 oper && \
-    useradd -g oinstall oracle 
+    useradd -g oinstall oracle && \
+    chown -R oracle:oinstall /opt/oracle && \
+    chown -R oracle:oinstall /opt/oraInventory && \
+    chmod -R 775 /opt 
 
-ENV TERM xterm   
+USER oracle
+COPY ./pro2/tnsnames.ora /opt/oracle/client/network/admin/tnsnames.ora
+
+USER root
+ENV TERM=xterm   
 ENV DLC=/usr/dlc
 ENV WRKDIR=/usr/wrk
 ENV PATH=$PATH:$DLC:$DLC/bin
@@ -82,11 +80,6 @@ RUN mkdir /app/ && \
     # hand them over to user 'openedge'
     chown -R pscadmin:pscadmin /app/ && \
     chown -R pscadmin:pscadmin /usr/dlc/servers/pasoe && \
-    rm -rf /usr/dlc/src && \
-    rm -rf /usr/dlc/empty && \
-    rm -rf /usr/dlc/sports* && \
-    rm -rf /usr/dlc/isports* && \
-    rm -rf /usr/dlc/demo && \
     # enable TCP
     echo 'tcp    6 TCP' >> /etc/protocols
 
@@ -100,7 +93,6 @@ ADD start.sh /app/pas
 
 CMD [ "/app/pas/start.sh" ]
 
-EXPOSE 8220 8221 8899
 
 
 

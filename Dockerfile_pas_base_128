@@ -2,26 +2,12 @@ FROM eclipse-temurin:17.0.11_9-jdk-jammy AS install
 
 ADD ../binaries/PROGRESS_OE_12.8.3_LNX_64.tar.gz /install/openedge
 
-COPY response128.ini /install/openedge/response.ini
-ENV TERM xterm
+COPY response128_pas_prod.ini /install/openedge/response.ini
+COPY clean_oe_files.sh /install/openedge/
+ENV TERM=xterm
 RUN /install/openedge/proinst -b /install/openedge/response.ini -l /install/install_oe.log -n 
 
-RUN rm -rf /usr/dlc/src \
-    /usr/dlc/empty* \
-    /usr/dlc/*sports* \
-    /usr/dlc/demo* \
-    /usr/dlc/gradle/ \
-    /usr/dlc/pct/ \
-    /usr/dlc/prohelp/ \
-    /usr/dlc/prolang/ \
-    /usr/dlc/javahelp/ \
-    /usr/dlc/newkw* \
-    /usr/dlc/notice.txt \
-    /usr/dlc/odbc/ \
-    /usr/dlc/oebuild/ \
-    /usr/dlc/ant/ \
-    /usr/dlc/templates/
-
+RUN ./install/openedge/clean_oe_files.sh pasoe
 
 FROM eclipse-temurin:17.0.11_9-jdk-jammy
 
@@ -39,10 +25,11 @@ COPY --from=install /etc/progress /etc/progress
 WORKDIR /usr/dlc/bin
 
 RUN chown root _* && \
-    chmod 4755 _* && \
-    chmod 755 _sql* 
+    chmod 4755 _*
+    #already removed the sql stuff for PASOE images, no need to chmod
+    #chmod 755 _sql* 
 
-ENV TERM xterm   
+ENV TERM=xterm   
 ENV DLC=/usr/dlc
 ENV WRKDIR=/usr/wrk
 ENV PATH=$PATH:$DLC:$DLC/bin
