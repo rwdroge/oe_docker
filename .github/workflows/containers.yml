@@ -32,7 +32,7 @@ jobs:
                 run: 
                     echo "OE_VERSION=${{matrix.version}}" >> $GITHUB_ENV
                     echo "OE_VERSION_FLAT=${ OE_VERSION//./ }" >> $GITHUB_ENV
-                    echo "OE_BASE_FLAT=${ OE_VERSION_FLAT:0:4} >> $GITHUB_ENV
+                    echo "OE_BASE_FLAT=${ OE_VERSION_FLAT:0:3} >> $GITHUB_ENV
 
             -   name: Insert JDK version in Dockerfile
                 run: |
