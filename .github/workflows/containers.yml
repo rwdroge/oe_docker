@@ -48,7 +48,7 @@ jobs:
       
             -   name: Download installer files
                 run: |
-                    build/scripts/download-oe.sh
+                    ${{ github.workspace }}/build/scripts/download-oe.sh
 
             -   name: Get correct response.ini  # get progress.cfg from secret PROGRESS_CFG_122
                 run: |
