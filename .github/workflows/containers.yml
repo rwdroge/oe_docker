@@ -31,12 +31,12 @@ jobs:
             -   name: OE Versions to ENV
                 run: 
                     echo "OE_VERSION=${{matrix.version}}" >> $GITHUB_ENV
-                    echo "OE_VERSION_FLAT=${{matrix.version//./}}" >> $GITHUB_ENV
-                    echo "OE_BASE_FLAT=${{OE_VERSION_FLAT:0:4}}" >> $GITHUB_ENV
+                    echo "OE_VERSION_FLAT=${{ env.OE_VERSION }}" >> $GITHUB_ENV
+                    echo OE_BASE_FLAT=${{env.OE_VERSION}}:0:4 >> $GITHUB_ENV
 
             -   name: Insert JDK version in Dockerfile
                 run: |
-                    jdk=`jq -r ".jdk${{env.OE_BASE_FLAT}}" src/jdk-versions.json`
+                    jdk=`jq -r ".jdk${{ env.OE_BASE_FLAT }}" src/jdk-versions.json`
                     echo JDK: $jdk
                     sed -i "s/JDKVERSION/$jdk/g" compiler/Dockerfile
                     echo download jdk from Dockerfile:
