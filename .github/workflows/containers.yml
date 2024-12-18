@@ -31,16 +31,16 @@ jobs:
             -   name: OE Versions to ENV
                 run: 
                     echo "OE_VERSION=${{matrix.version}}" >> $GITHUB_ENV
-                    echo "OE_VERSION_FLAT=${{ env.OE_VERSION }}" >> $GITHUB_ENV
-                    echo OE_BASE_FLAT=${{env.OE_VERSION}}:0:4 >> $GITHUB_ENV
+                    echo "OE_VERSION_FLAT=${ OE_VERSION//./ }" >> $GITHUB_ENV
+                    echo "OE_BASE_FLAT=${ OE_VERSION_FLAT:0:4} >> $GITHUB_ENV
 
             -   name: Insert JDK version in Dockerfile
                 run: |
-                    jdk=`jq -r ".jdk${{ env.OE_BASE_FLAT }}" src/jdk-versions.json`
+                    jdk=`jq -r ".jdk${{ env.OE_BASE_FLAT }}" build/jdk-versions.json`
                     echo JDK: $jdk
-                    sed -i "s/JDKVERSION/$jdk/g" compiler/Dockerfile
+                    sed -i "s/JDKVERSION/$jdk/g" build/compiler/Dockerfile
                     echo download jdk from Dockerfile:
-                    cat src/Dockerfile | grep temurin      
+                    cat build/compiler/Dockerfile | grep temurin      
       
             -   name: Download installer files
                 run: |
@@ -48,7 +48,7 @@ jobs:
 
             -   name: Get correct response.ini  # get progress.cfg from secret PROGRESS_CFG_122
                 run: |
-                      echo fetching response.ini/progress.cfg from secret RESPONSE_INI_${{env.OE_BASE_FLAT}}
+                      echo fetching response.ini/progress.cfg from secret RESPONSE_INI_${{ env.OE_BASE_FLAT}}
                       echo "${{ secrets[format('RESPONSE_INI_{0}', env.OE_BASE_FLAT)] }}" > build/response.ini
 
             -   name: Remove files used by installer
