@@ -40,7 +40,7 @@ jobs:
 
             -   name: Insert JDK version in Dockerfile
                 run: |
-                    jdk=`jq -r ".jdk${{ env.OE_VERSION_FLAT }}" build/jdk-versions.json`
+                    jdk=`jq -r ".jdk${{ env.OE_VERSION_FLAT }}" build/jdkversions.json`
                     echo JDK: $jdk
                     sed -i "s/JDKVERSION/$jdk/g" build/compiler/Dockerfile
                     echo download jdk from Dockerfile:
@@ -68,4 +68,4 @@ jobs:
                     context: "${{ github.workspace }}/build/oeinstaller"
                     push: true
                     tags: progressofficial/oe_compiler:${{ env.OE_VERSION }}
-
+ 
