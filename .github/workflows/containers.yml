@@ -1,4 +1,4 @@
-name: Run Gradle on PRs
+name: Build Docker Containers for OpenEdge
 on:
   push:
     branches: [ main ]
@@ -30,11 +30,11 @@ jobs:
                 id: get-oeversion
                 uses: bfv/openedge-flatversion@v1.1.0
                 with:
-                    version: ${{matrix.version}}
+                    version: ${{ matrix.version }}
 
             -   name: OE Versions to ENV
                 run: 
-                    echo "OE_VERSION=${{matrix.version}}" >> $GITHUB_ENV
+                    echo "OE_VERSION=${{ matrix.version }}" >> $GITHUB_ENV
                     echo "OE_VERSION_FLAT=${{ steps.get-oeversion.outputs.flat-version }}" >> $GITHUB_ENV
                     echo "OE_BASE_FLAT=${{ steps.get-oeversion.outputs.base-version }}" >> $GITHUB_ENV
 
