@@ -48,12 +48,12 @@ jobs:
       
             -   name: Download installer files
                 run: |
-                    ${{ github.workspace }}/build/scripts/download-oe.sh
+                    build/scripts/download-oe.sh
 
             -   name: Get correct response.ini  # get progress.cfg from secret PROGRESS_CFG_122
                 run: |
                       echo fetching response.ini/progress.cfg from secret RESPONSE_INI_${{ env.OE_VERSION_FLAT}}
-                      echo "${{ secrets[format('RESPONSE_INI_{0}', env.OE_VERSION_FLAT)] }}" > build/response.ini
+                      echo "${{ secrets[format('RESPONSE_INI_{0}_4GL', env.OE_VERSION_FLAT)] }}" > build/response.ini
 
             -   name: Remove files used by installer
                 run: |

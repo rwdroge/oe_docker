@@ -14,6 +14,8 @@
 /exact
 /devcontainer
 /rcd
+/pro2/logs
+/pasoe
 
 
 
@@ -30,6 +32,7 @@ docker-compose-amazon.yml
 *.lic
 *.lg
 *.jar
+*.r
 
 
 pro2/db_oracle/oradata/ORCLCDB/control01.ctl
@@ -48,3 +51,52 @@ pro2/db_oracle/oradata/ORCLCDB/ORCLPDB1/users01.dbf
 pro2/db_oracle/oradata/dbconfig/ORCLCDB/spfileORCLCDB.ora
 jenkins/agent/binaries/OpenEdge.BusinessLogic.pl
 jenkins/agent/binaries/PCT.jar
+pro2/logs/catalina.2024-09-24.log
+pro2/logs/catalina.out
+pro2/logs/host-manager.2024-09-24.log
+pro2/logs/localhost-access.2024-09-24.log
+pro2/logs/localhost-access.2024-09-25.log
+pro2/logs/localhost-access.2024-09-26.log
+pro2/logs/localhost.2024-09-24.log
+pro2/logs/manager.2024-09-24.log
+pro2/logs/oehealth-collector.2024-09-24.log
+pro2/logs/Pro2Web.2024-09-24.log
+pro2/logs/Pro2Web.2024-09-25.log
+pro2/logs/Pro2Web.2024-09-26.log
+pro2/logs/Pro2Web.agent.2024-09-24.log
+pro2/logs/Pro2Web.agent.2024-09-25.log
+pro2/logs/Pro2Web.agent.2024-09-26.log
+pro2/logs/Pro2Web.agent.log
+pro2/logs/catalina.2024-10-16.log
+pro2/logs/catalina.2024-10-17.log
+pro2/logs/catalina.2024-10-18.log
+pro2/logs/host-manager.2024-10-16.log
+pro2/logs/host-manager.2024-10-17.log
+pro2/logs/host-manager.2024-10-18.log
+pro2/logs/localhost-access.2024-10-16.log
+pro2/logs/localhost-access.2024-10-17.log
+pro2/logs/localhost-access.2024-10-18.log
+pro2/logs/localhost-access.2024-10-19.log
+pro2/logs/localhost-access.2024-10-20.log
+pro2/logs/localhost-access.2024-10-21.log
+pro2/logs/localhost.2024-10-16.log
+pro2/logs/localhost.2024-10-17.log
+pro2/logs/localhost.2024-10-18.log
+pro2/logs/manager.2024-10-16.log
+pro2/logs/manager.2024-10-17.log
+pro2/logs/manager.2024-10-18.log
+pro2/logs/oehealth-collector.2024-10-16.log
+pro2/logs/oehealth-collector.2024-10-17.log
+pro2/logs/oehealth-collector.2024-10-18.log
+pro2/logs/Pro2Web.2024-10-16.log
+pro2/logs/Pro2Web.2024-10-17.log
+pro2/logs/Pro2Web.2024-10-18.log
+pro2/logs/Pro2Web.2024-10-19.log
+pro2/logs/Pro2Web.2024-10-20.log
+pro2/logs/Pro2Web.2024-10-21.log
+pro2/logs/Pro2Web.agent.2024-10-16.log
+pro2/logs/Pro2Web.agent.2024-10-17.log
+pro2/logs/Pro2Web.agent.2024-10-18.log
+pro2/logs/Pro2Web.agent.2024-10-19.log
+pro2/logs/Pro2Web.agent.2024-10-20.log
+pro2/logs/Pro2Web.agent.2024-10-21.log
