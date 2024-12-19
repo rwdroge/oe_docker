@@ -8,19 +8,20 @@ ENV PATH="${JAVA_HOME}/bin:${PATH}"
 # in the correct location
 ADD PROGRESS_OE.tar.gz /install/openedge/
 ADD PROGRESS_PATCH_OE.tar.gz /install/patch/
-ADD scripts/install-openedge.sh /install/
+ADD scripts/install-oe.sh /install/
 
 COPY response.ini /install/openedge/response.ini
 ENV TERM xterm
 
-RUN /install/install-openedge.sh
+RUN /install/install-oe.sh
 
 RUN cat /install/install_oe.log
 RUN /usr/dlc/bin/proDebugEnable -enable-all
 RUN rm /usr/dlc/progress.cfg
 
-COPY clean-dlc.sh /install/openedge/clean-dlc.sh
-RUN /install/openedge/clean-dlc.sh
+COPY scripts/clean-oe-files.sh /install/openedge/clean-oe-files.sh 
+# This script needs 'container type' as input parameter
+RUN /install/openedge/clean-oe-files.sh 
 
 # multi stage build, this give the possibilty to remove all the slack from stage 0
 FROM ubuntu:22.04 as instance
