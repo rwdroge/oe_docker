@@ -54,7 +54,7 @@ jobs:
       
             -   name: Download installer files
                 run: |
-                    build/scripts/download-oe.sh
+                    build/scripts/download-oe.sh ${{ env.OE_VERSION }} ${{ env.OE_RELEASE }}
 
             -   name: Get correct response.ini  # get progress.cfg from secret PROGRESS_CFG_122
                 run: |
