@@ -70,7 +70,8 @@ jobs:
             -   name: Get correct response.ini  # get progress.cfg from secret PROGRESS_CFG_122
                 run: |
                       echo fetching response.ini/progress.cfg from secret RESPONSE_INI_${{ env.OE_VERSION_FLAT}}_${{ env.CONTAINERTYPE}}
-                      echo "${{ secrets[format('RESPONSE_INI_{0}_{1}', env.OE_VERSION_FLAT, env.CONTAINERTYPE)] }}" > build/response.ini
+                      echo "${{ secrets[format('RESPONSE_INI_{0}_{1}', env.OE_VERSION_FLAT, env.CONTAINERTYPE)] }}" > build/responsefiles/${{ env.CONTAINERTYPE }}/response.ini
+                      ls build/responsefiles
 
             -   name: Build and push
                 uses: docker/build-push-action@v5

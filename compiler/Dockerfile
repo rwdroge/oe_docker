@@ -12,7 +12,7 @@ ADD installer/PROGRESS_OE.tar.gz /install/openedge/
 ADD installer/PROGRESS_PATCH_OE.tar.gz /install/patch/
 ADD scripts/install-oe.sh /install/
 
-COPY response.ini /install/openedge/response.ini
+COPY responsefiles/${CTYPE}/response.ini /install/openedge/response.ini
 ENV TERM xterm
 
 RUN /install/install-oe.sh
