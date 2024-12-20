@@ -1,6 +1,6 @@
-ARG OE_VERSION
+ARG OE_VERSION=12.8.4
 
-FROM adoptopenjdk/openjdk11:latest AS builder-jdk
+FROM eclipse-temurin:17.0.12_7-jdk AS builder-jdk
 
 FROM progresssoftware/prgs-oedb:$OE_VERSION"_adv-ent"
 USER pscadmin

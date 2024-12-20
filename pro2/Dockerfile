@@ -1,14 +1,14 @@
-FROM rdroge/openedge_pas_orads:12.7.0
+FROM rdroge/openedge_pas_orads:12.8.3
 
 USER root
 
-ADD ./binaries/Pro2-6.5.0.bin response.properties /install/pro2/
+ADD ./binaries/Pro2-6.5.1.bin response.properties /install/pro2/
 
 WORKDIR /install/pro2
 
-RUN ./Pro2-6.5.0.bin -i Silent -f response.properties && \  
+RUN ./Pro2-6.5.1.bin -i Silent -f response.properties && \  
     chown -R pscadmin:pscadmin /install/pro2 -R && \
-    rm -rf Pro2-6.5.0.bin
+    rm -rf Pro2-6.5.1.bin
 
 WORKDIR /install/pro2/bprepl/Scripts
 
