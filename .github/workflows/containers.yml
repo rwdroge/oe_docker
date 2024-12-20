@@ -73,7 +73,8 @@ jobs:
             -   name: Build and push
                 uses: docker/build-push-action@v5
                 with:
-                    context: "${{ github.workspace }}/build/compiler"
+                    context: "${{ github.workspace }}/build"
+                    file: "${{ github.workspace }}/build/compiler/Dockerfile"
                     push: true
                     tags: progressofficial/oe_${{ env.CTLOW }}:${{ env.OE_VERSION }}
                     build-args: |
