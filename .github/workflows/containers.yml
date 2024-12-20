@@ -12,6 +12,7 @@ jobs:
         strategy:
             matrix:
                 version: [ 12.2.17, 12.8.4 ]
+                containertype: [ "4GL", "PAS_DEV", "PAS_PROD", "DB_ADV" ]
 
         steps:
 
@@ -38,6 +39,11 @@ jobs:
                     echo "OE_VERSION_FLAT=${{ steps.get-oeversion.outputs.flat-version }}" >> $GITHUB_ENV
                     echo "OE_BASE_FLAT=${{ steps.get-oeversion.outputs.base-version }}" >> $GITHUB_ENV
 
+            -   name: ContainerType to ENV
+                run: 
+                    echo "CONTAINERTYPE=${{ matrix.containertype }}" >> $GITHUB_ENV
+                    echo CTLOW="${{ matrix.containertype }},,[GLDBAVPSEOR]" >> $GITHUB_ENV
+                    
             -   name: Insert JDK version in Dockerfile
                 run: |
                     jdk=`jq -r ".jdk${{ env.OE_VERSION_FLAT }}" build/jdkversions.json`
@@ -53,7 +59,16 @@ jobs:
             -   name: Get correct response.ini  # get progress.cfg from secret PROGRESS_CFG_122
                 run: |
                       echo fetching response.ini/progress.cfg from secret RESPONSE_INI_${{ env.OE_VERSION_FLAT}}
-                      echo "${{ secrets[format('RESPONSE_INI_{0}_4GL', env.OE_VERSION_FLAT)] }}" > build/response.ini
+                      echo "${{ secrets[format('RESPONSE_INI_{0}_{1}', env.OE_VERSION_FLAT, env.CONTAINERTYPE)] }}" > build/response.ini
+
+            -   name: Build and push
+                uses: docker/build-push-action@v5
+                with:
+                    context: "${{ github.workspace }}/build/compiler"
+                    push: true
+                    tags: progressofficial/oe_${{ env.CTLOW }}:${{ env.OE_VERSION }}
+                    build-args: |
+                        CONTAINERTYPE=${{ env.CONTAINERTYPE }}
 
             -   name: Remove files used by installer
                 run: |
@@ -62,10 +77,5 @@ jobs:
                         rm response.ini
                         ls -l
         
-            -   name: Build and push
-                uses: docker/build-push-action@v5
-                with:
-                    context: "${{ github.workspace }}/build/oeinstaller"
-                    push: true
-                    tags: progressofficial/oe_compiler:${{ env.OE_VERSION }}
+
  

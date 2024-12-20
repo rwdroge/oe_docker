@@ -3,7 +3,7 @@
 CONTAINERTYPE=$1
 
 case "$CONTAINERTYPE" in
-	"pasoe")
+	PAS*)
 		rm -rf /usr/dlc/*OpenEdge*
         rm -rf /usr/dlc/*sports*
         rm -f /usr/dlc/bin/*sql*
@@ -11,7 +11,7 @@ case "$CONTAINERTYPE" in
         rm -f /usr/dlc/bin/_mproshut
         rm -f /usr/dlc/bin/dbtool
         ;;
-    "db")
+    DB)
         rm -rf /usr/dlc/ora
         rm -rf /usr/dlc/dotnet
         rm -rf /usr/dlc/sonic
@@ -21,7 +21,14 @@ case "$CONTAINERTYPE" in
         rm -rf /usr/dlc/servers
         rm -rf /usr/dlc/ubqmanager
         ;;
-    "compiler")
+    4GL)
+        rm -rf /usr/dlc/*OpenEdge*
+        rm -rf /usr/dlc/*sports*
+        rm -f /usr/dlc/bin/*sql*
+        rm -f /usr/dlc/bin/_mprosrv
+        rm -f /usr/dlc/bin/_mproshut
+        rm -f /usr/dlc/bin/dbtool
+        ;;
         ;;
     *)  
         #Files that can be removed regardless of container type

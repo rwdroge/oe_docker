@@ -1,5 +1,7 @@
 FROM ubuntu:22.04 as install
 
+ARG CTYPE
+
 ENV JAVA_HOME=/opt/java/openjdk
 COPY --from=eclipse-temurin:JDKVERSION $JAVA_HOME $JAVA_HOME
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
@@ -21,12 +23,10 @@ RUN rm /usr/dlc/progress.cfg
 
 COPY scripts/clean-oe-files.sh /install/openedge/clean-oe-files.sh 
 # This script needs 'container type' as input parameter
-RUN /install/openedge/clean-oe-files.sh 
+RUN /install/openedge/clean-oe-files.sh ${CTYPE}
 
 # multi stage build, this give the possibilty to remove all the slack from stage 0
 FROM ubuntu:22.04 as instance
-
-
 
 ENV JAVA_HOME=/opt/java/openjdk
 ENV DLC=/usr/dlc
