@@ -51,7 +51,7 @@ jobs:
         
             -   name: Set CTLOW environment variable for container image name purposes
                 run: 
-                    echo "CTLOW=${{ steps.string.outputs.lowercase }}">> $GITHUB_ENV"
+                    echo "CTLOW=${{ steps.string.outputs.lowercase }}" >> $GITHUB_ENV"
                      
             -   name: Insert JDK version in Dockerfile
                 run: |
