@@ -34,7 +34,7 @@ jobs:
                     version: ${{ matrix.version }}
 
             -   name: OE Versions to ENV
-                run: 
+                run: |
                     echo "OE_VERSION=${{ matrix.version }}" >> $GITHUB_ENV
                     echo "OE_VERSION_FLAT=${{ steps.get-oeversion.outputs.flat-version }}" >> $GITHUB_ENV
                     echo "OE_RELEASE=${{ steps.get-oeversion.outputs.release-version }}" >> $GITHUB_ENV
