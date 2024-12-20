@@ -8,8 +8,8 @@ ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
 # the running process (i.e. the github action) is responsible for placing the install .tar 
 # in the correct location
-ADD PROGRESS_OE.tar.gz /install/openedge/
-ADD PROGRESS_PATCH_OE.tar.gz /install/patch/
+ADD installer/PROGRESS_OE.tar.gz /install/openedge/
+ADD installer/PROGRESS_PATCH_OE.tar.gz /install/patch/
 ADD scripts/install-oe.sh /install/
 
 COPY response.ini /install/openedge/response.ini
