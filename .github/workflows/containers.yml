@@ -42,7 +42,7 @@ jobs:
             -   name: ContainerType to ENV
                 run: 
                     echo "CONTAINERTYPE=${{ matrix.containertype }}" >> $GITHUB_ENV
-                    echo "CTLOW=${{ matrix.containertype }},,[GLDBAVPSEOR]" >> $GITHUB_ENV
+                    echo "CTLOW=${CONTAINERTYPE,, }" >> $GITHUB_ENV
                     
             -   name: Insert JDK version in Dockerfile
                 run: |
