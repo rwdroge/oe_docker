@@ -42,8 +42,17 @@ jobs:
             -   name: ContainerType to ENV
                 run: 
                     echo "CONTAINERTYPE=${{ matrix.containertype }}" >> $GITHUB_ENV
-                    echo "CTLOW=${CONTAINERTYPE,, }" >> $GITHUB_ENV
-                    
+            
+            -   name: Convert environment variable to Lower case
+                id: string
+                uses: vishalmamidi/lowercase-action@v1
+                with:
+                    string: ${{ env.CONTAINERTYPE }}
+        
+            -   name: Set CTLOW environment variable for container image name purposes
+                run: 
+                    echo "CTLOW=${{ steps.string.outputs.lowercase }}">> $GITHUB_ENV"
+                     
             -   name: Insert JDK version in Dockerfile
                 run: |
                     jdk=`jq -r ".jdk${{ env.OE_VERSION_FLAT }}" build/jdkversions.json`
