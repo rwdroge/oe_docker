@@ -13,7 +13,7 @@ jobs:
         runs-on: ubuntu-latest
         strategy:
             matrix:
-                version: [ 12.8.4 ]
+                version: [ 12.2.17, 12.8.4 ]
                 containertype: [ "COMPILER" ] # ["PAS_DEV", "PAS_PROD", "DB_ADV"]
 
         steps:
@@ -85,8 +85,9 @@ jobs:
 
             -   name: Remove files used by installer
                 run: |
-                        cd build
+                        cd build 
                         rm -f PROGRESS_*
+                        cd ${{ env.CTLOW }}
                         rm response.ini
                         ls -l
         
