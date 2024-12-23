@@ -1,7 +1,6 @@
 FROM ubuntu:22.04 as install
 
 ARG CTYPE
-ARG FILENAME = "response_" + ${CTYPE}+ ".ini"
 
 ENV JAVA_HOME=/opt/java/openjdk
 COPY --from=eclipse-temurin:JDKVERSION $JAVA_HOME $JAVA_HOME
@@ -13,7 +12,7 @@ ADD installer/PROGRESS_OE.tar.gz /install/openedge/
 ADD installer/PROGRESS_PATCH_OE.tar.gz /install/patch/
 ADD scripts/install-oe.sh /install/
 
-COPY ${FILENAME} /install/openedge/response.ini
+COPY response.ini /install/openedge/response.ini
 ENV TERM xterm
 
 RUN /install/install-oe.sh
