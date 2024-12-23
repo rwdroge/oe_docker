@@ -21,7 +21,7 @@ case "$CONTAINERTYPE" in
         rm -rf /usr/dlc/servers
         rm -rf /usr/dlc/ubqmanager
         ;;
-    4GL)
+    COMPILER)
         rm -rf /usr/dlc/*OpenEdge*
         rm -rf /usr/dlc/*sports*
         rm -f /usr/dlc/bin/*sql*

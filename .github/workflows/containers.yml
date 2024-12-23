@@ -14,7 +14,7 @@ jobs:
         strategy:
             matrix:
                 version: [ 12.8.4 ]
-                containertype: [ "4GL", "PAS_DEV", "PAS_PROD", "DB_ADV" ]
+                containertype: [ "CONTAINER" ] # ["PAS_DEV", "PAS_PROD", "DB_ADV"]
 
         steps:
 
@@ -67,7 +67,7 @@ jobs:
                 run: |
                     build/scripts/download-oe.sh ${{ env.OE_VERSION }} ${{ env.OE_RELEASE }}
 
-            -   name: Get correct response.ini  # get progress.cfg from secret PROGRESS_CFG_122
+            -   name: Get correct response.ini  # using different response files for different containers
                 run: |
                       echo fetching response.ini/progress.cfg from secret RESPONSE_INI_${{ env.OE_VERSION_FLAT}}_${{ env.CONTAINERTYPE}}
                       echo "${{ secrets[format('RESPONSE_INI_{0}_{1}', env.OE_VERSION_FLAT, env.CONTAINERTYPE)] }}" > build/response_${{ env.CONTAINERTYPE }}.ini
