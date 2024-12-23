@@ -59,9 +59,9 @@ jobs:
                 run: |
                     jdk=`jq -r ".jdk${{ env.OE_VERSION_FLAT }}" build/jdkversions.json`
                     echo JDK: $jdk
-                    sed -i "s/JDKVERSION/$jdk/g" build/compiler/Dockerfile
+                    sed -i "s/JDKVERSION/$jdk/g" build/${{ env.CTLOW }}/Dockerfile
                     echo download jdk from Dockerfile:
-                    cat build/compiler/Dockerfile | grep temurin      
+                    cat build/${{ env.CTLOW }}/Dockerfile | grep temurin      
       
             -   name: Download installer files
                 run: |
@@ -70,7 +70,7 @@ jobs:
             -   name: Get correct response.ini  # using different response files for different containers
                 run: |
                       echo fetching response.ini/progress.cfg from secret RESPONSE_INI_${{ env.OE_VERSION_FLAT}}_${{ env.CONTAINERTYPE}}
-                      echo "${{ secrets[format('RESPONSE_INI_{0}_{1}', env.OE_VERSION_FLAT, env.CONTAINERTYPE)] }}" > build/${{ env.CTLOW }}/response.ini
+                      echo "${{ secrets[format('RESPONSE_INI_{0}_{1}', env.OE_VERSION_FLAT, env.CONTAINERTYPE)] }}" > ${{ env.CTLOW }}/response.ini
                       ls build
 
             -   name: Build and push
