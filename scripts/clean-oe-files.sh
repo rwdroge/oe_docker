@@ -3,8 +3,8 @@
 CONTAINERTYPE=$1
 
 case "$CONTAINERTYPE" in
-	PAS*)
-		rm -rf /usr/dlc/*OpenEdge*
+    PAS*)
+        rm -rf /usr/dlc/*OpenEdge*
         rm -rf /usr/dlc/*sports*
         rm -f /usr/dlc/bin/*sql*
         rm -f /usr/dlc/bin/_mprosrv
@@ -28,7 +28,6 @@ case "$CONTAINERTYPE" in
         rm -f /usr/dlc/bin/_mprosrv
         rm -f /usr/dlc/bin/_mproshut
         rm -f /usr/dlc/bin/dbtool
-        ;;
         ;;
     *)  
         #Files that can be removed regardless of container type
