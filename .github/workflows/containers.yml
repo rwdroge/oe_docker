@@ -13,7 +13,7 @@ jobs:
         runs-on: ubuntu-latest
         strategy:
             matrix:
-                version: [ 12.2.17, 12.8.4 ]
+                version: [ 12.2.17, 12.8.4 ] # make sure all response.ini files are available as secrets
                 containertype: [ "COMPILER" ] # ["PAS_DEV", "PAS_PROD", "DB_ADV"]
 
         steps:
