@@ -28,6 +28,7 @@ case "$CONTAINERTYPE" in
         rm -f /usr/dlc/bin/_mprosrv
         rm -f /usr/dlc/bin/_mproshut
         rm -f /usr/dlc/bin/dbtool
+        rm -rf /usr/dlc/servers
         ;;
     *)  
         #Files that can be removed regardless of container type

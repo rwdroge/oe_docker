@@ -33,6 +33,8 @@ docker-compose-amazon.yml
 *.lg
 *.jar
 *.r
+*.crt
+*.key
 
 
 pro2/db_oracle/oradata/ORCLCDB/control01.ctl
