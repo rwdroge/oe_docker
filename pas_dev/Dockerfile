@@ -69,7 +69,7 @@ RUN bin/oeprop.sh AppServer.Agent.pas.PROPATH=".,/app/config,/app/src,/app/lib/l
 COPY pas_dev/config/oeablSecurity-dev.csv /app/pas/as/webapps/ROOT/WEB-INF/oeablSecurity.csv
 COPY start.sh /app/pas/
 RUN chmod +x /app/pas/start.sh && \
-    chown -R openedge:openedge
+    chown -R openedge:openedge /app/pas/start.sh
 
 USER openedge
 
