@@ -65,7 +65,7 @@ WORKDIR /app/pas/as
 RUN bin/oeprop.sh AppServer.Agent.pas.PROPATH=".,/app/config,/app/src,/app/lib/logic.pl,/app/dep1,/app/dep2,/app/dep3,/app/dep4,/app/dep5,\${DLC}/tty,\${DLC}/tty/OpenEdge.Core.pl,\${DLC}/tty/netlib/OpenEdge.Net.pl" &&     touch /app/pas/as.pf &&     bin/oeprop.sh AppServer.SessMgr.agentStartupParam="-T \"\${catalina.base}/temp\" -pf ./../../as.pf" &&     bin/oeprop.sh AppServer.SessMgr.pas.agentLogFile="\${catalina.base}/logs/pas.agent.log" && \
     mkdir -p /app/pas/as/webapps/ROOT/WEB-INF/adapters/web/ROOT/
 
-COPY config/oeablSecurity-dev.csv /app/pas/as/webapps/ROOT/WEB-INF/oeablSecurity.csv
+COPY pas_dev/config/oeablSecurity-dev.csv /app/pas/as/webapps/ROOT/WEB-INF/oeablSecurity.csv
 COPY start.sh /app/pas/
 RUN chmod +x /app/pas/start.sh && \
     chown -R openedge:openedge
