@@ -63,7 +63,9 @@ class mttenantHandler inherits WebHandler:
         
         if apiType = "data" then
         do:
+            
             filter = new generics.FilterParams(entityName, entityName2, querystring, id1, id2).
+            
             entityName = "entities." + entityName.
             entity = new generics.GenericEntity(entityName).
             dynClass = dynamic-new string(entityName) () no-error.
@@ -96,6 +98,7 @@ class mttenantHandler inherits WebHandler:
                 end.
                 else 
                 do:
+                    
                     dynClass:CheckFieldList(filter:FieldList, output oFieldList, output lOk).
                     if not lOk then
                     do:

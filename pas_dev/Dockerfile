@@ -51,14 +51,42 @@ RUN chown root:openedge $DLC $WRKDIR && \
 # be able to use oeprop.sh to set properties
 RUN touch /usr/dlc/progress.cfg  && \
     chown openedge:openedge /usr/dlc/progress.cfg
+    
 
-RUN mkdir -p /app/src && mkdir /artifacts && \
+RUN mkdir -p /app/pas &&     mkdir /app/src &&     mkdir /app/lib &&     mkdir /app/config && \
     chown -R openedge:openedge /app /artifacts
+
+WORKDIR /app/pas
+
+RUN pasman create -p 8810 -P 8811 -j 8812 -s 8812 -Z dev -f -N pas ./as
+
+WORKDIR /app/pas/as
+
+RUN bin/oeprop.sh AppServer.Agent.pas.PROPATH=".,/app/config,/app/src,/app/lib/logic.pl,/app/dep1,/app/dep2,/app/dep3,/app/dep4,/app/dep5,\${DLC}/tty,\${DLC}/tty/OpenEdge.Core.pl,\${DLC}/tty/netlib/OpenEdge.Net.pl" &&     touch /app/pas/as.pf &&     bin/oeprop.sh AppServer.SessMgr.agentStartupParam="-T \"\${catalina.base}/temp\" -pf ./../../as.pf" &&     bin/oeprop.sh AppServer.SessMgr.pas.agentLogFile="\${catalina.base}/logs/pas.agent.log" && \
+    mkdir -p /app/pas/as/webapps/ROOT/WEB-INF/adapters/web/ROOT/
+
+COPY config/oeablSecurity-dev.csv /app/pas/as/webapps/ROOT/WEB-INF/oeablSecurity.csv
+COPY start.sh /app/pas/
+RUN chmod +x /app/pas/start.sh && \
+    chown -R openedge:openedge
 
 USER openedge
 
-WORKDIR /app/src
+VOLUME [/app/src]
+VOLUME [/app/lib]
+VOLUME [/app/config]
+
+ENV DLC="${DLC}"
+
+ENV PATH="${DLC}:${DLC}/bin:${JAVA_HOME}/bin:${PATH}"
+RUN chown openedge:openedge /usr/dlc/progress.cfg && \
+    /app/pas/as/bin/oeprop.sh AppServer.SessMgr.agentStartupParam="-T \"\${catalina.base}/temp\" -pf /app/config/as.pf" && \
+    rm /usr/dlc/progress.cfg
+
+ENV PASWEBHANDLERS=/app/src/webhandlers/ROOT.handlers
+
+WORKDIR /app/pas
 
 LABEL maintainer="Ruben Dröge <rdroge@progress.com>"
 
-ENV PATH="${DLC}:${DLC}/bin:${JAVA_HOME}/bin:${PATH}"
+CMD ["/app/pas/start.sh"]
