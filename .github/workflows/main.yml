@@ -10,7 +10,7 @@ jobs:
   gradle:
     runs-on: ubuntu-latest
     container: 
-      image: progressofficial/oe_compiler:12.8.4
+      image: docker.io/progressofficial/oe_compiler:12.8.4
       credentials:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
