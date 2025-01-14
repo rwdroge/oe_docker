@@ -32,6 +32,7 @@ ENV JAVA_HOME=/opt/java/openjdk
 ENV DLC=/usr/dlc
 ENV WRKDIR=/usr/wrk
 ENV TERM=xterm
+ENV PATH="${DLC}:${DLC}/bin:${JAVA_HOME}/bin:${PATH}"
 
 RUN groupadd -g 1000 openedge && \
     useradd -r -u 1000 -g openedge openedge
@@ -78,7 +79,7 @@ VOLUME [/app/config]
 
 ENV DLC="${DLC}"
 
-ENV PATH="${DLC}:${DLC}/bin:${JAVA_HOME}/bin:${PATH}"
+
 RUN chown openedge:openedge /usr/dlc/progress.cfg && \
     /app/pas/as/bin/oeprop.sh AppServer.SessMgr.agentStartupParam="-T \"\${catalina.base}/temp\" -pf /app/config/as.pf" && \
     rm /usr/dlc/progress.cfg
