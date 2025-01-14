@@ -1,7 +1,7 @@
 name: Run Gradle on PRs
 on:
   push:
-    branches: [  ]
+    branches: [ main ]
     paths: 
       - mttenant/**
       - .github/workflows/*.yml
@@ -9,7 +9,7 @@ on:
 jobs:
   gradle:
     runs-on: ubuntu-latest
-    container: rdroge/jenkins-agent:jdk17oe127
+    container: progressofficial/oe_compiler:12.8.4
     steps:
     - uses: actions/checkout@v4
     - name: Setup Gradle
