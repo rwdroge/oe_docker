@@ -1,7 +1,7 @@
 name: Run Gradle on PRs
 on:
   push:
-    branches: [ main ]
+    branches: [  ]
     paths: 
       - mttenant/**
       - .github/workflows/*.yml
