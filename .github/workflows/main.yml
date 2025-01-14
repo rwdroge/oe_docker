@@ -15,6 +15,7 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
+    container: progressofficial/oe_compiler:12.8.4
   gradle:
     needs: hub
     runs-on: ubuntu-latest
