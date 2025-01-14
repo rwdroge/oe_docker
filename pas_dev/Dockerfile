@@ -12,7 +12,9 @@ ENV PATH="${JAVA_HOME}/bin:${PATH}"
 ADD installer/PROGRESS_OE.tar.gz /install/openedge/
 ADD installer/PROGRESS_PATCH_OE.tar.gz /install/patch/
 ADD scripts/install-oe.sh /install/
-RUN touch /install/blank.txt
+RUN if [[ "$OEVERSION" = "122"]] ;  then mkdir /etc/progress ; fi && \
+    if [[ "$OEVERSION" = "122"]] ;  then mkdir /etc/openedge.d ; fi && \
+    if [[ "$OEVERSION" = "122"]] ;  then mkdir /etc/openedge ; fi
 
 COPY pas_dev/response.ini /install/openedge/response.ini
 ENV TERM xterm
@@ -49,9 +51,9 @@ RUN groupadd -g 1000 openedge && \
 COPY --from=install $JAVA_HOME $JAVA_HOME
 COPY --from=install $DLC $DLC
 COPY --from=install $WRKDIR $WRKDIR
-COPY --from=install /install/blank.txt /etc/openedge.d /etc/
-COPY --from=install /install/blank.txt /etc/openedge /etc/
-COPY --from=install /install/blank.txt /etc/progress /etc/
+COPY --from=install /etc/openedge.d /etc/openedge.d
+COPY --from=install /etc/openedge /etc/openedge
+COPY --from=install /etc/progress /etc/progress
 
 WORKDIR /usr/dlc/bin
 
