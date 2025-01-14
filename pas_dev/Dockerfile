@@ -33,6 +33,7 @@ FROM ubuntu:22.04 as instance
 RUN apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     net-tools \
+  && apt install netbase \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
