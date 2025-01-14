@@ -28,10 +28,11 @@ RUN /install/openedge/clean-oe-files.sh ${CTYPE}
 
 # multi stage build, this give the possibilty to remove all the slack from stage 0
 FROM ubuntu:22.04 as instance
-RUN apt update && \
-    apt install netbase && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+RUN apt-get update \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    net-tools \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
 
 ENV JAVA_HOME=/opt/java/openjdk
 ENV DLC=/usr/dlc
