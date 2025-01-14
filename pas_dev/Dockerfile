@@ -3,6 +3,7 @@ FROM ubuntu:22.04 as install
 ARG CTYPE
 ARG OEVERSION
 
+
 ENV JAVA_HOME=/opt/java/openjdk
 COPY --from=eclipse-temurin:JDKVERSION $JAVA_HOME $JAVA_HOME
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
@@ -12,7 +13,7 @@ ENV PATH="${JAVA_HOME}/bin:${PATH}"
 ADD installer/PROGRESS_OE.tar.gz /install/openedge/
 ADD installer/PROGRESS_PATCH_OE.tar.gz /install/patch/
 ADD scripts/install-oe.sh /install/
-RUN if [ "${OEVERSION}" = "122"]; then mkdir /etc/progress; else echo "false"; fi 
+RUN if [ ${OEVERSION} = "122"]; then mkdir /etc/progress; else echo "false"; fi 
 
 COPY pas_dev/response.ini /install/openedge/response.ini
 ENV TERM xterm
