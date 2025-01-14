@@ -83,6 +83,7 @@ jobs:
                     tags: progressofficial/oe_${{ env.CTLOW }}:${{ env.OE_VERSION }}
                     build-args: |
                         CONTAINERTYPE=${{ env.CONTAINERTYPE }}
+                        OE_VERSION=${{ env.OE_VERSION_FLAT }}
 
             -   name: Remove files used by installer
                 run: |
