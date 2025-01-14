@@ -18,6 +18,7 @@ ENV TERM xterm
 RUN /install/install-oe.sh
 
 RUN cat /install/install_oe.log
+RUN cat /usr/dlc/install/esam.log
 # RUN /usr/dlc/bin/proDebugEnable -enable-all
 RUN rm /usr/dlc/progress.cfg
 
