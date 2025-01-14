@@ -7,21 +7,14 @@ on:
       - .github/workflows/*.yml
 
 jobs:
-  hub:
+  gradle:
     runs-on: ubuntu-latest
-    steps:
-    - name: Login to Docker Hub
-      uses: docker/login-action@v3
-      with:
+    container: 
+      image: progressofficial/oe_compiler:12.8.4
+      credentials:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
-    container: progressofficial/oe_compiler:12.8.4
-  gradle:
-    needs: hub
-    runs-on: ubuntu-latest
-    container: progressofficial/oe_compiler:12.8.4
     steps:
-
     - uses: actions/checkout@v4
     - name: Setup Gradle
       uses: gradle/gradle-build-action@v2
