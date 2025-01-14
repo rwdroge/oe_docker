@@ -12,9 +12,7 @@ ENV PATH="${JAVA_HOME}/bin:${PATH}"
 ADD installer/PROGRESS_OE.tar.gz /install/openedge/
 ADD installer/PROGRESS_PATCH_OE.tar.gz /install/patch/
 ADD scripts/install-oe.sh /install/
-RUN if [[ "${OEVERSION}" = "122"]] ;  then mkdir /etc/progress ; fi && \
-    if [[ "${OEVERSION}" = "122"]] ;  then mkdir /etc/openedge.d ; fi && \
-    if [[ "${OEVERSION}" = "122"]] ;  then mkdir /etc/openedge ; fi
+RUN if [[ "${OEVERSION}" = "122"]]; then mkdir /etc/progress; else; fi 
 
 COPY pas_dev/response.ini /install/openedge/response.ini
 ENV TERM xterm
