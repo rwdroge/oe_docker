@@ -30,8 +30,8 @@ RUN /install/openedge/clean-oe-files.sh ${CTYPE}
 FROM ubuntu:22.04 as instance
 RUN apt update && \
     apt install netbase && \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 ENV JAVA_HOME=/opt/java/openjdk
 ENV DLC=/usr/dlc
