@@ -5,7 +5,8 @@ on:
     paths: 
       - oeinstaller/**
       - compiler/**
-      - scripts/**  
+      - scripts/**
+      - pas_dev/**  
       - .github/workflows/*.yml
 
 jobs:
