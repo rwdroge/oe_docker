@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     container: 
       image: docker.io/progressofficial/oe_compiler:12.8.4
+      options: --user root
       credentials:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
