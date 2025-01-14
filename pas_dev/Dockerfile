@@ -18,7 +18,7 @@ ENV TERM xterm
 RUN /install/install-oe.sh
 
 RUN cat /install/install_oe.log
-RUN /usr/dlc/bin/proDebugEnable -enable-all
+# RUN /usr/dlc/bin/proDebugEnable -enable-all
 RUN rm /usr/dlc/progress.cfg
 
 COPY scripts/clean-oe-files.sh /install/openedge/clean-oe-files.sh 
@@ -54,7 +54,7 @@ RUN touch /usr/dlc/progress.cfg  && \
     
 
 RUN mkdir -p /app/pas &&     mkdir /app/src &&     mkdir /app/lib &&     mkdir /app/config && \
-    chown -R openedge:openedge /app /artifacts
+    chown -R openedge:openedge /app 
 
 WORKDIR /app/pas
 
