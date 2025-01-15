@@ -78,7 +78,7 @@ RUN bin/oeprop.sh AppServer.Agent.pas.PROPATH=".,/app/config,/app/src,/app/lib/l
     mkdir -p /app/pas/as/webapps/ROOT/WEB-INF/adapters/web/ROOT/
 
 COPY pas_dev/config/oeablSecurity-dev.csv /app/pas/as/webapps/ROOT/WEB-INF/oeablSecurity.csv
-COPY start.sh /app/pas/
+COPY pas_dev/start.sh /app/pas/
 RUN chmod +x /app/pas/start.sh && \
     chown -R openedge:openedge /app/pas/start.sh && \
     echo 'tcp    6 TCP' >> /etc/protocols
