@@ -70,8 +70,8 @@ RUN chown root _* && \
 
 WORKDIR /app/pas
 
-RUN pasman create -p 8810 -P 8811 -j 8812 -s 8812 -Z dev -f -N pas ./as && \
-    chown -R openedge:openedge /app/pas/as
+# what happens if I create the PAS with the actual openedge user? File permissions ok?
+RUN pasman create -p 8810 -P 8811 -j 8812 -s 8812 -Z dev -f -N pas -U openedge -G openedge ./as 
 
 WORKDIR /app/pas/as
 
