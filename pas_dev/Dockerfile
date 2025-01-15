@@ -3,7 +3,6 @@ FROM ubuntu:22.04 as install
 ARG CTYPE
 ARG OEVERSION
 
-
 ENV JAVA_HOME=/opt/java/openjdk
 COPY --from=eclipse-temurin:JDKVERSION $JAVA_HOME $JAVA_HOME
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
@@ -84,8 +83,6 @@ COPY pas_dev/start.sh /app/pas/
 RUN chmod +x /app/pas/start.sh && \
     chown -R openedge:openedge /app/pas/start.sh && \
     echo 'tcp    6 TCP' >> /etc/protocols
-
-
 
 VOLUME /app/src
 VOLUME /app/lib
