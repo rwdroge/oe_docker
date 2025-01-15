@@ -13,6 +13,7 @@ ENV PATH="${JAVA_HOME}/bin:${PATH}"
 ADD installer/PROGRESS_OE.tar.gz /install/openedge/
 ADD installer/PROGRESS_PATCH_OE.tar.gz /install/patch/
 ADD scripts/install-oe.sh /install/
+
 RUN if [ "${OEVERSION}" = "122" ] ; then mkdir /etc/progress; else echo "false" ; fi && \
     if [ "${OEVERSION}" = "122" ] ; then mkdir /etc/openedge; else echo "false" ; fi && \
     if [ "${OEVERSION}" = "122" ] ; then touch /etc/openedge.d; else echo "false" ; fi 
@@ -28,7 +29,7 @@ RUN cat /install/install_oe.log
 RUN rm /usr/dlc/progress.cfg
 
 COPY scripts/clean-oe-files.sh /install/openedge/clean-oe-files.sh 
-# This script needs 'container type' as input parameter
+# This script needs 'container type' as input parameter as it differs what folders can be removed
 RUN /install/openedge/clean-oe-files.sh ${CTYPE}
 
 # multi stage build, this give the possibilty to remove all the slack from stage 0
@@ -38,16 +39,15 @@ RUN apt-get update \
     net-tools \
   && apt install netbase \
   && apt-get clean \
-  && rm -rf /var/lib/apt/lists/*
+  && rm -rf /var/lib/apt/lists/* \
+  && groupadd -g 1000 openedge \
+  && useradd -r -u 1000 -g openedge openedge
 
 ENV JAVA_HOME=/opt/java/openjdk
 ENV DLC=/usr/dlc
 ENV WRKDIR=/usr/wrk
 ENV TERM=xterm
 ENV PATH="${DLC}:${DLC}/bin:${JAVA_HOME}/bin:${PATH}"
-
-RUN groupadd -g 1000 openedge && \
-    useradd -r -u 1000 -g openedge openedge
 
 COPY --from=install $JAVA_HOME $JAVA_HOME
 COPY --from=install $DLC $DLC
@@ -60,19 +60,12 @@ WORKDIR /usr/dlc/bin
 
 RUN chown root _* && \
     chmod 4755 _* && \
-# allow for progress to be copied into $DLC
-# kubernetes does not support volume mount of single files
     chown root:openedge $DLC $WRKDIR && \
     chmod 775 $DLC && \
-    chmod 777 $WRKDIR
-
-# if not present ESAM starts complaining
-# this file is necessary in order for a Dockerfile which uses the openedge-pas image to 
-# be able to use oeprop.sh to set properties
-RUN touch /usr/dlc/progress.cfg  && \
-    chown openedge:openedge /usr/dlc/progress.cfg
-
-RUN mkdir -p /app/pas &&     mkdir /app/src &&     mkdir /app/lib &&     mkdir /app/config && \
+    chmod 777 $WRKDIR && \
+    touch /usr/dlc/progress.cfg  && \
+    chown openedge:openedge /usr/dlc/progress.cfg && \
+    mkdir -p /app/pas &&     mkdir /app/src &&     mkdir /app/lib &&     mkdir /app/config && \
     chown -R openedge:openedge /app      
 
 WORKDIR /app/pas
@@ -92,9 +85,9 @@ RUN chmod +x /app/pas/start.sh && \
 
 USER openedge
 
-VOLUME [/app/src]
-VOLUME [/app/lib]
-VOLUME [/app/config]
+VOLUME /app/src
+VOLUME /app/lib
+VOLUME /app/config
 
 ENV DLC="${DLC}"
 
