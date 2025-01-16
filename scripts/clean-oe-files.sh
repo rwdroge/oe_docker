@@ -33,7 +33,6 @@ case "$CONTAINERTYPE" in
         # other
         rm -rf /var/cache
         ;;
-        ;;
     DB)
         rm -rf /usr/dlc/ora
         rm -rf /usr/dlc/dotnet
@@ -65,7 +64,6 @@ case "$CONTAINERTYPE" in
         rm -f /usr/dlc/bin/xsdto4gl
         # other
         rm -rf /var/cache
-        ;;
         ;;
     COMPILER)
         rm -rf /usr/dlc/*OpenEdge*
