@@ -1,8 +1,9 @@
 services:
   keycloak:
+    container_name: ruben.test
     image: quay.io/keycloak/keycloak:24.0
     environment:
-      KC_HOSTNAME_STRICT: "false"
+      KC_HOSTNAME_STRICT: "true"
       KC_HOSTNAME_URL: https://ruben.test:8443
       KC_HOSTNAME_ADMIN_URL: https://ruben.test:8443
       KC_HOSTNAME_PORT: 8443
