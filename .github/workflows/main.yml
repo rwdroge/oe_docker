@@ -10,7 +10,7 @@ jobs:
   gradle:
     runs-on: ubuntu-latest
     container: 
-      image: docker.io/progressofficial/oe_compiler:12.8.4
+      image: docker.io/progressofficial/oe_compiler:12.8.6
       options: --user root
       credentials:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -24,7 +24,7 @@ jobs:
     - name: Execute Gradle build
       run: ./gradlew build compileCode
     - name: Store artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: dist
         path:
