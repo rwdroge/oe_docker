@@ -11,9 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     container: 
       image: docker.io/rdroge/oe_db_sports2020:12.8.6
-      options: --user pscadmin
+      options: --user pscadmin --hostname sports2020db
       env:
-        DB_BROKER_PORT: 15000
+        DB_BROKER_PORT: 15010
         DB_MINPORT: 3000 
         DB_MAXPORT: 5000
       credentials:

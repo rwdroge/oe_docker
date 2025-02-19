@@ -7,7 +7,7 @@
 
  
 plugins {
-	id('progress.openedge.abl-base') version '2.2.1'
+	id('progress.openedge.abl-base') version '2.3.0'
 	id('base')
 }
 
@@ -15,9 +15,11 @@ abl {
 	propath("${dlcHome}/src","${dlcHome}/tty","${dlcHome}/tty/netlib/OpenEdge.Net.pl","${dlcHome}/src/OpenEdge.BusinessLogic.pl")
 }
 
-task createSports2020(type: CreateDB){
-	dbName = 'mttenant'
-	sourceDb = "${dlcHome}/sports2020"
+task createSports2020(type: DBConnection){
+	id = 'id1'
+	dbName = 'sports2020'
+	host = 'sports2020db'
+	port = '15010'
 	outputDir = "${buildDir}/db/mttenant"
 }
 
@@ -32,9 +34,11 @@ task compileCode(type: ABLCompile){
 		tty.enabled = true
 	}
 	dbConnection {
-		dbName="${buildDir}/db/mttenant/mttenant"
-		connectionParameters = "-1"
+		dbName='sports2020'
+		connectionParameters = "-S 15010"
+		host = 'sports2020db'
     }
+	dbConnectionReferenceId("id1")
 }
 compileCode.dependsOn 'createSports2020'
 
