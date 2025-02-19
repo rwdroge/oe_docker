@@ -10,12 +10,18 @@ jobs:
   sports2020db:
     runs-on: ubuntu-latest
     container: 
-      image: docker.io/progresssoftware/prgs-oedb:latest_ent
-      options: --user root
+      image: docker.io/rdroge/oe_db_sports2020:12.8.6
+      options: --user pscadmin
+      env:
+        DB_BROKER_PORT: 15000
+        DB_MINPORT: 3000 
+        DB_MAXPORT: 5000
       credentials:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
-    
+      ports:
+        - 15010:15010
+        - 3000-5000:3000-5000
   gradle:
     runs-on: ubuntu-latest
     container: 
