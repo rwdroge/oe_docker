@@ -72,6 +72,7 @@ jobs:
                 run: |
                       echo fetching response.ini/progress.cfg from secret RESPONSE_INI_${{ env.OE_VERSION_FLAT}}_${{ env.CONTAINERTYPE}}
                       echo "${{ secrets[format('RESPONSE_INI_{0}_{1}', env.OE_VERSION_FLAT, env.CONTAINERTYPE)] }}" > build/${{ env.CTLOW }}/response.ini
+                      echo "${{ secrets[format('PROGRESS_CFG_{0}', env.FLATVERSION)] }}" | base64 --decode > build/${{ env.CTLOW }}/progress.cfg
                       ls build
 
             -   name: Build and push
