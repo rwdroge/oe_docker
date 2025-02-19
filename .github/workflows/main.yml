@@ -7,6 +7,15 @@ on:
       - .github/workflows/*.yml
 
 jobs:
+  sports2020db:
+    runs-on: ubuntu-latest
+    container: 
+      image: docker.io/progresssoftware/prgs-oedb:latest_ent
+      options: --user root
+      credentials:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    
   gradle:
     runs-on: ubuntu-latest
     container: 
