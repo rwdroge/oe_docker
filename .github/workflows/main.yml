@@ -24,7 +24,7 @@ jobs:
         - 3000-5000:3000-5000
     steps:
       - name: Echo
-        run:  ls /psc/wrk/
+        run:  ls /build/db/log/sports2020
   gradle:
     needs: sports2020db
     runs-on: ubuntu-latest
