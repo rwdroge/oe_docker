@@ -24,12 +24,13 @@ jobs:
         - 3000-5000:3000-5000
     steps:
       - name: Echo
-        run: echo 'database is being started'
+        run:  tail /psc/wrk/sports2020.lg
   gradle:
+    needs: sports2020db
     runs-on: ubuntu-latest
     container: 
       image: docker.io/progressofficial/oe_compiler:12.8.6
-      options: --user root
+      options: --user root -v build/compiler/progress.cfg:/usr/dlc/progress.cfg
       credentials:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
