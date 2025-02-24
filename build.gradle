@@ -20,7 +20,6 @@ task createSports2020(type: DBConnection){
 	dbName = 'sports2020'
 	host = 'sports2020db'
 	port = '15010'
-	outputDir = "${buildDir}/db/mttenant"
 }
 
 task compileCode(type: ABLCompile){

@@ -7,7 +7,7 @@ on:
       - compiler/**
       - scripts/**
       - pas_dev/**  
-      - .github/workflows/*.yml
+      - .github/workflows/containers.yml
 
 jobs:
     docker:
