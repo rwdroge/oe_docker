@@ -1,0 +1,31 @@
+services:
+  db_sports2020:
+    image: rdroge/oe_db_sports2020:12.8.6
+    user: pscadmin
+    container_name: db_sports2020
+    environment:
+      - DB_BROKER_PORT=15010
+      - DB_MINPORT=4000
+      - DB_MAXPORT=4200
+    ports:
+      - "15010:15010"
+      - "4000-4200:4000-4200"
+    volumes: 
+      - ./build/compiler/progress.cfg:/psc/dlc/progress.cfg
+  
+  compiler:
+    image: progressofficial/oe_compiler:12.8.6
+    container_name: compiler
+    volumes: 
+      - ./build/compiler/progress.cfg:/usr/dlc/progress.cfg
+    depends_on:
+      - db_sports2020
+      
+  
+      
+
+
+    
+
+
+      
