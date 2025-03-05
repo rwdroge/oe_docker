@@ -15,11 +15,10 @@ abl {
 	propath("${dlcHome}/src","${dlcHome}/tty","${dlcHome}/tty/netlib/OpenEdge.Net.pl","${dlcHome}/src/OpenEdge.BusinessLogic.pl")
 }
 
-task createSports2020(type: DBConnection){
-	id = 'id1'
-	dbName = 'sports2020'
-	host = 'sports2020db'
-	port = '15010'
+task createSports2020(type: CreateDB){
+	dbName = 'mttenant'
+	sourceDb = "${dlcHome}/sports2020"
+	outputDir = "${buildDir}/db/mttenant"
 }
 
 task compileCode(type: ABLCompile){
@@ -33,11 +32,9 @@ task compileCode(type: ABLCompile){
 		tty.enabled = true
 	}
 	dbConnection {
-		dbName='sports2020'
-		connectionParameters = "-S 15010"
-		host = 'sports2020db'
+		dbName="${buildDir}/db/mttenant/mttenant"
+		connectionParameters = "-1"
     }
-	dbConnectionReferenceId("id1")
 }
 compileCode.dependsOn 'createSports2020'
 
