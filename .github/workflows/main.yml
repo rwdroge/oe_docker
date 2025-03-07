@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     container: 
       image: docker.io/progressofficial/oe_compiler:12.8.6
-      options: --user root -v /build/compiler/progress.cfg:/usr/dlc/progress.cfg
+      options: --user root -v ./build/compiler/progress.cfg:/usr/dlc/progress.cfg
       credentials:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
