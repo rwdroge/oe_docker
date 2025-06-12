@@ -34,7 +34,7 @@ ENV WRKDIR=/usr/wrk
 ENV TERM=xterm
 
 RUN groupadd -g 1000 openedge && \
-    useradd -r -u 1000 -g openedge openedge
+    useradd -m -r -u 1000 -g openedge openedge
 
 COPY --from=install $JAVA_HOME $JAVA_HOME
 COPY --from=install $DLC $DLC

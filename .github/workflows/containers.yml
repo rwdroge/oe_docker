@@ -1,4 +1,4 @@
-name: Build Docker Containers for OpenEdge
+name: Build Containers for OpenEdge
 on:
   push:
     branches: [ main ]
