@@ -14,6 +14,7 @@ RUN apt-get update && \
     apt-get install net-tools -y && \
     apt-get install dnsutils -y && \
     echo '%sudo ALL=(ALL:ALL) NOPASSWD:ALL' >> /etc/sudoers ;
+RUN echo 'openedge ALL=(ALL:ALL) NOPASSWD:ALL' >> /etc/sudoers ;
 
 ENV JAVA_HOME=/opt/java/openjdk
 ENV DLC=/usr/dlc

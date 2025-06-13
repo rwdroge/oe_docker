@@ -77,7 +77,7 @@ case "$CONTAINERTYPE" in
         rm -rf /usr/wrk_oemgmt
         # dlc
         rm -rf /usr/dlc/gradle
-        rm -rf /usr/dlc/src
+        # rm -rf /usr/dlc/src
         rm -rf /usr/dlc/templates
         rm -f  /usr/dlc/ade.pf
         rm -rf /usr/dlc/ant/manual
