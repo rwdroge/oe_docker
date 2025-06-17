@@ -34,8 +34,8 @@ COPY --from=install $JAVA_HOME $JAVA_HOME
 COPY --from=install $DLC $DLC
 COPY --from=install $WRKDIR $WRKDIR
 
-COPY protocols /etc/
-COPY services /etc/
+COPY db_adv/protocols /etc/
+COPY db_adv/services /etc/
 RUN chmod 644 /etc/protocols && \
     chmod 644 /etc/services
 
