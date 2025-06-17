@@ -1,0 +1,2 @@
+tcp	6	TCP		# transmission control protocol
+udp	17	UDP		# user datagram protocol
