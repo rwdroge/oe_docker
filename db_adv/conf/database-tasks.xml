@@ -28,7 +28,7 @@
     </target>
 
     <target name="createdb" depends="initvars">       
-        <PCTCreateDatabase dbName="${DBNAME}" destDir="${dbdir}" dlchome="${DLC}" schemaFile="${defdir}/${DBNAME}.df" structFile="${defdir}/${DBNAME}.st" multiTenant="${MULTITENANT}" />
+        <PCTCreateDatabase dbName="${DBNAME}" destDir="${dbdir}" dlchome="${DLC}" schemaFile="${schemadir}/${DBNAME}.df" structFile="${defdir}/${DBNAME}.st" multiTenant="${MULTITENANT}" />
     </target>
 
     <target name="createdelta" depends="initvars">   

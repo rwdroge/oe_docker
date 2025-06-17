@@ -60,7 +60,7 @@ function initDb() {
 
     if [[ ! -f ${DBNAME}.db ]]; then 
 
-        if [[ ! -f ${DBNAME}.df ]] && [[ -f ${DEFDIR}/${DBNAME}.df ]] ; then 
+        if [[ ! -f ${SCHEMADIR}/${DBNAME}.df ]] && [[ -f ${DEFDIR}/${DBNAME}.df ]] ; then 
             cp ${DEFDIR}/${DBNAME}.df .
         fi
 
