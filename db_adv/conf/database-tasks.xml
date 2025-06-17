@@ -1,0 +1,55 @@
+<project name="createdb" default="display_info" basedir=".">
+
+    <taskdef resource="PCT.properties" />
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+    <typedef resource="types.properties" />
+    
+    <target name="display_info">
+        <property name="DBNAME" value="__unknown__" />
+        <echo>database: ${DBNAME}</echo>
+        <property name="MULTITENANT" value="false" />
+        <echo>multitenant: ${MULTITENANT}</echo>
+    </target>
+
+    <target name="initvars">
+        <property name="DLC" location="/usr/dlc" />
+        <property name="dbdir" location="/app/db" />
+        <property name="defdir" location="/app/db" />
+        <property name="schemadir" location="/app/schema" />
+        <property name="datadir" location="/app/data" />
+        <property name="singleuser" value="true" />
+        <property name="online" value="false" />
+        <echo>DLC:        ${DLC}</echo>
+        <echo>dbdir:      ${dbdir}</echo>
+        <echo>defdir:     ${defdir}</echo>
+        <echo>schemadir:  ${schemadir}</echo>
+        <echo>singleuser: ${singleuser}</echo>
+        <echo>online:     ${online}</echo>
+    </target>
+
+    <target name="createdb" depends="initvars">       
+        <PCTCreateDatabase dbName="${DBNAME}" destDir="${dbdir}" dlchome="${DLC}" schemaFile="${defdir}/${DBNAME}.df" structFile="${defdir}/${DBNAME}.st" multiTenant="${MULTITENANT}" />
+    </target>
+
+    <target name="createdelta" depends="initvars">   
+        <delete file="${schemadir}/${DBNAME}.delta.df"/>    
+        <PCTCreateDatabase dbName="srcdb" destDir="/app/tmp" dlchome="${DLC}" schemaFile="${schemadir}/${DBNAME}.df" structFile="${schemadir}/${DBNAME}.st" />
+        <PCTIncrementalDump destFile="${schemadir}/${DBNAME}.delta.df" dlchome="${DLC}" removeEmptyDFFile="true">
+            <SourceDb dbName="srcdb" logicalName="source" dbDir="/app/tmp" singleUser="true" />
+            <TargetDb dbName="${DBNAME}" logicalName="target" dbDir="${dbdir}" singleUser="${singleuser}" />
+        </PCTIncrementalDump>    
+    </target>
+
+    <target name="applydelta" depends="initvars">   
+        <PCTLoadSchema srcFile="${schemadir}/${DBNAME}.delta.df" dlchome="${DLC}" onlineChanges="${online}">
+            <PCTConnection dbName="${DBNAME}" dbDir="${dbdir}" singleUser="${singleuser}" />
+        </PCTLoadSchema>
+    </target>
+
+    <target name="loadData" depends="initvars">
+        <PCTLoadData srcDir="${datadir}" dlchome="${DLC}" tables="${tables}">
+          <PCTConnection dbName="${DBNAME}" dbDir="${dbdir}" singleUser="${singleuser}" />
+        </PCTLoadData>
+    </target>
+    
+</project>
