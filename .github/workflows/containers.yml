@@ -1,5 +1,5 @@
 name: Build Docker Containers for OpenEdge
-on:
+on: 
   push:
     branches: [ main ]
     paths: 
