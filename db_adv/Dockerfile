@@ -71,7 +71,7 @@ RUN \
   mkdir /app/tmp
 
 COPY db_adv/scripts/* /app/scripts/
-COPY db_adv/conf/* /app/scripts/
+COPY db_adv/conf/* /app/db/
 COPY scripts/* /app/scripts/
 RUN chmod +x /app/scripts/*.sh
 
