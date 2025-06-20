@@ -76,7 +76,8 @@ case "$CONTAINERTYPE" in
         rm -rf /usr/oemgmt
         rm -rf /usr/wrk_oemgmt
         # dlc
-        rm -rf /usr/dlc/gradle
+        # not removing gradle for CI/CD purposes
+        # rm -rf /usr/dlc/gradle
         # rm -rf /usr/dlc/src
         rm -rf /usr/dlc/templates
         rm -f  /usr/dlc/ade.pf
