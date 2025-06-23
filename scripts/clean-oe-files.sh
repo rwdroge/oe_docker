@@ -66,7 +66,7 @@ case "$CONTAINERTYPE" in
         rm -rf /var/cache
         ;;
     COMPILER)
-        rm -rf /usr/dlc/*OpenEdge*
+        # rm -rf /usr/dlc/*OpenEdge*
         rm -f /usr/dlc/bin/*sql*
         rm -f /usr/dlc/bin/_mprosrv
         rm -f /usr/dlc/bin/_mproshut
