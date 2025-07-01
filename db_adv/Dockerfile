@@ -82,6 +82,7 @@ USER openedge
 
 VOLUME /app/db
 VOLUME /app/schema
+VOLUME /app/data
 
 WORKDIR /app/db
 

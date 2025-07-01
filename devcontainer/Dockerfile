@@ -1,6 +1,6 @@
 # the Dockerfile for the actual devcontainer
 
-FROM docker.io/progressofficial/oe_compiler:12.8.7
+FROM docker.io/progressofficial/oe_compiler:12.8.8
 USER root
 
 RUN apt-get update && \
@@ -13,6 +13,7 @@ RUN apt-get update && \
     apt-get install iputils-ping -y && \
     apt-get install net-tools -y && \
     apt-get install dnsutils -y && \
+  # apt-get install -y dotnet-sdk-8.0 && \
     echo '%sudo ALL=(ALL:ALL) NOPASSWD:ALL' >> /etc/sudoers ;
 RUN echo 'openedge ALL=(ALL:ALL) NOPASSWD:ALL' >> /etc/sudoers ;
 

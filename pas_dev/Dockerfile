@@ -36,6 +36,8 @@ FROM ubuntu:22.04 as instance
 RUN apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     net-tools \
+  && apt-get install -y dotnet-runtime-8.0 \
+  && dotnet add package MathNet.Numerics --version 5.0.0 \
   && apt install netbase \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
