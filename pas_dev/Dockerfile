@@ -44,7 +44,13 @@ RUN apt-get update \
   && groupadd -g 1000 openedge \
   && useradd -r -u 1000 -g openedge openedge
   
-RUN dotnet add package MathNet.Numerics --version 5.0.0
+RUN dotnet new console -n test && \
+    dotnet new sln -n test && \
+    dot sln test.sln add test/test.csproj && \
+
+WORKDIR ./test/    
+RUN dotnet add package MathNet.Numerics --version 5.0.0 && \
+    ls
   
 ENV JAVA_HOME=/opt/java/openjdk
 ENV DLC=/usr/dlc
