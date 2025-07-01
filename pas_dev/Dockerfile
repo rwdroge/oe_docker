@@ -37,13 +37,15 @@ RUN apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     net-tools \
   && apt-get install -y dotnet-runtime-8.0 \
-  && dotnet add package MathNet.Numerics --version 5.0.0 \
+  # && apt-get install -y dotnet-sdk-8.0 \
   && apt install netbase \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
   && groupadd -g 1000 openedge \
   && useradd -r -u 1000 -g openedge openedge
-
+  
+RUN dotnet add package MathNet.Numerics --version 5.0.0
+  
 ENV JAVA_HOME=/opt/java/openjdk
 ENV DLC=/usr/dlc
 ENV WRKDIR=/usr/wrk
