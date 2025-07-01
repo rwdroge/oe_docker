@@ -46,10 +46,9 @@ RUN apt-get update \
   
 RUN dotnet new console -n test && \
     dotnet new sln -n test && \
-    dotnet sln test.sln add test/test.csproj && \
-    pwd
+    dotnet sln test.sln add test/test.csproj 
 
-
+WORKDIR /test
    
 RUN dotnet add package MathNet.Numerics --version 5.0.0 && \
     ls
