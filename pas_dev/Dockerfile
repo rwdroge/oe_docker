@@ -46,12 +46,12 @@ RUN apt-get update \
   
 RUN dotnet new console -n test && \
     dotnet new sln -n test && \
-    dotnet sln test.sln add test/test.csproj 
+    dotnet sln test.sln add test/test.csproj && \
+    chown openedge:openedge -R /test
 
 WORKDIR /test
    
-RUN dotnet add package MathNet.Numerics --version 5.0.0 && \
-    ls
+RUN dotnet add package MathNet.Numerics --version 5.0.0 
   
 ENV JAVA_HOME=/opt/java/openjdk
 ENV DLC=/usr/dlc
