@@ -28,8 +28,9 @@ RUN /install/openedge/clean-oe-files.sh ${CTYPE}
 # multi stage build, this give the possibilty to remove all the slack from stage 0
 FROM ubuntu:22.04 as instance
 
-RUN apt-get install -y dotnet-sdk-8.0
-RUN dotnet new console -n test && \
+RUN apt-get update && \
+    apt-get install -y dotnet-sdk-8.0 && \
+    dotnet new console -n test && \
     dotnet new sln -n test && \
     dotnet sln test.sln add test/test.csproj && \
     chown openedge:openedge -R /test
