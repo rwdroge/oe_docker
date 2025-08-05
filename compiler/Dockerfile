@@ -30,7 +30,7 @@ RUN /install/openedge/clean-oe-files.sh ${CTYPE}
 FROM ubuntu:24.04 AS instance
 
 RUN apt-get update && \
-    && useradd -m -r -u 1000 -g openedge openedge
+    useradd -m -r -u 1000 -g openedge openedge
 
 # WORKDIR /test
    
