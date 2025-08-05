@@ -52,7 +52,7 @@ COPY --from=install $DLC $DLC
 COPY --from=install $WRKDIR $WRKDIR
 
 RUN groupadd -g 1000 openedge && \
-    useradd -r -u 1000 -g openedge openedge
+    useradd -m -r -u 1000 -g openedge openedge
 
 # allow for progress to be copied into $DLC
 # kubernetes does not support volume mount of single files
