@@ -28,9 +28,6 @@ RUN /install/openedge/clean-oe-files.sh ${CTYPE}
 # multi stage build, this give the possibilty to remove all the slack from stage 0
 FROM ubuntu:24.04 as instance
 
-RUN groupadd -g 1000 openedge && \
-    useradd -m -r -u 1000 -g openedge openedge
-
 #RUN apt-get update && \
 #    apt install nodejs && \
 #    apt install npm
