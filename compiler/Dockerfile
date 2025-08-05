@@ -13,7 +13,7 @@ ADD installer/PROGRESS_PATCH_OE.tar.gz /install/patch/
 ADD scripts/install-oe.sh /install/
 
 COPY compiler/response.ini /install/openedge/response.ini
-ENV TERM xterm
+ENV TERM=xterm
 
 RUN /install/install-oe.sh
 
@@ -50,6 +50,9 @@ ENV TERM=xterm
 COPY --from=install $JAVA_HOME $JAVA_HOME
 COPY --from=install $DLC $DLC
 COPY --from=install $WRKDIR $WRKDIR
+
+RUN groupadd -g 1000 openedge && \
+    useradd -r -u 1000 -g openedge openedge
 
 # allow for progress to be copied into $DLC
 # kubernetes does not support volume mount of single files
