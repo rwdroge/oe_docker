@@ -58,7 +58,7 @@ services:
       - ORACLE_PWD=ruben
       - ORACLE_SID=ORCLCDB
       - ORACLE_PDB=ORCLPDB1
-    #  - ORACLE_EDITION=standard
+      - ORACLE_EDITION=ee
     volumes:
       - ./db_oracle/oradata:/opt/oracle/oradata
       - ./db_oracle/scripts:/opt/oracle/scripts/setup
@@ -66,7 +66,7 @@ services:
 
 
   pas_pro2:
-    image: rdroge/openedge_pas_pro2:12.8.3-6.5.1
+    image: rdroge/openedge_pas_pro2:6.5.2
     container_name: pas_pro2
     ports:
       - "9991-9993:9991-9993"

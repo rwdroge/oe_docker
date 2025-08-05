@@ -1,11 +1,7 @@
 #
-
-
-
 # This file is used by ORACLE utilities.  It is created by root.sh
 # and updated by either Database Configuration Assistant while creating
 # a database or ASM Configuration Assistant while creating ASM instance.
-
 # A colon, ':', is used as the field terminator.  A new line terminates
 # the entry.  Lines beginning with a pound sign, '#', are comments.
 #
@@ -20,4 +16,4 @@
 # Multiple entries with the same $ORACLE_SID are not allowed.
 #
 #
-ORCLCDB:/opt/oracle/product/19c/dbhome_1:N
+ORCLCDB:/opt/oracle/product/21c/dbhome_1:N

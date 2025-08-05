@@ -1,4 +1,4 @@
-FROM ubuntu:22.04 as install
+FROM ubuntu:24.04 as install
 
 ARG CTYPE
 ARG OEVERSION
@@ -32,7 +32,7 @@ COPY scripts/clean-oe-files.sh /install/openedge/clean-oe-files.sh
 RUN /install/openedge/clean-oe-files.sh ${CTYPE}
 
 # multi stage build, this give the possibilty to remove all the slack from stage 0
-FROM ubuntu:22.04 as instance
+FROM ubuntu:24.04 as instance
 RUN apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     net-tools \
