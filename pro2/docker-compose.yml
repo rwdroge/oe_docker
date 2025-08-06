@@ -3,7 +3,7 @@ version: '3.4'
 services:
        
   db_sports2020:
-    image: rdroge/openedge_db_sports2020:12.8.3
+    image: rdroge/oe_db_sports2020_pro2:12.8.8
     user: pscadmin
     container_name: db_sports2020
     environment:
@@ -14,10 +14,10 @@ services:
       - "37001:37001"
       - "4000-4200:4000-4200"
     volumes: 
-      - ../app/license/12.7/progress.cfg:/psc/dlc/progress.cfg
+      - ../app/license/12.8/progress.cfg:/psc/dlc/progress.cfg
       
   db_repl:
-    image: rdroge/openedge_db_repl:12.8.3
+    image: rdroge/oe_db_repl:12.8.8
     container_name: db_repl
     user: pscadmin
     environment:
@@ -28,11 +28,11 @@ services:
       - "37002:37002"
       - "4250-4350:4250-4350"
     volumes: 
-      - ../app/license/12.7/progress.cfg:/psc/dlc/progress.cfg
+      - ../app/license/12.8/progress.cfg:/psc/dlc/progress.cfg
       - ./db_repl/artifacts:/psc/wrk/repl
       
   db_pro2:
-    image: rdroge/openedge_db_pro2:12.8.3
+    image: rdroge/oe_db_pro2:12.8.8
     container_name: db_pro2
     user: pscadmin
     environment:
@@ -43,7 +43,7 @@ services:
       - "37003:37003"
       - "4450-4550:4450-4550"
     volumes: 
-      - ../app/license/12.7/progress.cfg:/psc/dlc/progress.cfg
+      - ../app/license/12.8/progress.cfg:/psc/dlc/progress.cfg
       - ./db_pro2/artifacts:/psc/wrk/pro2
       
 

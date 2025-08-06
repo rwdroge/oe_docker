@@ -1,4 +1,4 @@
-ARG OE_VERSION=12.8.4
+ARG OE_VERSION=12.8.8
 
 FROM eclipse-temurin:17.0.12_7-jdk AS builder-jdk
 
