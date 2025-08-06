@@ -41,8 +41,9 @@ RUN apt-get update \
   && apt install netbase \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
-  && groupadd -g 1000 openedge \
-  && useradd -r -u 1000 -g openedge openedge
+  # changed the group number because apparently group 1000 already exists on Ubuntu 24.04
+  && groupadd -g 980 openedge \
+  && useradd -r -u 980 -g openedge openedge
   
 RUN dotnet new console -n test && \
     dotnet new sln -n test && \

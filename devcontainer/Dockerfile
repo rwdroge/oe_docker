@@ -13,8 +13,8 @@ RUN apt-get update && \
     apt-get install iputils-ping -y && \
     apt-get install net-tools -y && \
     apt-get install dnsutils -y && \
-    apt-get install nodejs && \
-    apt-get install npm && \
+    apt-get install nodejs -y && \
+    apt-get install npm -y && \
   # apt-get install -y dotnet-sdk-8.0 && \
     echo '%sudo ALL=(ALL:ALL) NOPASSWD:ALL' >> /etc/sudoers ;
 RUN echo 'openedge ALL=(ALL:ALL) NOPASSWD:ALL' >> /etc/sudoers ;

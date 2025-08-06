@@ -1,4 +1,4 @@
-FROM ubuntu:22.04 AS install
+FROM ubuntu:24.04 AS install
 
 ARG CTYPE
 
@@ -22,7 +22,7 @@ RUN /install/openedge/clean-oe-files.sh ${CTYPE}
 RUN rm -f /usr/dlc/progress.cfg 
 
 # multi stage build, this give the possibilty to remove all the slack from stage 0
-FROM ubuntu:22.04 AS instance
+FROM ubuntu:24.04 AS instance
 
 LABEL maintainer="Ruben Dröge <rdroge@progress.com>"
 
@@ -48,8 +48,8 @@ RUN chown root _* && \
 
 ENV PATH=$DLC:$DLC/bin:$PATH:${JAVA_HOME}/bin:${PATH}
 
-RUN groupadd -g 1000 openedge && \
-    useradd -r -u 1000 -g openedge openedge
+RUN groupadd -g 980 openedge && \
+    useradd -r -u 980 -g openedge openedge
 
 # allow for progress.cfg to be copied into $DLC
 # kubernetes does not support volume mount of single files
