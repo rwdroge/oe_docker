@@ -70,12 +70,13 @@ WORKDIR /usr/dlc/bin
 
 RUN chown root _* && \
     chmod 4755 _* && \
-    chown root:openedge $DLC $WRKDIR && \
+    
     chmod 775 $DLC && \
     chmod 777 $WRKDIR && \
     touch /usr/dlc/progress.cfg  && \
     groupadd -g 980 openedge && \
     useradd -r -u 980 -g openedge openedge && \
+    chown root:openedge $DLC $WRKDIR && \
     chown openedge:openedge /usr/dlc/progress.cfg && \
     mkdir -p /app/pas &&     mkdir /app/src &&     mkdir /app/lib &&     mkdir /app/config && \
     chown -R openedge:openedge /app      
