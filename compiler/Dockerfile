@@ -2,6 +2,7 @@ FROM ubuntu:24.04 AS install
 
 
 ARG CTYPE
+ARG OEVERSION
 
 ENV JAVA_HOME=/opt/java/openjdk
 COPY --from=eclipse-temurin:JDKVERSION $JAVA_HOME $JAVA_HOME
@@ -13,6 +14,9 @@ ADD installer/PROGRESS_OE.tar.gz /install/openedge/
 ADD installer/PROGRESS_PATCH_OE.tar.gz /install/patch/
 ADD scripts/install-oe.sh /install/
 
+RUN if [ "${OEVERSION}" = "122" ] ; then mkdir /etc/progress; else echo "false" ; fi && \
+    if [ "${OEVERSION}" = "122" ] ; then mkdir /etc/openedge; else echo "false" ; fi && \
+    if [ "${OEVERSION}" = "122" ] ; then touch /etc/openedge.d; else echo "false" ; fi 
 COPY compiler/response.ini /install/openedge/response.ini
 ENV TERM=xterm
 
@@ -45,9 +49,12 @@ ENV TERM=xterm
 COPY --from=install $JAVA_HOME $JAVA_HOME
 COPY --from=install $DLC $DLC
 COPY --from=install $WRKDIR $WRKDIR
-
+COPY --from=install /etc/openedge.d /etc/openedge.d
+COPY --from=install /etc/openedge /etc/openedge
+COPY --from=install /etc/progress /etc/progress
 # allow for progress to be copied into $DLC
 # kubernetes does not support volume mount of single files
+WORKDIR /usr/dlc/bin
 RUN chown root:openedge $DLC $WRKDIR && \
     chmod 775 $DLC && \
     chmod 777 $WRKDIR
