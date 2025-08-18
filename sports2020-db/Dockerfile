@@ -1,4 +1,4 @@
-FROM progressofficial/oe_db_adv:12.8.8 AS install
+FROM progressofficial/oe_db_adv:latest AS install
 
 COPY schema/* /app/schema/
 COPY schema/ /app/db/   

@@ -40,10 +40,9 @@ RUN apt-get update \
   && apt-get install -y dotnet-sdk-8.0 \
   && apt install netbase \
   && apt-get clean \
-  && rm -rf /var/lib/apt/lists/* \
+  && rm -rf /var/lib/apt/lists/* 
   # changed the group number because apparently group 1000 already exists on Ubuntu 24.04
-  && groupadd -g 980 openedge \
-  && useradd -r -u 980 -g openedge openedge
+
   
 # RUN dotnet new console -n test && \
 #    dotnet new sln -n test && \
@@ -75,6 +74,8 @@ RUN chown root _* && \
     chmod 775 $DLC && \
     chmod 777 $WRKDIR && \
     touch /usr/dlc/progress.cfg  && \
+    && groupadd -g 980 openedge \
+    && useradd -r -u 980 -g openedge openedge && \
     chown openedge:openedge /usr/dlc/progress.cfg && \
     mkdir -p /app/pas &&     mkdir /app/src &&     mkdir /app/lib &&     mkdir /app/config && \
     chown -R openedge:openedge /app      
