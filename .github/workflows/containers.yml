@@ -15,7 +15,7 @@ jobs:
         strategy:
             matrix:
                 version: [ 12.8.9 ] # make sure all response.ini files are available as secrets
-                containertype: [ "PAS_DEV", "DB_ADV", "COMPILER" ] # ["PAS_DEV", "PAS_PROD", "DB_ADV"]
+                containertype: [ "COMPILER" ] # ["PAS_DEV", "PAS_PROD", "DB_ADV", "COMPILER"]
 
         steps:
 
