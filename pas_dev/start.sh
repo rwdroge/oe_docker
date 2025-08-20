@@ -53,7 +53,7 @@ function initLicense() {
 trap "stopServer" SIGINT SIGTERM
 
 logfile=/app/pas/as/logs/pas.agent.log
-sudo touch $logfile
+# sudo touch $logfile
 
 initLicense
 startServer
