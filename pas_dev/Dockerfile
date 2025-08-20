@@ -36,13 +36,11 @@ FROM ubuntu:24.04 as instance
 RUN apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     net-tools \
-  # && apt-get install -y dotnet-runtime-8.0 \
-  && apt-get install -y dotnet-sdk-8.0 \
   && apt install netbase \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
-  groupadd -g 980 openedge && \
-  useradd -m -r -u 980 -g openedge openedge
+  && groupadd -g 980 openedge \
+  && useradd -m -r -u 980 -g openedge openedge
   # changed the group number because apparently group 1000 already exists on Ubuntu 24.04
 
  
