@@ -61,6 +61,7 @@ WORKDIR /usr/dlc/bin
 RUN chown root _* && \
     chmod 4755 _* && \
     chown root:openedge $DLC $WRKDIR && \
+    chown -R openedge:openedge $DLC/servers/pasoe && \ 
     chmod 775 $DLC && \
     chmod 777 $WRKDIR && \
     touch /usr/dlc/progress.cfg  && \
