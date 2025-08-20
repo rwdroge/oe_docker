@@ -108,4 +108,4 @@ WORKDIR /app/pas
 
 LABEL maintainer="Ruben Dröge <rdroge@progress.com>"
 
-CMD ["/app/pas/start.sh"]
+CMD [""]
