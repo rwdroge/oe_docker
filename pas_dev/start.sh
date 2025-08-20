@@ -51,9 +51,10 @@ function initLicense() {
 }
 
 trap "stopServer" SIGINT SIGTERM
-
+echo "hier ben ik"
 logfile=/app/pas/as/logs/pas.agent.log
 # sudo touch $logfile
+
 
 initLicense
 startServer
