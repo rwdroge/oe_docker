@@ -1,4 +1,4 @@
-FROM ubuntu:24.04 as install
+FROM ubuntu:24.04 AS install
 
 ARG CTYPE
 ARG OEVERSION
@@ -23,7 +23,7 @@ ENV TERM xterm
 RUN /install/install-oe.sh
 
 RUN cat /install/install_oe.log
-# RUN /usr/dlc/bin/proDebugEnable -enable-all
+RUN /usr/dlc/bin/proDebugEnable -enable-all
 
 RUN rm /usr/dlc/progress.cfg
 
@@ -40,19 +40,12 @@ RUN apt-get update \
   && apt-get install -y dotnet-sdk-8.0 \
   && apt install netbase \
   && apt-get clean \
-  && rm -rf /var/lib/apt/lists/* 
+  && rm -rf /var/lib/apt/lists/* \
+  groupadd -g 980 openedge && \
+  useradd -m -r -u 980 -g openedge openedge
   # changed the group number because apparently group 1000 already exists on Ubuntu 24.04
 
-  
-# RUN dotnet new console -n test && \
-#    dotnet new sln -n test && \
-#    dotnet sln test.sln add test/test.csproj && \
-#    chown openedge:openedge -R /test
-
-# WORKDIR /test
-   
-# RUN dotnet add package MathNet.Numerics --version 5.0.0 
-  
+ 
 ENV JAVA_HOME=/opt/java/openjdk
 ENV DLC=/usr/dlc
 ENV WRKDIR=/usr/wrk
@@ -70,18 +63,17 @@ WORKDIR /usr/dlc/bin
 
 RUN chown root _* && \
     chmod 4755 _* && \
-    
+    chown root:openedge $DLC $WRKDIR && \
     chmod 775 $DLC && \
     chmod 777 $WRKDIR && \
     touch /usr/dlc/progress.cfg  && \
-    groupadd -g 980 openedge && \
-    useradd -r -u 980 -g openedge openedge && \
-    chown root:openedge $DLC $WRKDIR && \
     chown openedge:openedge /usr/dlc/progress.cfg && \
     mkdir -p /app/pas &&     mkdir /app/src &&     mkdir /app/lib &&     mkdir /app/config && \
     chown -R openedge:openedge /app      
 
 WORKDIR /app/pas
+
+USER openedge
 
 # what happens if I create the PAS with the actual openedge user? File permissions ok?
 RUN pasman create -p 8810 -P 8811 -j 8812 -s 8812 -Z dev -f -N pas -U openedge -G openedge ./as 
@@ -104,8 +96,7 @@ VOLUME /app/config
 
 ENV DLC="${DLC}"
 
-RUN chown openedge:openedge /usr/dlc/progress.cfg && \
-    /app/pas/as/bin/oeprop.sh AppServer.SessMgr.agentStartupParam="-T \"\${catalina.base}/temp\" -pf /app/config/as.pf" && \
+RUN /app/pas/as/bin/oeprop.sh AppServer.SessMgr.agentStartupParam="-T \"\${catalina.base}/temp\" -pf /app/config/as.pf" && \
     rm /usr/dlc/progress.cfg
 
 ENV PASWEBHANDLERS=/app/src/webhandlers/ROOT.handlers

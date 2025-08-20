@@ -16,6 +16,17 @@ RUN apt-get update && \
     apt-get install nodejs -y && \
     apt-get install npm -y && \
   # apt-get install -y dotnet-sdk-8.0 && \
+    apt-get install -y libnss3\                         
+                    -y libnspr4\                                    
+                    -y libatk1.0-0t64\                              
+                    -y libatk-bridge2.0-0t64\                       
+                    -y libcups2t64\                                 
+                    -y libxkbcommon0\                               
+                    -y libatspi2.0-0t64\                            
+                    -y libxdamage1\                                 
+                    -y libpango-1.0-0\                              
+                    -y libcairo2\                                   
+                    -y libasound2t64 && \ 
     echo '%sudo ALL=(ALL:ALL) NOPASSWD:ALL' >> /etc/sudoers ;
 RUN echo 'openedge ALL=(ALL:ALL) NOPASSWD:ALL' >> /etc/sudoers ;
 
