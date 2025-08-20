@@ -83,6 +83,7 @@ RUN bin/oeprop.sh AppServer.Agent.pas.PROPATH=".,/app/config,/app/src,/app/lib/l
 
 COPY pas_dev/config/oeablSecurity-dev.csv /app/pas/as/webapps/ROOT/WEB-INF/oeablSecurity.csv
 COPY pas_dev/start.sh /app/pas/
+USER root
 RUN chmod +x /app/pas/start.sh && \
     chown -R openedge:openedge /app/pas/start.sh && \
     echo 'tcp    6 TCP' >> /etc/protocols
@@ -91,13 +92,16 @@ VOLUME /app/src
 VOLUME /app/lib
 VOLUME /app/config
 
+USER openedge
+
 ENV DLC="${DLC}"
+
 
 RUN /app/pas/as/bin/oeprop.sh AppServer.SessMgr.agentStartupParam="-T \"\${catalina.base}/temp\" -pf /app/config/as.pf" && \
     rm /usr/dlc/progress.cfg
 
 ENV PASWEBHANDLERS=/app/src/webhandlers/ROOT.handlers
-USER openedge
+
 
 WORKDIR /app/pas
 
