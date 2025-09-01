@@ -20,26 +20,24 @@ RUN if [ "${OEVERSION}" = "122" ] ; then mkdir /etc/progress; else echo "false" 
 COPY compiler/response.ini /install/openedge/response.ini
 ENV TERM=xterm
 
-RUN /install/install-oe.sh
-
-RUN cat /install/install_oe.log
-RUN /usr/dlc/bin/proDebugEnable -enable-all
-RUN rm /usr/dlc/progress.cfg
-
 COPY scripts/clean-oe-files.sh /install/openedge/clean-oe-files.sh 
 # This script needs 'container type' as input parameter
-RUN /install/openedge/clean-oe-files.sh ${CTYPE}
+RUN /install/install-oe.sh && \
+    cat /install/install_oe.log && \
+    /usr/dlc/bin/proDebugEnable -enable-all && \
+    rm /usr/dlc/progress.cfg && \
+    /install/openedge/clean-oe-files.sh ${CTYPE} && \
+    rm -rf /install
 
 # multi stage build, this give the possibilty to remove all the slack from stage 0
-FROM ubuntu:24.04 AS instance
+FROM ubuntu:24.04-minimal AS instance
 
 RUN apt-get update && \
     groupadd -g 980 openedge && \
-    useradd -m -r -u 980 -g openedge openedge
+    useradd -m -r -u 980 -g openedge openedge && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-# WORKDIR /test
-   
-# RUN dotnet add package MathNet.Numerics --version 5.0.0
 
 ENV JAVA_HOME=/opt/java/openjdk
 ENV DLC=/usr/dlc
@@ -65,7 +63,7 @@ RUN chown root:openedge $DLC $WRKDIR && \
 RUN touch /usr/dlc/progress.cfg  && \
     chown openedge:openedge /usr/dlc/progress.cfg
 
-RUN mkdir -p /app/src && mkdir /artifacts && \
+RUN mkdir -p /app/src /artifacts && \
     chown -R openedge:openedge /app /artifacts
 
 USER openedge

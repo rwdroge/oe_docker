@@ -13,9 +13,7 @@ RUN apt-get update && \
     apt-get install iputils-ping -y && \
     apt-get install net-tools -y && \
     apt-get install dnsutils -y && \
-    apt-get install nodejs -y && \
-    apt-get install npm -y && \
-  # apt-get install -y dotnet-sdk-8.0 && \
+    # apt-get install -y dotnet-sdk-8.0 && \
     apt-get install -y libnss3\                         
                     -y libnspr4\                                    
                     -y libatk1.0-0t64\                              
@@ -29,11 +27,16 @@ RUN apt-get update && \
                     -y libasound2t64 && \ 
     echo '%sudo ALL=(ALL:ALL) NOPASSWD:ALL' >> /etc/sudoers ;
 RUN echo 'openedge ALL=(ALL:ALL) NOPASSWD:ALL' >> /etc/sudoers ;
+USER openedge
+
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x -o nodesource_setup.sh && \
+    sudo -E bash nodesource_setup.sh && \
+    sudo apt install -y nodejs
 
 ENV JAVA_HOME=/opt/java/openjdk
 ENV DLC=/usr/dlc
 ENV WRKDIR=/usr/wrk
 ENV PATH=$DLC:$DLC/bin:$PATH
 
-USER openedge
+
 # this script is build as docker.io/rdroge/oe_devcontainer:Tag
