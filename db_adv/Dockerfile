@@ -15,11 +15,12 @@ ADD scripts/install-oe.sh /install/
 COPY db_adv/response.ini /install/openedge/response.ini
 ENV TERM=linux
 
-RUN /install/install-oe.sh
-RUN cat /install/install_oe.log
 COPY scripts/clean-oe-files.sh /install/openedge/clean-oe-files.sh 
-RUN /install/openedge/clean-oe-files.sh ${CTYPE}
-RUN rm -f /usr/dlc/progress.cfg 
+RUN /install/install-oe.sh && \
+    cat /install/install_oe.log && \
+    /install/openedge/clean-oe-files.sh ${CTYPE} && \
+    rm -f /usr/dlc/progress.cfg && \
+    rm -rf /install 
 
 # multi stage build, this give the possibilty to remove all the slack from stage 0
 FROM ubuntu:24.04 AS instance
@@ -53,30 +54,18 @@ RUN groupadd -g 980 openedge && \
 
 # allow for progress.cfg to be copied into $DLC
 # kubernetes does not support volume mount of single files
-RUN chown root:openedge $DLC
-RUN chmod 775 $DLC
-
-RUN touch /usr/dlc/progress.cfg  && \
+RUN chown root:openedge $DLC && \
+    chmod 775 $DLC && \
+    touch /usr/dlc/progress.cfg && \
     chown openedge:openedge /usr/dlc/progress.cfg
 
 # create directories and files as root
-RUN \
-  mkdir /app/ && \
-  mkdir /app/backup/ && \
-  mkdir /app/config/ && \
-  mkdir /app/data/ && \
-  mkdir /app/db/ && \
-  mkdir /app/schema/ && \
-  mkdir /app/scripts/ && \
-  mkdir /app/tmp
-
 COPY db_adv/scripts/* /app/scripts/
 COPY db_adv/conf/* /app/db/
 COPY scripts/* /app/scripts/
-RUN chmod +x /app/scripts/*.sh
-
-# turn them over to user 'openedge'
-RUN chown -R openedge:openedge /app/ 
+RUN mkdir -p /app/backup /app/config /app/data /app/db /app/schema /app/scripts /app/tmp && \
+    chmod +x /app/scripts/*.sh && \
+    chown -R openedge:openedge /app/ 
 
 USER openedge
 
