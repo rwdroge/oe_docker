@@ -49,7 +49,7 @@ RUN chown root _* && \
 
 ENV PATH=$DLC:$DLC/bin:$PATH:${JAVA_HOME}/bin:${PATH}
 
-RUN deluser -r ubuntu && \
+RUN userdel -r -f ubuntu && \
     groupadd -g 1000 openedge && \
     useradd -r -u 1000 -g openedge openedge
 

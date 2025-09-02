@@ -36,7 +36,7 @@ RUN apt-get update \
   && apt-get install -y netbase \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
-  && userdel -r ubuntu \
+  && userdel -r -f ubuntu \
   && groupadd -g 1000 openedge \
   && useradd -m -r -u 1000 -g openedge openedge
   # changed the group number because apparently group 1000 already exists on Ubuntu 24.04

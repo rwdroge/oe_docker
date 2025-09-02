@@ -33,7 +33,7 @@ RUN /install/install-oe.sh && \
 FROM ubuntu:24.04 AS instance
 
 RUN apt-get update && \
-    userdel -r ubuntu && \
+    userdel -r -f ubuntu && \
     groupadd -g 1000 openedge && \
     useradd -m -r -u 1000 -g openedge openedge && \
     apt-get clean && \
