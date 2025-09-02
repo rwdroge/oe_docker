@@ -1,4 +1,4 @@
-FROM ubuntu:24.04 AS install
+FROM ubuntu:22.04 AS install
 
 
 ARG CTYPE
@@ -30,13 +30,11 @@ RUN /install/install-oe.sh && \
     rm -rf /install
 
 # multi stage build, this give the possibilty to remove all the slack from stage 0
-FROM ubuntu:24.04 AS instance
+FROM ubuntu:22.04 AS instance
 
 RUN apt-get update && \
-    #userdel -r -f ubuntu && \
-    #groupadd -g 1000 openedge && \
-    #useradd -m -r -u 1000 -g openedge openedge && \
-    usermod -l openedge ubuntu && \
+    groupadd -g 1000 openedge && \
+    useradd -m -r -u 1000 -g openedge openedge && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 

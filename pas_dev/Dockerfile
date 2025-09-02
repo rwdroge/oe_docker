@@ -1,4 +1,4 @@
-FROM ubuntu:24.04 AS install
+FROM ubuntu:22.04 AS install
 
 ARG CTYPE
 ARG OEVERSION
@@ -29,14 +29,13 @@ RUN /install/install-oe.sh && \
     rm -rf /install
 
 # multi stage build, this give the possibilty to remove all the slack from stage 0
-FROM ubuntu:24.04 as instance
+FROM ubuntu:22.04 as instance
 RUN apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     net-tools \
   && apt-get install -y netbase \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
-  && userdel -r -f ubuntu \
   && groupadd -g 1000 openedge \
   && useradd -m -r -u 1000 -g openedge openedge
   # changed the group number because apparently group 1000 already exists on Ubuntu 24.04

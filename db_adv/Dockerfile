@@ -1,4 +1,4 @@
-FROM ubuntu:24.04 AS install
+FROM ubuntu:22.04 AS install
 
 ARG CTYPE
 
@@ -23,7 +23,7 @@ RUN /install/install-oe.sh && \
     rm -rf /install 
 
 # multi stage build, this give the possibilty to remove all the slack from stage 0
-FROM ubuntu:24.04 AS instance
+FROM ubuntu:22.04 AS instance
 
 LABEL maintainer="Ruben Dröge <rdroge@progress.com>"
 
@@ -49,8 +49,7 @@ RUN chown root _* && \
 
 ENV PATH=$DLC:$DLC/bin:$PATH:${JAVA_HOME}/bin:${PATH}
 
-RUN userdel -r -f ubuntu && \
-    groupadd -g 1000 openedge && \
+RUN groupadd -g 1000 openedge && \
     useradd -r -u 1000 -g openedge openedge
 
 # allow for progress.cfg to be copied into $DLC
