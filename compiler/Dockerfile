@@ -33,8 +33,9 @@ RUN /install/install-oe.sh && \
 FROM ubuntu:24.04 AS instance
 
 RUN apt-get update && \
-    groupadd -g 980 openedge && \
-    useradd -m -r -u 980 -g openedge openedge && \
+    userdel -r ubuntu && \
+    groupadd -g 1000 openedge && \
+    useradd -m -r -u 1000 -g openedge openedge && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 

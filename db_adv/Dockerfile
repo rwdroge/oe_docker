@@ -49,8 +49,9 @@ RUN chown root _* && \
 
 ENV PATH=$DLC:$DLC/bin:$PATH:${JAVA_HOME}/bin:${PATH}
 
-RUN groupadd -g 980 openedge && \
-    useradd -r -u 980 -g openedge openedge
+RUN deluser -r ubuntu && \
+    groupadd -g 1000 openedge && \
+    useradd -r -u 1000 -g openedge openedge
 
 # allow for progress.cfg to be copied into $DLC
 # kubernetes does not support volume mount of single files
