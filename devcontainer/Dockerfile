@@ -17,15 +17,15 @@ RUN apt-get update && \
         dnsutils \
         libnss3 \
         libnspr4 \
-        libatk1.0-0t64 \
-        libatk-bridge2.0-0t64 \
-        libcups2t64 \
-        libxkbcommon0 \
-        libatspi2.0-0t64 \
+#        libatk1.0-0t64 \
+#        libatk-bridge2.0-0t64 \
+#        libcups2t64 \
+       libxkbcommon0 \
+ #       libatspi2.0-0t64 \
         libxdamage1 \
         libpango-1.0-0 \
-        libcairo2 \
-        libasound2t64 && \
+        libcairo2 && \
+#        libasound2t64 && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     echo '%sudo ALL=(ALL:ALL) NOPASSWD:ALL' >> /etc/sudoers && \

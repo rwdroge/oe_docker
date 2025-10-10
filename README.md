@@ -1,54 +1,175 @@
 # oe_demos_docker
 
-## Pro2Oracle Docker Demo Environment
-### Prerequisites:
--	Docker installed
-    -	Docker Desktop for Windows
-    -	WSL2 (Windows Subsystem for Linux)
-    -	Or: Linux VM with Docker installed
--	Docker-Compose installed
+This repository contains Dockerfiles and tooling to build local OpenEdge images such as `compiler`, `db_adv`, and `pas_dev` using locally provided installers.
 
-### Containers:
--	Sports2020 DB
--	Repl DB
--	Pro2 DB
--	Oracle DB (requires an Oracle Account first with License Agreement Acceptance after via https://container-registry.oracle.com)
--	Pro2 (PASOE)
+For Pro2-specific demo documentation, see `pro2/README.md`.
 
-Job runner is started by default and replication is setup for sports2020 source database to the Oracle database. Pro2 properties have been imported already.
-One mapping is defined for the Benefits table, but no CDC-mapping has been done yet for that table and code hasn’t been generated either.
-Setup Environment:
--	Clone repository (https://github.com/rwdroge/oe_demos_docker)
--	Navigate to Pro2 folder
--   Put your valid progress.cfg file into the designated folder
--	CMD > docker-compose up
+## Prerequisites
 
-### Demo Script:
--	Show dashboard and explain what people are looking at and then move to ‘Manage Replication’
--	Show the generation of the target schema (‘Generate Target Schema’)
-    - Explain the Job scheduler (background process that picks up all scheduled jobs)
-    - Show the various generated SQL-scripts
--	Add a mapping next to the existing mapping for the Benefits table
-    -	Maybe only select certain fields to replicate
--	Add CDC Mappings for these mappings as well
--	[Optional] Assign Benefits / Other table that has been mapped to different replication threads under the ‘Advanced Configuration’ menu item
--	Generate Code
-    -	[Optional]: show generated code in brepl/repl_mproc (bulkload) and brepl/repl_proc (replication) using an interactive Docker session into the pas_pro2 container:
-      
-      ```docker exec -it <container_id> /bin/sh```
-    
-      ```ls /install/pro2/bprepl/repl_mproc```
-    
-      ```ls /install/pro2/bprepl/repl_proc```
+Before building images, ensure you have:
 
--	Go to [Actions > Jobs > Scheduled Jobs]
--	Select the job of type ‘CDC Threads’ and choose ‘Run Now’
-    -	This starts the CDC administration thread that captures changes in the CDC tables
+1. **OpenEdge installer binaries** placed in `binaries/oe/<major.minor>/` (see below)
+2. **Valid control codes** configured in each component's `response.ini` file (see [Configure control codes](#configure-control-codes))
 
--	Select one of the jobs of type ‘Replication Threads’ and choose ‘Run Now’
-    -	This starts 1 or all of the replication threads and will replicate the actual changes from source to target
--	Go to [Actions > Bulk Load > Run Bulk Loads]
-    -	Select the source database (sports2020)
-    -	Select ‘Yes’ for ‘Reload table if already bulk-loaded once’
-    - Choose ‘Run’ and confirm that the bulk load has executed successfully by running the Bulk Load Report via [Actions > Bulk Load > Bulk Load Report
-    -	Explain that the bulk load needs to run initially as a starting point (after that only changes are replicated incrementally)
+> ⚠️ **Important:** The build scripts will validate that both installers and `response.ini` files exist before starting the build. Missing files will result in clear error messages.
+
+### Binaries folder layout
+
+Place your binaries under `binaries/oe/<major.minor>/` relative to the repo root:
+
+- Single installer example:
+  - `binaries/oe/12.8/PROGRESS_OE_12.8.9_LNX_64.tar.gz`
+- Base + patch example:
+  - `binaries/oe/12.8/PROGRESS_OE_12.8_LNX_64.tar.gz` (base)
+  - `binaries/oe/12.8/PROGRESS_OE_12.8.6_LNX_64.tar.gz` (patch)
+
+> **Important (OpenEdge 12.8.4â€“12.8.8):** You must place the 12.8 base installer next to the update installer (OE 12.8.x) in the same directory. The tooling expects both base and update to be present side-by-side to stage and install correctly.
+
+Example required pair for 12.8.6:
+
+- `binaries/oe/12.8/PROGRESS_OE_12.8_LNX_64.tar.gz` (base)
+- `binaries/oe/12.8/PROGRESS_OE_12.8.6_LNX_64.tar.gz` (update)
+
+
+If your tarball names differ, you can override filenames via script parameters (see below). The scripts will stage the patch file to `installer/PROGRESS_PATCH_OE.tar.gz` for the Dockerfile.
+
+### Configure control codes
+
+> ⚠️ **Required:** You must configure valid OpenEdge control codes before building images.
+
+Before running the build scripts, add your valid OpenEdge control codes to the `response.ini` file in each component directory. Edit the **Product Configuration** section of each `response.ini` file and add your control codes.
+
+**Required files:**
+
+- `compiler/response.ini`
+- `db_adv/response.ini`
+- `pas_dev/response.ini`
+
+**What happens if missing:**
+- `build-image.ps1` will fail immediately with a clear error message pointing to the missing file
+- `build-all-images.ps1` will check all three files upfront and list any that are missing before starting the build
+
+
+### Prepare installers (Windows PowerShell)
+
+Use `tools/prepare-installers.ps1` to stage installers for a component and version:
+
+```powershell
+pwsh ./tools/prepare-installers.ps1 -Component compiler -Version 12.8.6
+pwsh ./tools/prepare-installers.ps1 -Component db_adv   -Version 12.8.6
+pwsh ./tools/prepare-installers.ps1 -Component pas_dev  -Version 12.8.6
+```
+
+Optional parameters:
+
+- `-BinariesRoot` to point to a custom binaries root.
+- `-SingleTar`, `-BaseTar`, `-PatchTar` to explicitly specify filenames if they differ from the defaults.
+
+### Prepare installers (POSIX shell)
+
+If you are on Linux/macOS:
+
+```bash
+./tools/prepare-installers.sh -c compiler -v 12.8.6
+./tools/prepare-installers.sh -c db_adv   -v 12.8.6
+./tools/prepare-installers.sh -c pas_dev  -v 12.8.6
+```
+
+Use `-b </path/to/binaries/oe>` to override the binaries root.
+
+### Build images locally
+
+After preparing the installers, build images as usual from the repo root. Example:
+
+```bash
+# compiler
+docker build -f compiler/Dockerfile \
+  --build-arg CTYPE=compiler \
+  --build-arg OEVERSION=128 \
+  --build-arg JDKVERSION=21 \
+  -t oe_compiler:12.8.6 .
+
+# db_adv
+docker build -f db_adv/Dockerfile \
+  --build-arg CTYPE=db \
+  --build-arg JDKVERSION=21 \
+  -t oe_db_adv:12.8.6 .
+
+# pas_dev
+docker build -f pas_dev/Dockerfile \
+  --build-arg CTYPE=pas \
+  --build-arg OEVERSION=128 \
+  --build-arg JDKVERSION=21 \
+  -t oe_pas_dev:12.8.6 .
+```
+
+Notes:
+
+- The `OEVERSION` build-arg is already used by Dockerfiles for minor differences (e.g., creating `/etc/openedge.d` for certain versions). Keep using your existing conventions.
+- The install flow is managed by `scripts/install-oe.sh`, which installs the base and, if present, the patch (`/install/patch/proinst`).
+
+### One-step wrapper (Windows PowerShell)
+
+You can run a single command that prepares installers and builds the image:
+
+```powershell
+pwsh ./tools/build-image.ps1 -Component compiler -Version 12.8.6 -Tag 12.8.6
+pwsh ./tools/build-image.ps1 -Component db_adv   -Version 12.8.6 -Tag 12.8.6
+pwsh ./tools/build-image.ps1 -Component pas_dev  -Version 12.8.6 -Tag 12.8.6
+```
+
+Options:
+- `-ImageName` to override default repository name per component.
+- `-BinariesRoot` to point to a custom binaries root.
+- `-JDKVERSION` to control the Java version propagated as build-arg.
+- `-OEVERSION` to override the automatic mapping of series to OEVERSION (defaults: 12.2→122, 12.7→127, 12.8→128).
+- `-BuildDevcontainer` (compiler only) to also build a devcontainer image using the just-created local compiler image as the base. The devcontainer image will be tagged as `rdroge/oe_devcontainer:<Tag>`.
+
+Example with devcontainer:
+
+```powershell
+pwsh ./tools/build-image.ps1 -Component compiler -Version 12.8.6 -Tag 12.8.6 -BuildDevcontainer
+```
+
+> **Note:** The `-BuildDevcontainer` switch can only be used with `-Component compiler` and requires the compiler image to be built first (which happens automatically in the same script execution).
+
+### Build all images at once (Windows PowerShell)
+
+You can build all four images (compiler, devcontainer, pas_dev, db_adv) with a single command:
+
+```powershell
+pwsh ./tools/build-all-images.ps1 -Version 12.8.6 -Tag 12.8.6
+```
+
+This will:
+1. Build the compiler image
+2. Build the devcontainer image (using the local compiler image as base)
+3. Build the pas_dev image
+4. Build the db_adv image
+
+Options:
+- `-SkipDevcontainer` to skip building the devcontainer image
+- `-BinariesRoot` to point to a custom binaries root
+- `-JDKVERSION` to control the Java version propagated as build-arg
+- `-OEVERSION` to override the automatic mapping of series to OEVERSION
+
+Example without devcontainer:
+
+```powershell
+pwsh ./tools/build-all-images.ps1 -Version 12.8.6 -Tag 12.8.6 -SkipDevcontainer
+```
+
+The script will display a summary at the end showing the build status and duration for each component.
+
+### Series note (12.2, 12.7, 12.8)
+
+For 12.2 and 12.7 series the base installer filename follows the same convention as 12.8: the base tar omits `.0` in the filename.
+
+Examples:
+
+- 12.2 base+patch:
+  - `binaries/oe/12.2/PROGRESS_OE_12.2_LNX_64.tar.gz`
+  - `binaries/oe/12.2/PROGRESS_OE_12.2.x_LNX_64.tar.gz` (patch)
+- 12.7 base+patch:
+  - `binaries/oe/12.7/PROGRESS_OE_12.7_LNX_64.tar.gz`
+  - `binaries/oe/12.7/PROGRESS_OE_12.7.x_LNX_64.tar.gz` (patch)

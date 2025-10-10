@@ -29,7 +29,7 @@ RUN /install/install-oe.sh && \
     rm -rf /install
 
 # multi stage build, this give the possibilty to remove all the slack from stage 0
-FROM ubuntu:22.04 as instance
+FROM ubuntu:22.04 AS instance
 RUN apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     net-tools \
