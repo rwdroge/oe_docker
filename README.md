@@ -1,8 +1,8 @@
-﻿# oe_demos_docker
+# oe_demos_docker
 
 This repository contains Dockerfiles and tooling to build local OpenEdge images such as `compiler`, `db_adv`, and `pas_dev` using locally provided installers.
 
-For Pro2-specific demo documentation, see `pro2/README.md`.
+> **Note:** Pro2 replication demos have been moved to a separate repository: [oe_pro2_docker](https://github.com/rwdroge/oe_pro2_docker)
 
 ## Getting Started
 
