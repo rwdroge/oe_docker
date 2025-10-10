@@ -6,8 +6,8 @@
 # private projects
 
 /authentication/
-!placeholder_oe_binaries.txt
-/binaries
+/binaries/oe/11.7
+/binaries/oe/12.2
 /exact_db
 /exact_pas
 /kafka
@@ -25,6 +25,7 @@ docker-compose-amazon.yml
 
 # OE Setups (tar.gz and response files except for sample)
 *.tar.gz
+*.tar
 *.ini
 *.bin
 *.zip
