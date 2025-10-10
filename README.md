@@ -155,6 +155,31 @@ pwsh ./tools/build-image.ps1 -Component compiler -Version 12.8.6 -Tag 12.8.6 -Bu
 
 > **Note:** The `-BuildDevcontainer` switch can only be used with `-Component compiler` and requires the compiler image to be built first (which happens automatically in the same script execution).
 
+### One-step wrapper (Linux/macOS Bash)
+
+You can run a single command that prepares installers and builds the image:
+
+```bash
+./tools/build-image.sh -c compiler -v 12.8.6 -t 12.8.6
+./tools/build-image.sh -c db_adv   -v 12.8.6 -t 12.8.6
+./tools/build-image.sh -c pas_dev  -v 12.8.6 -t 12.8.6
+```
+
+Options:
+- `-i <image>` to override default repository name per component
+- `-b <binroot>` to point to a custom binaries root
+- `-j <jdkversion>` to control the Java version propagated as build-arg
+- `-o <oeversion>` to override the automatic mapping of series to OEVERSION (defaults: 12.2→122, 12.7→127, 12.8→128)
+- `-d` (compiler only) to also build a devcontainer image using the just-created local compiler image as the base
+
+Example with devcontainer:
+
+```bash
+./tools/build-image.sh -c compiler -v 12.8.6 -t 12.8.6 -d
+```
+
+> **Note:** The `-d` option can only be used with `-c compiler` and requires the compiler image to be built first (which happens automatically in the same script execution).
+
 ### Build all images at once (Windows PowerShell)
 
 You can build all four images (compiler, devcontainer, pas_dev, db_adv) with a single command:
@@ -179,6 +204,34 @@ Example without devcontainer:
 
 ```powershell
 pwsh ./tools/build-all-images.ps1 -Version 12.8.6 -Tag 12.8.6 -SkipDevcontainer
+```
+
+The script will display a summary at the end showing the build status and duration for each component.
+
+### Build all images at once (Linux/macOS Bash)
+
+You can build all four images (compiler, devcontainer, pas_dev, db_adv) with a single command:
+
+```bash
+./tools/build-all-images.sh -v 12.8.6 -t 12.8.6
+```
+
+This will:
+1. Build the compiler image
+2. Build the devcontainer image (using the local compiler image as base)
+3. Build the pas_dev image
+4. Build the db_adv image
+
+Options:
+- `-s` to skip building the devcontainer image
+- `-b <binroot>` to point to a custom binaries root
+- `-j <jdkversion>` to control the Java version propagated as build-arg
+- `-o <oeversion>` to override the automatic mapping of series to OEVERSION
+
+Example without devcontainer:
+
+```bash
+./tools/build-all-images.sh -v 12.8.6 -t 12.8.6 -s
 ```
 
 The script will display a summary at the end showing the build status and duration for each component.
