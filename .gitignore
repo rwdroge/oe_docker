@@ -6,6 +6,7 @@
 # private projects
 
 /authentication/
+!placeholder_oe_binaries.txt
 /binaries
 /exact_db
 /exact_pas

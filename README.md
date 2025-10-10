@@ -10,6 +10,8 @@ Before building images, ensure you have:
 
 1. **OpenEdge installer binaries** placed in `binaries/oe/<major.minor>/` (see below)
 2. **Valid control codes** configured in each component's `response.ini` file (see [Configure control codes](#configure-control-codes))
+   - Example files (`response_ini_example.txt`) are provided in each component directory
+   - Copy/rename to `response.ini` and add your company name, serials, and control codes
 
 > ⚠️ **Important:** The build scripts will validate that both installers and `response.ini` files exist before starting the build. Missing files will result in clear error messages.
 
@@ -37,9 +39,29 @@ If your tarball names differ, you can override filenames via script parameters (
 
 > ⚠️ **Required:** You must configure valid OpenEdge control codes before building images.
 
-Before running the build scripts, add your valid OpenEdge control codes to the `response.ini` file in each component directory. Edit the **Product Configuration** section of each `response.ini` file and add your control codes.
+Each component directory contains an example response.ini file called `response_ini_example.txt` that you can use as a template:
 
-**Required files:**
+- `compiler/response_ini_example.txt`
+- `db_adv/response_ini_example.txt`
+- `pas_dev/response_ini_example.txt`
+
+**To configure:**
+
+1. Copy or rename `response_ini_example.txt` to `response.ini` in each component directory
+2. Edit the **Product Configuration** section(s) in each `response.ini` file
+3. Add your company name, serial numbers, and control codes
+
+**Example Product Configuration section:**
+```ini
+[Product Configuration 1]
+name=YourCompanyName
+serial=YourSerialNumber
+version=12.8
+control=YourControlCode
+prodname=4GL Development System
+```
+
+**Required files after configuration:**
 
 - `compiler/response.ini`
 - `db_adv/response.ini`
