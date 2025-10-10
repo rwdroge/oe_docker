@@ -1,8 +1,31 @@
-# oe_demos_docker
+﻿# oe_demos_docker
 
 This repository contains Dockerfiles and tooling to build local OpenEdge images such as `compiler`, `db_adv`, and `pas_dev` using locally provided installers.
 
 For Pro2-specific demo documentation, see `pro2/README.md`.
+
+## Getting Started
+
+### 1. Clone the repository
+
+First, clone this repository to your local machine:
+
+```bash
+git clone https://github.com/rwdroge/oe_demos_docker.git
+cd oe_demos_docker
+```
+
+### 2. Add OpenEdge installers
+
+Place your OpenEdge installer binaries in the `binaries/oe/<major.minor>/` directory (see [Binaries folder layout](#binaries-folder-layout) below).
+
+### 3. Configure control codes
+
+Rename the response_._ini_example.txt files to response.ini and add your OpenEdge control codes (see [Configure control codes](#configure-control-codes) below).
+
+### 4. Build images
+
+Use the provided build scripts to create your Docker images (see build sections below).
 
 ## Prerequisites
 
