@@ -1,6 +1,6 @@
-# oe_demos_docker
+﻿# oe_demos_docker
 
-This repository contains Dockerfiles and tooling to build local OpenEdge images such as `compiler`, `db_adv`, and `pas_dev` using locally provided installers.
+This repository contains Dockerfiles and tooling to build local OpenEdge Docker container images such as `compiler`, `db_adv`, and `pas_dev` using locally provided installers.
 
 > **Note:** Pro2 replication demos have been moved to a separate repository: [oe_pro2_docker](https://github.com/rwdroge/oe_pro2_docker)
 
@@ -17,7 +17,8 @@ cd oe_demos_docker
 
 ### 2. Add OpenEdge installers
 
-Place your OpenEdge installer binaries in the `binaries/oe/<major.minor>/` directory (see [Binaries folder layout](#binaries-folder-layout) below).
+Download the Linux 64-bit installers for the required OE versions from ESD.
+Place those OpenEdge installer binaries in the `binaries/oe/<major.minor>/` directory (see [Binaries folder layout](#binaries-folder-layout) below).
 
 ### 3. Configure control codes
 
