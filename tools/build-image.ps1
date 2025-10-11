@@ -16,7 +16,8 @@ param(
 
   [int]$JDKVERSION = 21,
   [string]$OEVERSION = $null,
-  [switch]$BuildDevcontainer = $false
+  [switch]$BuildDevcontainer = $false,
+  [switch]$BuildSports2020Db = $false
 )
 
 $ErrorActionPreference = 'Stop'
@@ -40,12 +41,16 @@ if ($Component -like '-*') {
   }
 }
 
-if (@('compiler','db_adv','pas_dev') -notcontains $Component) {
-  throw "Invalid -Component '$Component'. Allowed: compiler, db_adv, pas_dev"
+if (@('compiler','db_adv','pas_dev','pas_base','pas_orads') -notcontains $Component) {
+  throw "Invalid -Component '$Component'. Allowed: compiler, db_adv, pas_dev, pas_base, pas_orads"
 }
 
 if ($BuildDevcontainer -and $Component -ne 'compiler') {
   throw "The -BuildDevcontainer switch can only be used with -Component compiler"
+}
+
+if ($BuildSports2020Db -and $Component -ne 'db_adv') {
+  throw "The -BuildSports2020Db switch can only be used with -Component db_adv"
 }
 
 function Convert-ToVersionParts([string]$v){
@@ -59,9 +64,11 @@ if(-not $Tag){ $Tag = $Version }
 
 # Defaults per component
 switch ($Component) {
-  'compiler' { if(-not $ImageName){ $ImageName = 'rdroge/oe_compiler' } ; $CTYPE='compiler' }
-  'db_adv'   { if(-not $ImageName){ $ImageName = 'rdroge/oe_db_adv' }          ; $CTYPE='db' }
-  'pas_dev'  { if(-not $ImageName){ $ImageName = 'rdroge/oe_pas_dev' }; $CTYPE='pas' }
+  'compiler'  { if(-not $ImageName){ $ImageName = 'rdroge/oe_compiler' }  ; $CTYPE='compiler' }
+  'db_adv'    { if(-not $ImageName){ $ImageName = 'rdroge/oe_db_adv' }    ; $CTYPE='db' }
+  'pas_dev'   { if(-not $ImageName){ $ImageName = 'rdroge/oe_pas_dev' }   ; $CTYPE='pas' }
+  'pas_base'  { if(-not $ImageName){ $ImageName = 'rdroge/oe_pas_base' }  ; $CTYPE='pas' }
+  'pas_orads' { if(-not $ImageName){ $ImageName = 'rdroge/oe_pas_orads' } ; $CTYPE='pas' }
 }
 
 # Map OEVERSION if not provided (122, 127, 128)
@@ -177,4 +184,56 @@ if ($BuildDevcontainer) {
   
   # Cleanup devcontainer temp
   Remove-Item -Recurse -Force $devTempDir
+}
+
+# Build sports2020-db if requested
+if ($BuildSports2020Db) {
+  Write-Host ""
+  Write-Host "Building sports2020-db using local db_adv image: $tagRef"
+  
+  $sports2020Dir = Join-Path $root 'sports2020-db'
+  $sports2020Dockerfile = Join-Path $sports2020Dir 'Dockerfile'
+  
+  if (-not (Test-Path $sports2020Dockerfile)) {
+    throw "Sports2020-db Dockerfile not found: $sports2020Dockerfile"
+  }
+  
+  # Create temporary Dockerfile with local base image
+  $sportsTempDir = New-Item -ItemType Directory -Path (Join-Path $env:TEMP ("oe_sports2020_" + [guid]::NewGuid().ToString()))
+  $sportsTempDockerfile = Join-Path $sportsTempDir.FullName 'Dockerfile'
+  
+  # Replace the FROM line to use the local db_adv image
+  $sportsDockerfileContent = Get-Content -Raw $sports2020Dockerfile
+  $originalFrom = 'FROM progressofficial/oe_db_adv:latest AS install'
+  $newFrom = "FROM $tagRef AS install"
+  
+  Write-Host "Replacing base image:"
+  Write-Host "  Original: $originalFrom"
+  Write-Host "  New:      $newFrom"
+  
+  $sportsDockerfileContent = $sportsDockerfileContent -replace [regex]::Escape($originalFrom), $newFrom
+  $sportsDockerfileContent | Set-Content -NoNewline $sportsTempDockerfile
+  
+  # Verify the replacement worked
+  $firstLine = (Get-Content $sportsTempDockerfile -TotalCount 1)[0]
+  Write-Host "  Verified: $firstLine"
+  
+  $sportsImageName = 'rdroge/oe_sports2020_db'
+  $sportsTagRef = "$($sportsImageName):$Tag"
+  
+  Write-Host "Building $sportsTagRef using $sports2020Dockerfile"
+  
+  $sportsCmd = @('docker','build','-f', $sportsTempDockerfile, '-t', $sportsTagRef, $sports2020Dir)
+  Write-Host ($sportsCmd -join ' ')
+  $sportsProc = Start-Process -FilePath $sportsCmd[0] -ArgumentList $sportsCmd[1..($sportsCmd.Length-1)] -NoNewWindow -Wait -PassThru
+  
+  if ($sportsProc.ExitCode -ne 0) {
+    Remove-Item -Recurse -Force $sportsTempDir
+    throw "sports2020-db build failed with exit code $($sportsProc.ExitCode)"
+  }
+  
+  Write-Host "Done: $sportsTagRef"
+  
+  # Cleanup sports2020 temp
+  Remove-Item -Recurse -Force $sportsTempDir
 }

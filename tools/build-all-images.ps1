@@ -10,7 +10,8 @@ param(
 
   [int]$JDKVERSION = 21,
   [string]$OEVERSION = $null,
-  [switch]$SkipDevcontainer = $false
+  [switch]$SkipDevcontainer = $false,
+  [switch]$BuildSports2020Db = $false
 )
 
 $ErrorActionPreference = 'Stop'
@@ -21,6 +22,7 @@ $ErrorActionPreference = 'Stop'
   Example:
     pwsh ./tools/build-all-images.ps1 -Version 12.8.7 -Tag 12.8.7
     pwsh ./tools/build-all-images.ps1 -Version 12.8.7 -Tag 12.8.7 -SkipDevcontainer
+    pwsh ./tools/build-all-images.ps1 -Version 12.8.7 -Tag 12.8.7 -BuildSports2020Db
 #>
 
 if (-not $Tag) { $Tag = $Version }
@@ -30,8 +32,9 @@ if (-not (Test-Path $buildImageScript)) {
   throw "build-image.ps1 not found at: $buildImageScript"
 }
 
-$components = @('compiler', 'pas_dev', 'db_adv')
+$components = @('compiler', 'pas_dev', 'pas_base', 'pas_orads', 'db_adv')
 $buildDevcontainer = -not $SkipDevcontainer
+$buildSports2020 = $BuildSports2020Db
 
 # Validate all response.ini files exist before starting
 $root = Resolve-Path (Join-Path $PSScriptRoot '..')
@@ -60,6 +63,7 @@ Write-Host "  Version: $Version" -ForegroundColor Cyan
 Write-Host "  Tag: $Tag" -ForegroundColor Cyan
 Write-Host "  Components: $($components -join ', ')" -ForegroundColor Cyan
 Write-Host "  Devcontainer: $buildDevcontainer" -ForegroundColor Cyan
+Write-Host "  Sports2020-db: $buildSports2020" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 
@@ -93,6 +97,11 @@ foreach ($component in $components) {
     # Only add -BuildDevcontainer for compiler component
     if ($component -eq 'compiler' -and $buildDevcontainer) {
       $buildArgs += '-BuildDevcontainer'
+    }
+    
+    # Only add -BuildSports2020Db for db_adv component
+    if ($component -eq 'db_adv' -and $buildSports2020) {
+      $buildArgs += '-BuildSports2020Db'
     }
     
     & $buildImageScript @buildArgs
@@ -171,4 +180,7 @@ if ($failCount -gt 0) {
   }
   Write-Host "  - rdroge/oe_pas_dev:$Tag" -ForegroundColor White
   Write-Host "  - rdroge/oe_db_adv:$Tag" -ForegroundColor White
+  if ($buildSports2020) {
+    Write-Host "  - rdroge/oe_sports2020_db:$Tag" -ForegroundColor White
+  }
 }

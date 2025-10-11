@@ -16,11 +16,13 @@ Optional:
   -j <jdkversion>    JDK version (default: 21)
   -o <oeversion>     OE version code (default: auto-mapped from series)
   -s                 Skip devcontainer build
+  -S                 Build sports2020-db
   -h                 Show this help
 
 Examples:
   $0 -v 12.8.6 -t 12.8.6
   $0 -v 12.8.6 -t 12.8.6 -s
+  $0 -v 12.8.6 -t 12.8.6 -S
 EOF
 }
 
@@ -31,8 +33,9 @@ BINARIES_ROOT=""
 JDKVERSION=21
 OEVERSION=""
 SKIP_DEVCONTAINER=0
+BUILD_SPORTS2020=0
 
-while getopts ":v:t:b:j:o:sh" opt; do
+while getopts ":v:t:b:j:o:sSh" opt; do
   case $opt in
     v) VERSION="$OPTARG";;
     t) TAG="$OPTARG";;
@@ -40,6 +43,7 @@ while getopts ":v:t:b:j:o:sh" opt; do
     j) JDKVERSION="$OPTARG";;
     o) OEVERSION="$OPTARG";;
     s) SKIP_DEVCONTAINER=1;;
+    S) BUILD_SPORTS2020=1;;
     h) usage; exit 0;;
     *) usage; exit 1;;
   esac
@@ -67,8 +71,9 @@ if [[ ! -f "$BUILD_IMAGE_SCRIPT" ]]; then
   exit 1
 fi
 
-COMPONENTS=("compiler" "pas_dev" "db_adv")
+COMPONENTS=("compiler" "pas_dev" "pas_base" "pas_orads" "db_adv")
 BUILD_DEVCONTAINER=$((1 - SKIP_DEVCONTAINER))
+BUILD_SPORTS=$BUILD_SPORTS2020
 
 # Validate all response.ini files exist before starting
 MISSING_RESPONSE_INI=()
@@ -96,6 +101,7 @@ echo -e "\033[0;36m  Version: $VERSION\033[0m"
 echo -e "\033[0;36m  Tag: $TAG\033[0m"
 echo -e "\033[0;36m  Components: ${COMPONENTS[*]}\033[0m"
 echo -e "\033[0;36m  Devcontainer: $([[ $BUILD_DEVCONTAINER -eq 1 ]] && echo "true" || echo "false")\033[0m"
+echo -e "\033[0;36m  Sports2020-db: $([[ $BUILD_SPORTS -eq 1 ]] && echo "true" || echo "false")\033[0m"
 echo -e "\033[0;36m========================================\033[0m"
 echo ""
 
@@ -131,6 +137,11 @@ for comp in "${COMPONENTS[@]}"; do
   # Only add -d for compiler component
   if [[ "$comp" == "compiler" && $BUILD_DEVCONTAINER -eq 1 ]]; then
     BUILD_ARGS="$BUILD_ARGS -d"
+  fi
+  
+  # Only add -s for db_adv component
+  if [[ "$comp" == "db_adv" && $BUILD_SPORTS -eq 1 ]]; then
+    BUILD_ARGS="$BUILD_ARGS -s"
   fi
   
   # Run build
@@ -212,4 +223,7 @@ else
   fi
   echo "  - rdroge/oe_pas_dev:$TAG"
   echo "  - rdroge/oe_db_adv:$TAG"
+  if [[ $BUILD_SPORTS -eq 1 ]]; then
+    echo "  - rdroge/oe_sports2020_db:$TAG"
+  fi
 fi

@@ -19,12 +19,14 @@ Optional:
   -j <jdkversion>    JDK version (default: 21)
   -o <oeversion>     OE version code (default: auto-mapped from series)
   -d                 Build devcontainer (compiler only)
+  -s                 Build sports2020-db (db_adv only)
   -h                 Show this help
 
 Examples:
   $0 -c compiler -v 12.8.6 -t 12.8.6
   $0 -c compiler -v 12.8.6 -t 12.8.6 -d
   $0 -c db_adv -v 12.8.6 -t 12.8.6
+  $0 -c db_adv -v 12.8.6 -t 12.8.6 -s
 EOF
 }
 
@@ -37,8 +39,9 @@ BINARIES_ROOT=""
 JDKVERSION=21
 OEVERSION=""
 BUILD_DEVCONTAINER=0
+BUILD_SPORTS2020=0
 
-while getopts ":c:v:t:i:b:j:o:dh" opt; do
+while getopts ":c:v:t:i:b:j:o:dsh" opt; do
   case $opt in
     c) COMPONENT="$OPTARG";;
     v) VERSION="$OPTARG";;
@@ -48,6 +51,7 @@ while getopts ":c:v:t:i:b:j:o:dh" opt; do
     j) JDKVERSION="$OPTARG";;
     o) OEVERSION="$OPTARG";;
     d) BUILD_DEVCONTAINER=1;;
+    s) BUILD_SPORTS2020=1;;
     h) usage; exit 0;;
     *) usage; exit 1;;
   esac
@@ -61,14 +65,20 @@ if [[ -z "$COMPONENT" || -z "$VERSION" ]]; then
 fi
 
 # Validate component
-if [[ "$COMPONENT" != "compiler" && "$COMPONENT" != "db_adv" && "$COMPONENT" != "pas_dev" ]]; then
-  echo "Error: Invalid component '$COMPONENT'. Allowed: compiler, db_adv, pas_dev" >&2
+if [[ "$COMPONENT" != "compiler" && "$COMPONENT" != "db_adv" && "$COMPONENT" != "pas_dev" && "$COMPONENT" != "pas_base" && "$COMPONENT" != "pas_orads" ]]; then
+  echo "Error: Invalid component '$COMPONENT'. Allowed: compiler, db_adv, pas_dev, pas_base, pas_orads" >&2
   exit 1
 fi
 
 # Validate devcontainer option
 if [[ $BUILD_DEVCONTAINER -eq 1 && "$COMPONENT" != "compiler" ]]; then
   echo "Error: The -d (devcontainer) option can only be used with -c compiler" >&2
+  exit 1
+fi
+
+# Validate sports2020 option
+if [[ $BUILD_SPORTS2020 -eq 1 && "$COMPONENT" != "db_adv" ]]; then
+  echo "Error: The -s (sports2020-db) option can only be used with -c db_adv" >&2
   exit 1
 fi
 
@@ -99,6 +109,14 @@ case "$COMPONENT" in
     ;;
   pas_dev)
     [[ -z "$IMAGE_NAME" ]] && IMAGE_NAME="rdroge/oe_pas_dev"
+    CTYPE="pas"
+    ;;
+  pas_base)
+    [[ -z "$IMAGE_NAME" ]] && IMAGE_NAME="rdroge/oe_pas_base"
+    CTYPE="pas"
+    ;;
+  pas_orads)
+    [[ -z "$IMAGE_NAME" ]] && IMAGE_NAME="rdroge/oe_pas_orads"
     CTYPE="pas"
     ;;
 esac
@@ -230,4 +248,48 @@ if [[ $BUILD_DEVCONTAINER -eq 1 ]]; then
     "$ROOT"
   
   echo "Done: $DEV_TAG_REF"
+fi
+
+# Build sports2020-db if requested
+if [[ $BUILD_SPORTS2020 -eq 1 ]]; then
+  echo ""
+  echo "Building sports2020-db using local db_adv image: $TAG_REF"
+  
+  SPORTS2020_DIR="$ROOT/sports2020-db"
+  SPORTS2020_DOCKERFILE="$SPORTS2020_DIR/Dockerfile"
+  
+  if [[ ! -f "$SPORTS2020_DOCKERFILE" ]]; then
+    echo "Error: Sports2020-db Dockerfile not found: $SPORTS2020_DOCKERFILE" >&2
+    exit 1
+  fi
+  
+  # Create temporary Dockerfile with local base image
+  SPORTS_TEMP_DIR=$(mktemp -d)
+  trap "rm -rf $SPORTS_TEMP_DIR" EXIT
+  SPORTS_TEMP_DOCKERFILE="$SPORTS_TEMP_DIR/Dockerfile"
+  
+  # Replace the FROM line to use the local db_adv image
+  ORIGINAL_FROM="FROM progressofficial/oe_db_adv:latest AS install"
+  NEW_FROM="FROM $TAG_REF AS install"
+  
+  echo "Replacing base image:"
+  echo "  Original: $ORIGINAL_FROM"
+  echo "  New:      $NEW_FROM"
+  
+  sed "s|$ORIGINAL_FROM|$NEW_FROM|g" "$SPORTS2020_DOCKERFILE" > "$SPORTS_TEMP_DOCKERFILE"
+  
+  # Verify the replacement worked
+  FIRST_FROM=$(grep "^FROM" "$SPORTS_TEMP_DOCKERFILE" | head -1)
+  echo "  Verified: $FIRST_FROM"
+  
+  SPORTS_IMAGE_NAME="rdroge/oe_sports2020_db"
+  SPORTS_TAG_REF="${SPORTS_IMAGE_NAME}:${TAG}"
+  
+  echo "Building $SPORTS_TAG_REF using $SPORTS2020_DOCKERFILE"
+  
+  docker build -f "$SPORTS_TEMP_DOCKERFILE" \
+    -t "$SPORTS_TAG_REF" \
+    "$SPORTS2020_DIR"
+  
+  echo "Done: $SPORTS_TAG_REF"
 fi

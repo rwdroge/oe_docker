@@ -1,8 +1,38 @@
-﻿# oe_demos_docker
+# oe_demos_docker
 
-This repository contains Dockerfiles and tooling to build local OpenEdge Docker container images such as `compiler`, `db_adv`, and `pas_dev` using locally provided installers.
+This repository contains Dockerfiles and tooling to build local OpenEdge Docker container images such as `compiler`, `db_adv`, `pas_dev`, `pas_base`, and `pas_orads` using locally provided installers.
 
 > **Note:** Pro2 replication demos have been moved to a separate repository: [oe_pro2_docker](https://github.com/rwdroge/oe_pro2_docker)
+
+## Available Image Types
+
+This repository supports building the following OpenEdge container images:
+
+- **`compiler`** - OpenEdge compiler and development tools
+- **`devcontainer`** - Development container based on compiler image (built automatically with compiler)
+- **`db_adv`** - OpenEdge database server (Advanced Enterprise Edition)
+- **`pas_dev`** - PASOE development instance with volumes for source code and libraries
+- **`pas_base`** - PASOE production instance (basic configuration)
+- **`pas_orads`** - PASOE production instance with Oracle DataServer support
+- **`sports2020_db`** - Sports2020 demo database (built automatically with db_adv if requested)
+
+### PASOE Image Differences
+
+- **`pas_dev`**: Development-focused PASOE with:
+  - Volumes for `/app/src`, `/app/lib`, `/app/config`
+  - Development profile configuration
+  - Suitable for local development and testing
+
+- **`pas_base`**: Production PASOE with:
+  - Pre-created production instance (`prodpas`)
+  - Health check enabled
+  - Minimal configuration for production deployment
+
+- **`pas_orads`**: Production PASOE with Oracle DataServer:
+  - All features of `pas_base`
+  - Oracle Instant Client 19.3 installed
+  - Oracle DataServer components included
+  - Requires Oracle client installer in `binaries/oracle/` directory
 
 ## Getting Started
 
@@ -68,6 +98,8 @@ Each component directory contains an example response.ini file called `response_
 - `compiler/response_ini_example.txt`
 - `db_adv/response_ini_example.txt`
 - `pas_dev/response_ini_example.txt`
+- `pas_base/response_ini_example.txt`
+- `pas_orads/response_ini_example.txt`
 
 **To configure:**
 
@@ -90,6 +122,8 @@ prodname=4GL Development System
 - `compiler/response.ini`
 - `db_adv/response.ini`
 - `pas_dev/response.ini`
+- `pas_base/response.ini`
+- `pas_orads/response.ini`
 
 **What happens if missing:**
 - `build-image.ps1` will fail immediately with a clear error message pointing to the missing file
@@ -101,9 +135,11 @@ prodname=4GL Development System
 Use `tools/prepare-installers.ps1` to stage installers for a component and version:
 
 ```powershell
-pwsh ./tools/prepare-installers.ps1 -Component compiler -Version 12.8.6
-pwsh ./tools/prepare-installers.ps1 -Component db_adv   -Version 12.8.6
-pwsh ./tools/prepare-installers.ps1 -Component pas_dev  -Version 12.8.6
+pwsh ./tools/prepare-installers.ps1 -Component compiler  -Version 12.8.6
+pwsh ./tools/prepare-installers.ps1 -Component db_adv    -Version 12.8.6
+pwsh ./tools/prepare-installers.ps1 -Component pas_dev   -Version 12.8.6
+pwsh ./tools/prepare-installers.ps1 -Component pas_base  -Version 12.8.6
+pwsh ./tools/prepare-installers.ps1 -Component pas_orads -Version 12.8.6
 ```
 
 Optional parameters:
@@ -116,9 +152,11 @@ Optional parameters:
 If you are on Linux/macOS:
 
 ```bash
-./tools/prepare-installers.sh -c compiler -v 12.8.6
-./tools/prepare-installers.sh -c db_adv   -v 12.8.6
-./tools/prepare-installers.sh -c pas_dev  -v 12.8.6
+./tools/prepare-installers.sh -c compiler  -v 12.8.6
+./tools/prepare-installers.sh -c db_adv    -v 12.8.6
+./tools/prepare-installers.sh -c pas_dev   -v 12.8.6
+./tools/prepare-installers.sh -c pas_base  -v 12.8.6
+./tools/prepare-installers.sh -c pas_orads -v 12.8.6
 ```
 
 Use `-b </path/to/binaries/oe>` to override the binaries root.
@@ -141,12 +179,26 @@ docker build -f db_adv/Dockerfile \
   --build-arg JDKVERSION=21 \
   -t oe_db_adv:12.8.6 .
 
-# pas_dev
+# pas_dev (development PASOE)
 docker build -f pas_dev/Dockerfile \
   --build-arg CTYPE=pas \
   --build-arg OEVERSION=128 \
   --build-arg JDKVERSION=21 \
   -t oe_pas_dev:12.8.6 .
+
+# pas_base (production PASOE)
+docker build -f pas_base/Dockerfile \
+  --build-arg CTYPE=pas \
+  --build-arg OEVERSION=128 \
+  --build-arg JDKVERSION=21 \
+  -t oe_pas_base:12.8.6 .
+
+# pas_orads (production PASOE with Oracle DataServer)
+docker build -f pas_orads/Dockerfile \
+  --build-arg CTYPE=pas \
+  --build-arg OEVERSION=128 \
+  --build-arg JDKVERSION=21 \
+  -t oe_pas_orads:12.8.6 .
 ```
 
 Notes:
@@ -159,9 +211,11 @@ Notes:
 You can run a single command that prepares installers and builds the image:
 
 ```powershell
-pwsh ./tools/build-image.ps1 -Component compiler -Version 12.8.6 -Tag 12.8.6
-pwsh ./tools/build-image.ps1 -Component db_adv   -Version 12.8.6 -Tag 12.8.6
-pwsh ./tools/build-image.ps1 -Component pas_dev  -Version 12.8.6 -Tag 12.8.6
+pwsh ./tools/build-image.ps1 -Component compiler  -Version 12.8.6 -Tag 12.8.6
+pwsh ./tools/build-image.ps1 -Component db_adv    -Version 12.8.6 -Tag 12.8.6
+pwsh ./tools/build-image.ps1 -Component pas_dev   -Version 12.8.6 -Tag 12.8.6
+pwsh ./tools/build-image.ps1 -Component pas_base  -Version 12.8.6 -Tag 12.8.6
+pwsh ./tools/build-image.ps1 -Component pas_orads -Version 12.8.6 -Tag 12.8.6
 ```
 
 Options:
@@ -170,6 +224,7 @@ Options:
 - `-JDKVERSION` to control the Java version propagated as build-arg.
 - `-OEVERSION` to override the automatic mapping of series to OEVERSION (defaults: 12.2→122, 12.7→127, 12.8→128).
 - `-BuildDevcontainer` (compiler only) to also build a devcontainer image using the just-created local compiler image as the base. The devcontainer image will be tagged as `rdroge/oe_devcontainer:<Tag>`.
+- `-BuildSports2020Db` (db_adv only) to also build a sports2020-db image using the just-created local db_adv image as the base. The sports2020-db image will be tagged as `rdroge/oe_sports2020_db:<Tag>`.
 
 Example with devcontainer:
 
@@ -177,16 +232,24 @@ Example with devcontainer:
 pwsh ./tools/build-image.ps1 -Component compiler -Version 12.8.6 -Tag 12.8.6 -BuildDevcontainer
 ```
 
-> **Note:** The `-BuildDevcontainer` switch can only be used with `-Component compiler` and requires the compiler image to be built first (which happens automatically in the same script execution).
+Example with sports2020-db:
+
+```powershell
+pwsh ./tools/build-image.ps1 -Component db_adv -Version 12.8.6 -Tag 12.8.6 -BuildSports2020Db
+```
+
+> **Note:** The `-BuildDevcontainer` switch can only be used with `-Component compiler` and the `-BuildSports2020Db` switch can only be used with `-Component db_adv`. Both require their base image to be built first (which happens automatically in the same script execution).
 
 ### One-step wrapper (Linux/macOS Bash)
 
 You can run a single command that prepares installers and builds the image:
 
 ```bash
-./tools/build-image.sh -c compiler -v 12.8.6 -t 12.8.6
-./tools/build-image.sh -c db_adv   -v 12.8.6 -t 12.8.6
-./tools/build-image.sh -c pas_dev  -v 12.8.6 -t 12.8.6
+./tools/build-image.sh -c compiler  -v 12.8.6 -t 12.8.6
+./tools/build-image.sh -c db_adv    -v 12.8.6 -t 12.8.6
+./tools/build-image.sh -c pas_dev   -v 12.8.6 -t 12.8.6
+./tools/build-image.sh -c pas_base  -v 12.8.6 -t 12.8.6
+./tools/build-image.sh -c pas_orads -v 12.8.6 -t 12.8.6
 ```
 
 Options:
@@ -195,6 +258,7 @@ Options:
 - `-j <jdkversion>` to control the Java version propagated as build-arg
 - `-o <oeversion>` to override the automatic mapping of series to OEVERSION (defaults: 12.2→122, 12.7→127, 12.8→128)
 - `-d` (compiler only) to also build a devcontainer image using the just-created local compiler image as the base
+- `-s` (db_adv only) to also build a sports2020-db image using the just-created local db_adv image as the base
 
 Example with devcontainer:
 
@@ -202,11 +266,17 @@ Example with devcontainer:
 ./tools/build-image.sh -c compiler -v 12.8.6 -t 12.8.6 -d
 ```
 
-> **Note:** The `-d` option can only be used with `-c compiler` and requires the compiler image to be built first (which happens automatically in the same script execution).
+Example with sports2020-db:
+
+```bash
+./tools/build-image.sh -c db_adv -v 12.8.6 -t 12.8.6 -s
+```
+
+> **Note:** The `-d` option can only be used with `-c compiler` and the `-s` option can only be used with `-c db_adv`. Both require their base image to be built first (which happens automatically in the same script execution).
 
 ### Build all images at once (Windows PowerShell)
 
-You can build all four images (compiler, devcontainer, pas_dev, db_adv) with a single command:
+You can build all images (compiler, devcontainer, pas_dev, pas_base, pas_orads, db_adv) with a single command:
 
 ```powershell
 pwsh ./tools/build-all-images.ps1 -Version 12.8.6 -Tag 12.8.6
@@ -216,10 +286,13 @@ This will:
 1. Build the compiler image
 2. Build the devcontainer image (using the local compiler image as base)
 3. Build the pas_dev image
-4. Build the db_adv image
+4. Build the pas_base image
+5. Build the pas_orads image
+6. Build the db_adv image
 
 Options:
 - `-SkipDevcontainer` to skip building the devcontainer image
+- `-BuildSports2020Db` to also build the sports2020-db image after db_adv
 - `-BinariesRoot` to point to a custom binaries root
 - `-JDKVERSION` to control the Java version propagated as build-arg
 - `-OEVERSION` to override the automatic mapping of series to OEVERSION
@@ -230,11 +303,17 @@ Example without devcontainer:
 pwsh ./tools/build-all-images.ps1 -Version 12.8.6 -Tag 12.8.6 -SkipDevcontainer
 ```
 
+Example with sports2020-db:
+
+```powershell
+pwsh ./tools/build-all-images.ps1 -Version 12.8.6 -Tag 12.8.6 -BuildSports2020Db
+```
+
 The script will display a summary at the end showing the build status and duration for each component.
 
 ### Build all images at once (Linux/macOS Bash)
 
-You can build all four images (compiler, devcontainer, pas_dev, db_adv) with a single command:
+You can build all images (compiler, devcontainer, pas_dev, pas_base, pas_orads, db_adv) with a single command:
 
 ```bash
 ./tools/build-all-images.sh -v 12.8.6 -t 12.8.6
@@ -244,10 +323,13 @@ This will:
 1. Build the compiler image
 2. Build the devcontainer image (using the local compiler image as base)
 3. Build the pas_dev image
-4. Build the db_adv image
+4. Build the pas_base image
+5. Build the pas_orads image
+6. Build the db_adv image
 
 Options:
 - `-s` to skip building the devcontainer image
+- `-S` to also build the sports2020-db image after db_adv
 - `-b <binroot>` to point to a custom binaries root
 - `-j <jdkversion>` to control the Java version propagated as build-arg
 - `-o <oeversion>` to override the automatic mapping of series to OEVERSION
@@ -256,6 +338,12 @@ Example without devcontainer:
 
 ```bash
 ./tools/build-all-images.sh -v 12.8.6 -t 12.8.6 -s
+```
+
+Example with sports2020-db:
+
+```bash
+./tools/build-all-images.sh -v 12.8.6 -t 12.8.6 -S
 ```
 
 The script will display a summary at the end showing the build status and duration for each component.

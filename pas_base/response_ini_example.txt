@@ -1,0 +1,156 @@
+;
+; DESCRIPTION of Configuration Count
+;
+;  NumberofConfigurations - the number of products being installed.
+;
+
+[Install Method]
+ApplyAsServicePack=0
+[Welcome Dialog]
+Result=1
+
+[Configuration Count]
+NumberofConfigurations=1
+
+[Product Configuration 1]
+name=
+serial=
+version=12.8
+control=
+prodname=Progress App Server for OE
+
+;
+; DESCRIPTION of OpenEdge Explorer
+;
+; enable  - indicates whether or not you want to enable the OpenEdge Explorer functionality.
+;   - a value of false indicates you do NOT want to enable the OpenEdge Explorer functionality.
+;   - a value of true indicates you want to enable the OpenEdge Explorer functionality.
+;
+
+[OpenEdge Explorer]
+enable=false
+
+;
+; DESCRIPTION of Java
+;
+;  JavaHome - the root directory where the JRE is installed
+;
+
+[Java]
+JavaHome=/opt/java/openjdk
+
+;
+; DESCRIPTION of Type and Destination
+;
+;  type - identifies the type of installation. Valid values are COMPLETE and CUSTOM.
+;  path - identifies the directory in which you install your OpenEdge product software.
+;  workpath - identifies the directory in which your applications, databases, and log files will reside.
+;  oem_path - identifies the directory in which you install your Management product software.
+;  oem_workpath - identifies the directory in which your Management applications, databases, and log files will reside.
+;
+
+[Type and Destination]
+type=COMPLETE
+path=/usr/dlc
+workpath=/usr/wrk
+oem_path=/usr/dlc
+oem_workpath=/usr/wrk
+
+;
+; DESCRIPTION of Installation Options
+;
+;  installPASforOE - indicates whether or not you want to install the Progress Application Server for OpenEdge.
+;   - a value of false indicates you do NOT want to install the Progress Application Server for OpenEdge.
+;   - a value of true indicates you want to install the Progress Application Server for OpenEdge.
+;  installOEMgmt - indicates whether or not you want to install the OpenEdge Management.
+;   - a value of false indicates you do NOT want to install the OpenEdge Management.
+;   - a value of true indicates you want to install the OpenEdge Management.
+;  installAppServer - indicates whether or not you want to install the AppServer.
+;   - a value of false indicates you do NOT want to install the AppServer.
+;   - a value of true indicates you want to install the AppServer.
+;  installWebSpeed - indicates whether or not you want to install the WebSpeed.
+;   - a value of false indicates you do NOT want to install the WebSpeed.
+;   - a value of true indicates you want to install the WebSpeed.
+;  installDataServer - indicates whether or not you want to install the DataServer.
+;   - a value of false indicates you do NOT want to install the DataServer.
+;   - a value of true indicates you want to install the DataServer.
+;  installOEReplication - indicates whether or not you want to install the OpenEdge Replication.
+;   - a value of false indicates you do NOT want to install the OpenEdge Replication.
+;   - a value of true indicates you want to install the OpenEdge Replication.
+;  installOERDBMS - indicates whether or not you want to install the OpenEdge RDBMS.
+;   - a value of false indicates you do NOT want to install the OpenEdge RDBMS.
+;   - a value of true indicates you want to install the OpenEdge RDBMS.
+;  installOEClient - indicates whether or not you want to install the OpenEdge Client Networking.
+;   - a value of false indicates you do NOT want to install the OpenEdge Client Networking.
+;   - a value of true indicates you want to install the OpenEdge Client Networking.
+;  installOEDevStudio - indicates whether or not you want to install the OpenEdge Developer Studio.
+;   - a value of false indicates you do NOT want to install the OpenEdge Developer Studio.
+;   - a value of true indicates you want to install the OpenEdge Developer Studio.
+;  installOEArchitect - indicates whether or not you want to install the OpenEdge Architect.
+;   - a value of false indicates you do NOT want to install the OpenEdge Architect.
+;   - a value of true indicates you want to install the OpenEdge Architect.
+;  installOEGUI4NET - indicates whether or not you want to install the OpenEdge GUI for .NET.
+;   - a value of false indicates you do NOT want to install the OpenEdge GUI for .NET.
+;   - a value of true indicates you want to install the OpenEdge GUI for .NET.
+;  installOERESTAdapter - indicates whether or not you want to install the OpenEdge REST Adapter.
+;   - a value of false indicates you do NOT want to install the OpenEdge REST Adapter.
+;   - a value of true indicates you want to install the OpenEdge REST Adapter.
+;
+
+[Installation Options]
+installPASforOE=true
+installOEMgmt=false
+installAppServer=false
+installWebSpeed=false
+installDataServer=false
+installOEReplication=false
+installOERDBMS=false
+installOEClient=false
+installOEDevStudio=false
+installOEArchitect=false
+installOEGUI4NET=false
+installOERESTAdapter=false
+
+;
+; DESCRIPTION of Shortcuts
+;
+;  createShortcuts - indicates whether or not you want to create shortcuts.
+;   - a value of false indicates you do NOT want to create shortcuts.
+;   - a value of true indicates you want to create shortcuts.
+;
+
+[Shortcuts]
+createShortcuts=false
+
+;
+; DESCRIPTION of License Agreement
+;
+;  licenseAccepted - indicates whether or not you accept the license agreement.
+;   - a value of false indicates you do NOT accept the license agreement.
+;   - a value of true indicates you accept the license agreement.
+;
+
+[License Agreement]
+licenseAccepted=true
+
+;
+; DESCRIPTION of Pre-Installation Summary
+;
+;  Result - indicates whether or not you want to continue with the installation.
+;   - a value of 0 indicates you do NOT want to continue with the installation.
+;   - a value of 1 indicates you want to continue with the installation.
+;
+
+[Pre-Installation Summary]
+Result=1
+
+;
+; DESCRIPTION of Install Complete
+;
+;  Result - indicates whether or not you want to view the README file.
+;   - a value of 0 indicates you do NOT want to view the README file.
+;   - a value of 1 indicates you want to view the README file.
+;
+
+[Install Complete]
+Result=0
