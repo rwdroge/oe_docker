@@ -7,7 +7,7 @@ This guide shows the installation requirements for different OpenEdge versions w
 ## Installation Patterns by Version
 
 ### Pattern 1: Single Installer (Simple)
-**Versions**: 12.2.0-12.2.16, 12.2.20+, 12.8.0-12.8.3, 12.8.9+
+**Versions**: 12.2.0-12.2.16, 12.2.19+, 12.8.0-12.8.3, 12.8.9+
 
 ```
 Single installer contains complete version
@@ -48,7 +48,8 @@ Two installers + two response files
 
  
 12.2.17 ──┐   
-12.2.18 ──┘─ Pattern 2: Base + Patch (dual response) ⚠️
+          |-─ Pattern 2: Base + Patch (dual response) ⚠️
+12.2.18 ──┘
  
 
 12.2.19+ ─────────────────────────────────────────────────────────────
@@ -85,7 +86,7 @@ Two installers + two response files
 
 ## Setup Instructions by Pattern
 
-### For Pattern 1 (12.2.0-12.2.15, 12.2.20+, 12.8.0-12.8.3, 12.8.9+)
+### For Pattern 1 (12.2.0-12.2.16, 12.2.19+, 12.8.0-12.8.3, 12.8.9+)
 
 ```powershell
 # 1. Place installer
@@ -99,7 +100,7 @@ cp compiler/response_ini_example.txt compiler/response.ini
 ./tools/build-image.ps1 -Component compiler -Version 12.8.9 -Tag 12.8.9
 ```
 
-### For Pattern 2 (12.2.16-12.2.19, 12.8.4-12.8.8) ⚠️
+### For Pattern 2 (12.2.17-12.2.18, 12.8.4-12.8.8) ⚠️
 
 ```powershell
 # 1. Place installers
@@ -121,12 +122,12 @@ cp compiler/response_update_ini_example.txt compiler/response_update.ini
 
 Progress has changed the installation approach multiple times:
 
-**12.2.0-12.2.15 → 12.2.16-12.2.19 (Dual Response)**
+**12.2.0-12.2.16 → 12.2.17-12.2.18 (Dual Response)**
 - Introduced base + patch with separate response files
 - More complex update scenarios
 - Better separation of base vs. update configuration
 
-**12.2.19 → 12.2.20+ (Back to Single)**
+**12.2.18 → 12.2.19+ (Back to Single)**
 - Simplified back to single installer
 - Easier to manage and distribute
 
@@ -146,14 +147,14 @@ Progress has changed the installation approach multiple times:
 - Check you've created the file in the correct component directory
 - Verify filename is exactly `response.ini` (case-sensitive)
 
-### "Patch installation failed" (12.2.16-12.2.19, 12.8.4-12.8.8)
+### "Patch installation failed" (12.2.17-12.2.18, 12.8.4-12.8.8)
 - Ensure `response_update.ini` exists
 - Verify it contains the `[Update]` section
 - Check license information is correct
 
 ### "Wrong installer for version"
-- **12.2.16-12.2.19**: Need base (12.2) + patch (12.2.x)
-- **12.2.20+**: Need only single installer (12.2.20)
+- **12.2.17-12.2.18**: Need base (12.2) + patch (12.2.x)
+- **12.2.19+**: Need only single installer (12.2.20)
 - **12.8.4-12.8.8**: Need base (12.8) + patch (12.8.x)
 - **12.8.9+**: Need only single installer (12.8.9)
 - Check installer filenames match expected pattern
