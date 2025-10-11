@@ -33,6 +33,14 @@ This repository supports building the following OpenEdge container images:
   - Requires Oracle client installer in `binaries/oracle/` directory
   - **Note**: Must build `pas_base` first
 
+## Using with Dev Containers
+
+The **`devcontainer`**, **`sports2020_db`**, and **`pas_dev`** images built from this repository can be used with the OpenEdge development container setups available at:
+
+**[https://github.com/rwdroge/oedevcontainer](https://github.com/rwdroge/oedevcontainer)**
+
+This provides a complete containerized OpenEdge development environment with VS Code integration.
+
 ## Getting Started
 
 ### Prerequisites
@@ -259,5 +267,8 @@ Examples:
   - `binaries/oe/12.7/PROGRESS_OE_12.7_LNX_64.tar.gz`
   - `binaries/oe/12.7/PROGRESS_OE_12.7.x_LNX_64.tar.gz` (patch)
 
+## Credits
+
+This project was also inspired by the OpenEdge and Docker work of [Bronco Oostermeijer](https://github.com/bfv). Many thanks for the pioneering efforts in containerizing OpenEdge!
 
 

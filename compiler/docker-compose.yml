@@ -1,6 +1,6 @@
 services:
   db_sports2020:
-    image: rdroge/oe_db_sports2020:12.8.6
+    image: rdroge/oe_db_sports2020:12.8.9
     user: pscadmin
     container_name: db_sports2020
     environment:
@@ -14,7 +14,7 @@ services:
       - ./build/compiler/progress.cfg:/psc/dlc/progress.cfg
   
   compiler:
-    image: progressofficial/oe_compiler:12.8.6
+    image: progressofficial/oe_compiler:12.8.9
     container_name: compiler
     volumes: 
       - ./build/compiler/progress.cfg:/usr/dlc/progress.cfg
