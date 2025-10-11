@@ -19,12 +19,14 @@ Optional:
   -s                 Skip devcontainer build
   -S                 Skip sports2020-db build
   -P                 Skip pas_orads build
+  -D                 Build only devcontainer images (compiler, devcontainer, pas_dev, db_adv, sports2020-db)
   -h                 Show this help
 
 Examples:
   $0 -v 12.8.6 -t 12.8.6
   $0 -v 12.8.6 -t 12.8.6 -s
   $0 -v 12.8.6 -t 12.8.6 -S -P
+  $0 -v 12.8.6 -t 12.8.6 -D
 EOF
 }
 
@@ -37,8 +39,9 @@ OEVERSION=""
 SKIP_DEVCONTAINER=0
 SKIP_SPORTS2020=0
 SKIP_PASORADS=0
+DEVCONTAINER_ONLY=0
 
-while getopts ":v:t:b:j:o:sSPh" opt; do
+while getopts ":v:t:b:j:o:sSPDh" opt; do
   case $opt in
     v) VERSION="$OPTARG";;
     t) TAG="$OPTARG";;
@@ -48,6 +51,7 @@ while getopts ":v:t:b:j:o:sSPh" opt; do
     s) SKIP_DEVCONTAINER=1;;
     S) SKIP_SPORTS2020=1;;
     P) SKIP_PASORADS=1;;
+    D) DEVCONTAINER_ONLY=1;;
     h) usage; exit 0;;
     *) usage; exit 1;;
   esac
@@ -75,10 +79,18 @@ if [[ ! -f "$BUILD_IMAGE_SCRIPT" ]]; then
   exit 1
 fi
 
-COMPONENTS=("compiler" "pas_dev" "pas_base" "pas_orads" "db_adv")
-BUILD_DEVCONTAINER=$((1 - SKIP_DEVCONTAINER))
-BUILD_SPORTS=$((1 - SKIP_SPORTS2020))
-BUILD_PASORADS=$((1 - SKIP_PASORADS))
+# If DEVCONTAINER_ONLY is set, build only the images needed for devcontainer setups
+if [[ $DEVCONTAINER_ONLY -eq 1 ]]; then
+  COMPONENTS=("compiler" "pas_dev" "db_adv")
+  BUILD_DEVCONTAINER=1
+  BUILD_SPORTS=1
+  BUILD_PASORADS=0
+else
+  COMPONENTS=("compiler" "pas_dev" "pas_base" "pas_orads" "db_adv")
+  BUILD_DEVCONTAINER=$((1 - SKIP_DEVCONTAINER))
+  BUILD_SPORTS=$((1 - SKIP_SPORTS2020))
+  BUILD_PASORADS=$((1 - SKIP_PASORADS))
+fi
 
 # Validate all response.ini files exist before starting
 # Note: pas_orads builds from pas_base and doesn't need its own response.ini
@@ -106,7 +118,11 @@ if [[ ${#MISSING_RESPONSE_INI[@]} -gt 0 ]]; then
 fi
 
 echo -e "\033[0;36m========================================\033[0m"
-echo -e "\033[0;36mBuilding all OpenEdge images\033[0m"
+if [[ $DEVCONTAINER_ONLY -eq 1 ]]; then
+  echo -e "\033[0;36mBuilding OpenEdge images for devcontainer\033[0m"
+else
+  echo -e "\033[0;36mBuilding all OpenEdge images\033[0m"
+fi
 echo -e "\033[0;36m  Version: $VERSION\033[0m"
 echo -e "\033[0;36m  Tag: $TAG\033[0m"
 echo -e "\033[0;36m  Components: ${COMPONENTS[*]}\033[0m"
@@ -240,7 +256,9 @@ else
     echo "  - rdroge/oe_devcontainer:$TAG"
   fi
   echo "  - rdroge/oe_pas_dev:$TAG"
-  echo "  - rdroge/oe_pas_base:$TAG"
+  if [[ $DEVCONTAINER_ONLY -eq 0 ]]; then
+    echo "  - rdroge/oe_pas_base:$TAG"
+  fi
   if [[ $BUILD_PASORADS -eq 1 ]]; then
     echo "  - rdroge/oe_pas_orads:$TAG"
   fi

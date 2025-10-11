@@ -12,7 +12,8 @@ param(
   [string]$OEVERSION = $null,
   [switch]$SkipDevcontainer = $false,
   [switch]$SkipSports2020Db = $false,
-  [switch]$SkipPasOrads = $false
+  [switch]$SkipPasOrads = $false,
+  [switch]$DevcontainerOnly = $false
 )
 
 $ErrorActionPreference = 'Stop'
@@ -20,11 +21,13 @@ $ErrorActionPreference = 'Stop'
 <#
   Build all OpenEdge images (compiler, devcontainer, pas_dev, pas_base, pas_orads, db_adv, sports2020-db) in one command.
   By default, all images are built. Use Skip* parameters to exclude specific images.
+  Use -DevcontainerOnly to build only images required for devcontainer setups (compiler, devcontainer, pas_dev, db_adv, sports2020-db).
   
   Example:
     pwsh ./tools/build-all-images.ps1 -Version 12.8.7 -Tag 12.8.7
     pwsh ./tools/build-all-images.ps1 -Version 12.8.7 -Tag 12.8.7 -SkipDevcontainer
     pwsh ./tools/build-all-images.ps1 -Version 12.8.7 -Tag 12.8.7 -SkipSports2020Db -SkipPasOrads
+    pwsh ./tools/build-all-images.ps1 -Version 12.8.7 -Tag 12.8.7 -DevcontainerOnly
 #>
 
 if (-not $Tag) { $Tag = $Version }
@@ -34,10 +37,18 @@ if (-not (Test-Path $buildImageScript)) {
   throw "build-image.ps1 not found at: $buildImageScript"
 }
 
-$components = @('compiler', 'pas_dev', 'pas_base', 'pas_orads', 'db_adv')
-$buildDevcontainer = -not $SkipDevcontainer
-$buildSports2020 = -not $SkipSports2020Db
-$buildPasOrads = -not $SkipPasOrads
+# If DevcontainerOnly is set, build only the images needed for devcontainer setups
+if ($DevcontainerOnly) {
+  $components = @('compiler', 'pas_dev', 'db_adv')
+  $buildDevcontainer = $true
+  $buildSports2020 = $true
+  $buildPasOrads = $false
+} else {
+  $components = @('compiler', 'pas_dev', 'pas_base', 'pas_orads', 'db_adv')
+  $buildDevcontainer = -not $SkipDevcontainer
+  $buildSports2020 = -not $SkipSports2020Db
+  $buildPasOrads = -not $SkipPasOrads
+}
 
 # Validate all response.ini files exist before starting
 # Note: pas_orads builds from pas_base and doesn't need its own response.ini
@@ -66,7 +77,11 @@ if ($missingResponseIni.Count -gt 0) {
 }
 
 Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "Building all OpenEdge images" -ForegroundColor Cyan
+if ($DevcontainerOnly) {
+  Write-Host "Building OpenEdge images for devcontainer" -ForegroundColor Cyan
+} else {
+  Write-Host "Building all OpenEdge images" -ForegroundColor Cyan
+}
 Write-Host "  Version: $Version" -ForegroundColor Cyan
 Write-Host "  Tag: $Tag" -ForegroundColor Cyan
 Write-Host "  Components: $($components -join ', ')" -ForegroundColor Cyan
@@ -202,7 +217,9 @@ if ($failCount -gt 0) {
     Write-Host "  - rdroge/oe_devcontainer:$Tag" -ForegroundColor White
   }
   Write-Host "  - rdroge/oe_pas_dev:$Tag" -ForegroundColor White
-  Write-Host "  - rdroge/oe_pas_base:$Tag" -ForegroundColor White
+  if (-not $DevcontainerOnly) {
+    Write-Host "  - rdroge/oe_pas_base:$Tag" -ForegroundColor White
+  }
   if ($buildPasOrads) {
     Write-Host "  - rdroge/oe_pas_orads:$Tag" -ForegroundColor White
   }

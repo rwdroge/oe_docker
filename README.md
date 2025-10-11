@@ -197,9 +197,16 @@ Options (use Skip* flags to exclude specific images):
 - `-SkipDevcontainer` to skip building the devcontainer image
 - `-SkipPasOrads` to skip building the pas_orads image
 - `-SkipSports2020Db` to skip building the sports2020-db image
+- `-DevcontainerOnly` to build only images required for devcontainer setups (compiler, devcontainer, pas_dev, db_adv, sports2020-db)
 - `-BinariesRoot` to point to a custom binaries root
 - `-JDKVERSION` to control the Java version propagated as build-arg
 - `-OEVERSION` to override the automatic mapping of series to OEVERSION
+
+Example building only devcontainer images:
+
+```powershell
+pwsh ./tools/build-all-images.ps1 -Version 12.8.6 -Tag 12.8.6 -DevcontainerOnly
+```
 
 Example skipping devcontainer:
 
@@ -236,9 +243,16 @@ Options (use skip flags to exclude specific images):
 - `-s` to skip building the devcontainer image
 - `-P` to skip building the pas_orads image
 - `-S` to skip building the sports2020-db image
+- `-D` to build only images required for devcontainer setups (compiler, devcontainer, pas_dev, db_adv, sports2020-db)
 - `-b <binroot>` to point to a custom binaries root
 - `-j <jdkversion>` to control the Java version propagated as build-arg
 - `-o <oeversion>` to override the automatic mapping of series to OEVERSION
+
+Example building only devcontainer images:
+
+```bash
+./tools/build-all-images.sh -v 12.8.6 -t 12.8.6 -D
+```
 
 Example skipping devcontainer:
 
