@@ -7,11 +7,11 @@
 
 /binaries/oe/11.7
 /binaries/oe/12.2
-/kafka
 /efk
 /keycloak
 /mttenant
 /jenkins
+DOCKERFILE_OPTIMIZATIONS.md
 
 # OE Setups (tar.gz and response files except for sample)
 *.tar.gz
