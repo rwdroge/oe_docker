@@ -138,8 +138,8 @@ Write-Host "Building $tagRef using $dockerfile"
 
 $cmd = @('docker','build','-f', $tempDockerfile, '-t', $tagRef) + $buildArgs + @($root)
 Write-Host ($cmd -join ' ')
-$proc = Start-Process -FilePath $cmd[0] -ArgumentList $cmd[1..($cmd.Length-1)] -NoNewWindow -Wait -PassThru
-if($proc.ExitCode -ne 0){ throw "docker build failed with exit code $($proc.ExitCode)" }
+& docker build -f $tempDockerfile -t $tagRef @buildArgs $root
+if($LASTEXITCODE -ne 0){ throw "docker build failed with exit code $LASTEXITCODE" }
 
 Write-Host "Done: $tagRef"
 
@@ -185,11 +185,11 @@ if ($BuildDevcontainer) {
   
   $devCmd = @('docker','build','-f', $devTempDockerfile, '-t', $devTagRef, $root)
   Write-Host ($devCmd -join ' ')
-  $devProc = Start-Process -FilePath $devCmd[0] -ArgumentList $devCmd[1..($devCmd.Length-1)] -NoNewWindow -Wait -PassThru
+  & docker build -f $devTempDockerfile -t $devTagRef $root
   
-  if ($devProc.ExitCode -ne 0) {
+  if ($LASTEXITCODE -ne 0) {
     Remove-Item -Recurse -Force $devTempDir
-    throw "devcontainer build failed with exit code $($devProc.ExitCode)"
+    throw "devcontainer build failed with exit code $LASTEXITCODE"
   }
   
   Write-Host "Done: $devTagRef"
@@ -237,11 +237,11 @@ if ($BuildSports2020Db) {
   
   $sportsCmd = @('docker','build','-f', $sportsTempDockerfile, '-t', $sportsTagRef, $sports2020Dir)
   Write-Host ($sportsCmd -join ' ')
-  $sportsProc = Start-Process -FilePath $sportsCmd[0] -ArgumentList $sportsCmd[1..($sportsCmd.Length-1)] -NoNewWindow -Wait -PassThru
+  & docker build -f $sportsTempDockerfile -t $sportsTagRef $sports2020Dir
   
-  if ($sportsProc.ExitCode -ne 0) {
+  if ($LASTEXITCODE -ne 0) {
     Remove-Item -Recurse -Force $sportsTempDir
-    throw "sports2020-db build failed with exit code $($sportsProc.ExitCode)"
+    throw "sports2020-db build failed with exit code $LASTEXITCODE"
   }
   
   Write-Host "Done: $sportsTagRef"

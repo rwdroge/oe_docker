@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Build all OpenEdge images (compiler, devcontainer, pas_dev, db_adv) in one command
+# Build all OpenEdge images (compiler, devcontainer, pas_dev, pas_base, pas_orads, db_adv, sports2020-db) in one command
+# By default, all images are built. Use skip options to exclude specific images.
 
 usage() {
   cat >&2 <<EOF
@@ -16,13 +17,14 @@ Optional:
   -j <jdkversion>    JDK version (default: 21)
   -o <oeversion>     OE version code (default: auto-mapped from series)
   -s                 Skip devcontainer build
-  -S                 Build sports2020-db
+  -S                 Skip sports2020-db build
+  -P                 Skip pas_orads build
   -h                 Show this help
 
 Examples:
   $0 -v 12.8.6 -t 12.8.6
   $0 -v 12.8.6 -t 12.8.6 -s
-  $0 -v 12.8.6 -t 12.8.6 -S
+  $0 -v 12.8.6 -t 12.8.6 -S -P
 EOF
 }
 
@@ -33,9 +35,10 @@ BINARIES_ROOT=""
 JDKVERSION=21
 OEVERSION=""
 SKIP_DEVCONTAINER=0
-BUILD_SPORTS2020=0
+SKIP_SPORTS2020=0
+SKIP_PASORADS=0
 
-while getopts ":v:t:b:j:o:sSh" opt; do
+while getopts ":v:t:b:j:o:sSPh" opt; do
   case $opt in
     v) VERSION="$OPTARG";;
     t) TAG="$OPTARG";;
@@ -43,7 +46,8 @@ while getopts ":v:t:b:j:o:sSh" opt; do
     j) JDKVERSION="$OPTARG";;
     o) OEVERSION="$OPTARG";;
     s) SKIP_DEVCONTAINER=1;;
-    S) BUILD_SPORTS2020=1;;
+    S) SKIP_SPORTS2020=1;;
+    P) SKIP_PASORADS=1;;
     h) usage; exit 0;;
     *) usage; exit 1;;
   esac
@@ -73,11 +77,17 @@ fi
 
 COMPONENTS=("compiler" "pas_dev" "pas_base" "pas_orads" "db_adv")
 BUILD_DEVCONTAINER=$((1 - SKIP_DEVCONTAINER))
-BUILD_SPORTS=$BUILD_SPORTS2020
+BUILD_SPORTS=$((1 - SKIP_SPORTS2020))
+BUILD_PASORADS=$((1 - SKIP_PASORADS))
 
 # Validate all response.ini files exist before starting
+# Note: pas_orads builds from pas_base and doesn't need its own response.ini
 MISSING_RESPONSE_INI=()
 for comp in "${COMPONENTS[@]}"; do
+  # Skip pas_orads as it builds from pas_base and doesn't need response.ini
+  if [[ "$comp" == "pas_orads" ]]; then
+    continue
+  fi
   RESPONSE_INI="$ROOT/$comp/response.ini"
   if [[ ! -f "$RESPONSE_INI" ]]; then
     MISSING_RESPONSE_INI+=("$RESPONSE_INI")
@@ -101,6 +111,7 @@ echo -e "\033[0;36m  Version: $VERSION\033[0m"
 echo -e "\033[0;36m  Tag: $TAG\033[0m"
 echo -e "\033[0;36m  Components: ${COMPONENTS[*]}\033[0m"
 echo -e "\033[0;36m  Devcontainer: $([[ $BUILD_DEVCONTAINER -eq 1 ]] && echo "true" || echo "false")\033[0m"
+echo -e "\033[0;36m  PAS for ORADS: $([[ $BUILD_PASORADS -eq 1 ]] && echo "true" || echo "false")\033[0m"
 echo -e "\033[0;36m  Sports2020-db: $([[ $BUILD_SPORTS -eq 1 ]] && echo "true" || echo "false")\033[0m"
 echo -e "\033[0;36m========================================\033[0m"
 echo ""
@@ -111,6 +122,13 @@ declare -a DURATIONS
 declare -a STATUSES
 
 for comp in "${COMPONENTS[@]}"; do
+  # Skip pas_orads if requested
+  if [[ "$comp" == "pas_orads" && $BUILD_PASORADS -eq 0 ]]; then
+    echo ""
+    echo -e "\033[0;33mSkipping pas_orads (use without -P to build)\033[0m"
+    continue
+  fi
+  
   echo ""
   echo -e "\033[0;33m========================================\033[0m"
   echo -e "\033[0;33mBuilding: $comp\033[0m"
@@ -222,6 +240,10 @@ else
     echo "  - rdroge/oe_devcontainer:$TAG"
   fi
   echo "  - rdroge/oe_pas_dev:$TAG"
+  echo "  - rdroge/oe_pas_base:$TAG"
+  if [[ $BUILD_PASORADS -eq 1 ]]; then
+    echo "  - rdroge/oe_pas_orads:$TAG"
+  fi
   echo "  - rdroge/oe_db_adv:$TAG"
   if [[ $BUILD_SPORTS -eq 1 ]]; then
     echo "  - rdroge/oe_sports2020_db:$TAG"

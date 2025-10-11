@@ -11,18 +11,20 @@ param(
   [int]$JDKVERSION = 21,
   [string]$OEVERSION = $null,
   [switch]$SkipDevcontainer = $false,
-  [switch]$BuildSports2020Db = $false
+  [switch]$SkipSports2020Db = $false,
+  [switch]$SkipPasOrads = $false
 )
 
 $ErrorActionPreference = 'Stop'
 
 <#
-  Build all OpenEdge images (compiler, devcontainer, pas_dev, db_adv) in one command.
+  Build all OpenEdge images (compiler, devcontainer, pas_dev, pas_base, pas_orads, db_adv, sports2020-db) in one command.
+  By default, all images are built. Use Skip* parameters to exclude specific images.
   
   Example:
     pwsh ./tools/build-all-images.ps1 -Version 12.8.7 -Tag 12.8.7
     pwsh ./tools/build-all-images.ps1 -Version 12.8.7 -Tag 12.8.7 -SkipDevcontainer
-    pwsh ./tools/build-all-images.ps1 -Version 12.8.7 -Tag 12.8.7 -BuildSports2020Db
+    pwsh ./tools/build-all-images.ps1 -Version 12.8.7 -Tag 12.8.7 -SkipSports2020Db -SkipPasOrads
 #>
 
 if (-not $Tag) { $Tag = $Version }
@@ -34,12 +36,18 @@ if (-not (Test-Path $buildImageScript)) {
 
 $components = @('compiler', 'pas_dev', 'pas_base', 'pas_orads', 'db_adv')
 $buildDevcontainer = -not $SkipDevcontainer
-$buildSports2020 = $BuildSports2020Db
+$buildSports2020 = -not $SkipSports2020Db
+$buildPasOrads = -not $SkipPasOrads
 
 # Validate all response.ini files exist before starting
+# Note: pas_orads builds from pas_base and doesn't need its own response.ini
 $root = Resolve-Path (Join-Path $PSScriptRoot '..')
 $missingResponseIni = @()
 foreach ($comp in $components) {
+  # Skip pas_orads as it builds from pas_base and doesn't need response.ini
+  if ($comp -eq 'pas_orads') {
+    continue
+  }
   $responseIni = Join-Path $root (Join-Path $comp 'response.ini')
   if (-not (Test-Path $responseIni)) {
     $missingResponseIni += $responseIni
@@ -63,6 +71,7 @@ Write-Host "  Version: $Version" -ForegroundColor Cyan
 Write-Host "  Tag: $Tag" -ForegroundColor Cyan
 Write-Host "  Components: $($components -join ', ')" -ForegroundColor Cyan
 Write-Host "  Devcontainer: $buildDevcontainer" -ForegroundColor Cyan
+Write-Host "  PAS for ORADS: $buildPasOrads" -ForegroundColor Cyan
 Write-Host "  Sports2020-db: $buildSports2020" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
@@ -71,6 +80,13 @@ $startTime = Get-Date
 $results = @()
 
 foreach ($component in $components) {
+  # Skip pas_orads if requested
+  if ($component -eq 'pas_orads' -and -not $buildPasOrads) {
+    Write-Host ""
+    Write-Host "Skipping pas_orads (use without -SkipPasOrads to build)" -ForegroundColor Yellow
+    continue
+  }
+  
   Write-Host ""
   Write-Host "========================================" -ForegroundColor Yellow
   Write-Host "Building: $component" -ForegroundColor Yellow
@@ -80,28 +96,32 @@ foreach ($component in $components) {
   $componentStartTime = Get-Date
   
   try {
-    $buildArgs = @('-Component', $component, '-Version', $Version, '-Tag', $Tag)
+    $buildArgs = @{
+      Component = $component
+      Version = $Version
+      Tag = $Tag
+    }
     
     if ($BinariesRoot) {
-      $buildArgs += @('-BinariesRoot', $BinariesRoot)
+      $buildArgs['BinariesRoot'] = $BinariesRoot
     }
     
     if ($JDKVERSION) {
-      $buildArgs += @('-JDKVERSION', $JDKVERSION)
+      $buildArgs['JDKVERSION'] = $JDKVERSION
     }
     
     if ($OEVERSION) {
-      $buildArgs += @('-OEVERSION', $OEVERSION)
+      $buildArgs['OEVERSION'] = $OEVERSION
     }
     
     # Only add -BuildDevcontainer for compiler component
     if ($component -eq 'compiler' -and $buildDevcontainer) {
-      $buildArgs += '-BuildDevcontainer'
+      $buildArgs['BuildDevcontainer'] = $true
     }
     
     # Only add -BuildSports2020Db for db_adv component
     if ($component -eq 'db_adv' -and $buildSports2020) {
-      $buildArgs += '-BuildSports2020Db'
+      $buildArgs['BuildSports2020Db'] = $true
     }
     
     & $buildImageScript @buildArgs
@@ -118,7 +138,8 @@ foreach ($component in $components) {
     }
     
     Write-Host ""
-    Write-Host "✓ $component completed in $($componentDuration.ToString('mm\:ss'))" -ForegroundColor Green
+    $durationStr = "{0:mm\:ss}" -f $componentDuration
+    Write-Host "[OK] $component completed in $durationStr" -ForegroundColor Green
     
   } catch {
     $componentDuration = (Get-Date) - $componentStartTime
@@ -130,7 +151,7 @@ foreach ($component in $components) {
     }
     
     Write-Host ""
-    Write-Host "✗ $component failed: $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host "[FAIL] $component failed: $($_.Exception.Message)" -ForegroundColor Red
     Write-Host ""
     Write-Host "Stopping build process due to failure." -ForegroundColor Red
     break
@@ -147,11 +168,12 @@ Write-Host ""
 
 foreach ($result in $results) {
   $statusColor = if ($result.Status -eq 'Success') { 'Green' } else { 'Red' }
-  $statusSymbol = if ($result.Status -eq 'Success') { '✓' } else { '✗' }
+  $statusSymbol = if ($result.Status -eq 'Success') { '[OK]' } else { '[FAIL]' }
   
   Write-Host "$statusSymbol $($result.Component): " -NoNewline
   Write-Host "$($result.Status) " -ForegroundColor $statusColor -NoNewline
-  Write-Host "($($result.Duration.ToString('mm\:ss')))"
+  $resultDurationStr = "{0:mm\:ss}" -f $result.Duration
+  Write-Host "($resultDurationStr)"
   
   if ($result.Error) {
     Write-Host "  Error: $($result.Error)" -ForegroundColor Red
@@ -159,10 +181,11 @@ foreach ($result in $results) {
 }
 
 Write-Host ""
-Write-Host "Total time: $($totalDuration.ToString('hh\:mm\:ss'))" -ForegroundColor Cyan
+$totalTimeStr = "{0:hh\:mm\:ss}" -f $totalDuration
+Write-Host "Total time: $totalTimeStr" -ForegroundColor Cyan
 
-$successCount = ($results | Where-Object { $_.Status -eq 'Success' }).Count
-$failCount = ($results | Where-Object { $_.Status -eq 'Failed' }).Count
+$successCount = ($results | Where-Object { $_.Status -eq "Success" }).Count
+$failCount = ($results | Where-Object { $_.Status -eq "Failed" }).Count
 
 if ($failCount -gt 0) {
   Write-Host ""
@@ -179,6 +202,10 @@ if ($failCount -gt 0) {
     Write-Host "  - rdroge/oe_devcontainer:$Tag" -ForegroundColor White
   }
   Write-Host "  - rdroge/oe_pas_dev:$Tag" -ForegroundColor White
+  Write-Host "  - rdroge/oe_pas_base:$Tag" -ForegroundColor White
+  if ($buildPasOrads) {
+    Write-Host "  - rdroge/oe_pas_orads:$Tag" -ForegroundColor White
+  }
   Write-Host "  - rdroge/oe_db_adv:$Tag" -ForegroundColor White
   if ($buildSports2020) {
     Write-Host "  - rdroge/oe_sports2020_db:$Tag" -ForegroundColor White
