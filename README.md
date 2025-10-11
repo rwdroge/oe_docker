@@ -60,7 +60,7 @@ Place your binaries under `binaries/oe/<major.minor>/` relative to the repo root
   - `binaries/oe/12.8/PROGRESS_OE_12.8_LNX_64.tar.gz` (base)
   - `binaries/oe/12.8/PROGRESS_OE_12.8.6_LNX_64.tar.gz` (patch)
 
-> **Important (OpenEdge 12.8.4â€“12.8.8):** You must place the 12.8 base installer next to the update installer (OE 12.8.x) in the same directory. The tooling expects both base and update to be present side-by-side to stage and install correctly.
+> **Important (OpenEdge 12.8.4 - 12.8.8):** You must place the 12.8 base installer next to the update installer (OE 12.8.x) in the same directory. The tooling expects both base and update to be present side-by-side to stage and install correctly.
 
 Example required pair for 12.8.6:
 
@@ -290,4 +290,5 @@ Examples:
 - 12.7 base+patch:
   - `binaries/oe/12.7/PROGRESS_OE_12.7_LNX_64.tar.gz`
   - `binaries/oe/12.7/PROGRESS_OE_12.7.x_LNX_64.tar.gz` (patch)
+
 
