@@ -9,7 +9,9 @@
 /binaries/oe/12.2
 /kafka
 /efk
+/keycloak
 /mttenant
+/jenkins
 
 # OE Setups (tar.gz and response files except for sample)
 *.tar.gz
