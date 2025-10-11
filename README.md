@@ -76,59 +76,29 @@ If your tarball names differ, you can override filenames via script parameters (
 
 > 📖 **See [RESPONSE_INI_GUIDE.md](RESPONSE_INI_GUIDE.md) for detailed instructions**, especially for versions **12.2.17-12.2.18** and **12.8.4-12.8.8** which require two response files.
 
-Each component directory contains example response.ini files:
+**Required components** (need response.ini):
+- `compiler`, `db_adv`, `pas_dev`, `pas_base`
 
-- `compiler/response_ini_example.txt` (and `response_update_ini_example.txt` for dual-response versions)
-- `db_adv/response_ini_example.txt` (and `response_update_ini_example.txt` for dual-response versions)
-- `pas_dev/response_ini_example.txt` (and `response_update_ini_example.txt` for dual-response versions)
-- `pas_base/response_ini_example.txt` (and `response_update_ini_example.txt` for dual-response versions)
+**Not required** (extend base images):
+- `devcontainer`, `pas_orads`, `sports2020-db`
 
-**Note:** The following images don't need response.ini files as they build on top of base images:
-- ~~`devcontainer/`~~ - Extends compiler image
-- ~~`pas_orads/`~~ - Extends pas_base image
-- ~~`sports2020-db/`~~ - Extends db_adv image
+**Setup steps:**
 
-**Quick setup:**
+1. Copy example file(s) to `response.ini` (and `response_update.ini` for dual-response versions):
+   ```bash
+   # Most versions (single file)
+   cp compiler/response_ini_example.txt compiler/response.ini
+   
+   # Versions 12.2.17-12.2.18 and 12.8.4-12.8.8 (two files)
+   cp compiler/response_ini_example.txt compiler/response.ini
+   cp compiler/response_update_ini_example.txt compiler/response_update.ini
+   ```
 
-1. Copy `response_ini_example.txt` to `response.ini` in each component directory
-2. **For OpenEdge 12.2.17-12.2.18 or 12.8.4-12.8.8**: Also copy `response_update_ini_example.txt` to `response_update.ini`
-3. Edit the file(s) and add your company name, serial numbers, and control codes
+2. Edit the file(s) and add your company name, serial numbers, and control codes
 
-> **Note**: Most versions use a single installer/response file. Only 12.2.17-12.2.18 and 12.8.4-12.8.8 require dual response files.
+3. Repeat for each required component: `compiler`, `db_adv`, `pas_dev`, `pas_base`
 
-**Example for dual-response versions (12.2.17-12.2.18, 12.8.4-12.8.8):**
-```powershell
-# Base installation file (always needed)
-cp compiler/response_ini_example.txt compiler/response.ini
-
-# Update/patch installation file (ONLY for dual-response versions)
-cp compiler/response_update_ini_example.txt compiler/response_update.ini
-
-# Edit both files with your license info
-```
-
-**Example for single-installer versions (most versions):**
-```powershell
-# Only one file needed
-cp compiler/response_ini_example.txt compiler/response.ini
-
-# Edit with your license info
-```
-
-**Required files after configuration:**
-
-- `compiler/response.ini` (+ `response_update.ini` for 12.2.17-12.2.18, 12.8.4-12.8.8)
-- `db_adv/response.ini` (+ `response_update.ini` for 12.2.17-12.2.18, 12.8.4-12.8.8)
-- `pas_dev/response.ini` (+ `response_update.ini` for 12.2.17-12.2.18, 12.8.4-12.8.8)
-- `pas_base/response.ini` (+ `response_update.ini` for 12.2.17-12.2.18, 12.8.4-12.8.8)
-
-**Not required** (these extend base images):
-- ~~`devcontainer/response.ini`~~ - Not needed (extends compiler)
-- ~~`pas_orads/response.ini`~~ - Not needed (extends pas_base)
-- ~~`sports2020-db/response.ini`~~ - Not needed (extends db_adv)
-
-**What happens if missing:**
-- Build scripts will validate required files upfront and fail with clear error messages if any are missing
+> **Note:** Build scripts will validate required files exist before starting and fail with clear error messages if any are missing.
 
 ## Building Images
 
