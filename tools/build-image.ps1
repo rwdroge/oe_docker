@@ -78,10 +78,15 @@ if(-not $OEVERSION){
   if(-not $OEVERSION){ Write-Host "OEVERSION not mapped for series $series; leaving empty." }
 }
 
-# Validate response.ini exists before building
-$responseIni = Join-Path $root (Join-Path $Component 'response.ini')
-if(-not (Test-Path $responseIni)){
-  throw "response.ini not found at: $responseIni`n`nPlease configure OpenEdge control codes in the response.ini file before building.`nSee the 'Configure control codes' section in README.md for details."
+# Get root directory
+$root = Resolve-Path (Join-Path $PSScriptRoot '..')
+
+# Validate response.ini exists before building (skip for pas_orads - it uses base image)
+if ($Component -ne 'pas_orads') {
+  $responseIni = Join-Path $root (Join-Path $Component 'response.ini')
+  if(-not (Test-Path $responseIni)){
+    throw "response.ini not found at: $responseIni`n`nPlease configure OpenEdge control codes in the response.ini file before building.`nSee the 'Configure control codes' section in README.md for details."
+  }
 }
 
 # Prepare installers
@@ -98,7 +103,6 @@ if ($BinariesRoot) {
 }
 
 # Build docker image
-$root = Resolve-Path (Join-Path $PSScriptRoot '..')
 $dockerfile = Join-Path $root (Join-Path $Component 'Dockerfile')
 if(-not (Test-Path $dockerfile)){ throw "Dockerfile not found: $dockerfile" }
 
@@ -111,10 +115,18 @@ $jdkKey = "jdk$OEVERSION"
 $JdkVersionValue = $jdkMap.$jdkKey
 if(-not $JdkVersionValue) { throw "No JDK mapping found for key '$jdkKey' in $jdkJsonPath" }
 
-# Create a temporary Dockerfile with JDKVERSION placeholder replaced
+# Create a temporary Dockerfile with placeholders replaced
 $tempDir = New-Item -ItemType Directory -Path (Join-Path $env:TEMP ("oe_build_" + [guid]::NewGuid().ToString()))
 $tempDockerfile = Join-Path $tempDir.FullName 'Dockerfile'
-(Get-Content -Raw $dockerfile).Replace('JDKVERSION', $JdkVersionValue) | Set-Content -NoNewline $tempDockerfile
+$dockerfileContent = Get-Content -Raw $dockerfile
+$dockerfileContent = $dockerfileContent.Replace('JDKVERSION', $JdkVersionValue)
+
+# For pas_orads, replace the base image tag with the current tag
+if ($Component -eq 'pas_orads') {
+  $dockerfileContent = $dockerfileContent.Replace('rdroge/oe_pas_base:latest', "rdroge/oe_pas_base:$Tag")
+}
+
+$dockerfileContent | Set-Content -NoNewline $tempDockerfile
 Write-Host "Using JDK version: $JdkVersionValue (key: $jdkKey)"
 
 $buildArgs = @('--build-arg', "CTYPE=$CTYPE", '--build-arg', "JDKVERSION=$JDKVERSION")

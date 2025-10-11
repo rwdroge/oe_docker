@@ -2,7 +2,7 @@
 set -euo pipefail
 
 usage(){
-  echo "Usage: $0 -c <compiler|db_adv|pas_dev> -v <12.8.x> [-b <binariesRoot>]" >&2
+  echo "Usage: $0 -c <compiler|db_adv|pas_dev|pas_base|pas_orads> -v <12.8.x> [-b <binariesRoot>]" >&2
 }
 
 COMPONENT=""; VERSION=""; BINROOT="$(cd "$(dirname "$0")"/.. && pwd)/binaries/oe"
@@ -16,8 +16,14 @@ while getopts ":c:v:b:" opt; do
 done
 
 if [[ -z "$COMPONENT" || -z "$VERSION" ]]; then usage; exit 1; fi
-if [[ "$COMPONENT" != "compiler" && "$COMPONENT" != "db_adv" && "$COMPONENT" != "pas_dev" ]]; then
+if [[ "$COMPONENT" != "compiler" && "$COMPONENT" != "db_adv" && "$COMPONENT" != "pas_dev" && "$COMPONENT" != "pas_base" && "$COMPONENT" != "pas_orads" ]]; then
   echo "Invalid component: $COMPONENT" >&2; exit 1
+fi
+
+# pas_orads doesn't need installer preparation (uses pas_base as base image)
+if [[ "$COMPONENT" == "pas_orads" ]]; then
+  echo "Skipping installer preparation for pas_orads (uses pas_base as base image)"
+  exit 0
 fi
 
 if [[ ! "$VERSION" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then

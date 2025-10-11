@@ -18,7 +18,7 @@ RUN if [ "${OEVERSION}" = "122" ] ; then mkdir /etc/progress; else echo "false" 
     if [ "${OEVERSION}" = "122" ] ; then touch /etc/openedge.d; else echo "false" ; fi 
 
 COPY pas_dev/response.ini /install/openedge/response.ini
-ENV TERM xterm
+ENV TERM=xterm
 
 COPY scripts/clean-oe-files.sh /install/openedge/clean-oe-files.sh 
 # This script needs 'container type' as input parameter as it differs what folders can be removed
@@ -31,11 +31,11 @@ RUN /install/install-oe.sh && \
 # multi stage build, this give the possibilty to remove all the slack from stage 0
 FROM ubuntu:22.04 AS instance
 RUN apt-get update \
-  && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     net-tools \
-  && apt-get install -y netbase \
+    netbase \
   && apt-get clean \
-  && rm -rf /var/lib/apt/lists/* \
+  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
   && groupadd -g 1000 openedge \
   && useradd -m -r -u 1000 -g openedge openedge
   # changed the group number because apparently group 1000 already exists on Ubuntu 24.04
@@ -48,8 +48,8 @@ ENV TERM=xterm
 ENV PATH="${DLC}:${DLC}/bin:${JAVA_HOME}/bin:${PATH}"
 
 COPY --from=install $JAVA_HOME $JAVA_HOME
-COPY --from=install $DLC $DLC
-COPY --from=install $WRKDIR $WRKDIR
+COPY --from=install --chown=root:openedge $DLC $DLC
+COPY --from=install --chown=root:openedge $WRKDIR $WRKDIR
 COPY --from=install /etc/openedge.d /etc/openedge.d
 COPY --from=install /etc/openedge /etc/openedge
 COPY --from=install /etc/progress /etc/progress
@@ -58,14 +58,14 @@ WORKDIR /usr/dlc/bin
 
 RUN chown root _* && \
     chmod 4755 _* && \
-    chown root:openedge $DLC $WRKDIR && \
     chown -R openedge:openedge $DLC/servers/pasoe && \ 
     chmod 775 $DLC && \
     chmod 777 $WRKDIR && \
     touch /usr/dlc/progress.cfg  && \
     chown openedge:openedge /usr/dlc/progress.cfg && \
     mkdir -p /app/pas /app/src /app/lib /app/config && \
-    chown -R openedge:openedge /app      
+    chown -R openedge:openedge /app && \
+    echo 'tcp    6 TCP' >> /etc/protocols      
 
 WORKDIR /app/pas
 
@@ -81,11 +81,8 @@ RUN bin/oeprop.sh AppServer.Agent.pas.PROPATH=".,/app/config,/app/src,/app/lib/l
     chown -R openedge:openedge /app/pas/as
 
 COPY pas_dev/config/oeablSecurity-dev.csv /app/pas/as/webapps/ROOT/WEB-INF/oeablSecurity.csv
-COPY pas_dev/start.sh /app/pas/
+COPY --chown=openedge:openedge --chmod=755 pas_dev/start.sh /app/pas/start.sh
 USER root
-RUN chmod +x /app/pas/start.sh && \
-    chown -R openedge:openedge /app/pas/start.sh && \
-    echo 'tcp    6 TCP' >> /etc/protocols
 
 VOLUME /app/src
 VOLUME /app/lib

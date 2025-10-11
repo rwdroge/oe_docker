@@ -135,14 +135,16 @@ fi
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-# Validate response.ini exists before building
-RESPONSE_INI="$ROOT/$COMPONENT/response.ini"
-if [[ ! -f "$RESPONSE_INI" ]]; then
-  echo "Error: response.ini not found at: $RESPONSE_INI" >&2
-  echo "" >&2
-  echo "Please configure OpenEdge control codes in the response.ini file before building." >&2
-  echo "See the 'Configure control codes' section in README.md for details." >&2
-  exit 1
+# Validate response.ini exists before building (skip for pas_orads - it uses base image)
+if [[ "$COMPONENT" != "pas_orads" ]]; then
+  RESPONSE_INI="$ROOT/$COMPONENT/response.ini"
+  if [[ ! -f "$RESPONSE_INI" ]]; then
+    echo "Error: response.ini not found at: $RESPONSE_INI" >&2
+    echo "" >&2
+    echo "Please configure OpenEdge control codes in the response.ini file before building." >&2
+    echo "See the 'Configure control codes' section in README.md for details." >&2
+    exit 1
+  fi
 fi
 
 # Prepare installers
@@ -186,11 +188,17 @@ if [[ -z "$JDK_VERSION_VALUE" || "$JDK_VERSION_VALUE" == "null" ]]; then
   exit 1
 fi
 
-# Create temporary Dockerfile with JDKVERSION placeholder replaced
+# Create temporary Dockerfile with placeholders replaced
 TEMP_DIR=$(mktemp -d)
 trap "rm -rf $TEMP_DIR" EXIT
 TEMP_DOCKERFILE="$TEMP_DIR/Dockerfile"
 sed "s/JDKVERSION/$JDK_VERSION_VALUE/g" "$DOCKERFILE" > "$TEMP_DOCKERFILE"
+
+# For pas_orads, replace the base image tag with the current tag
+if [[ "$COMPONENT" == "pas_orads" ]]; then
+  sed -i "s|rdroge/oe_pas_base:latest|rdroge/oe_pas_base:$TAG|g" "$TEMP_DOCKERFILE"
+fi
+
 echo "Using JDK version: $JDK_VERSION_VALUE (key: $JDK_KEY)"
 
 TAG_REF="${IMAGE_NAME}:${TAG}"

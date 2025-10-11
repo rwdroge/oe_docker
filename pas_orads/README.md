@@ -1,6 +1,6 @@
 # PASOE with Oracle DataServer (pas_orads)
 
-This image builds a production PASOE instance with Oracle DataServer support, including the Oracle Instant Client.
+This image extends `pas_base` by adding Oracle DataServer support and the Oracle Instant Client. It follows a layered architecture similar to `devcontainer` (which extends `compiler`) and `sports2020-db` (which extends `db_adv`).
 
 ## Prerequisites
 
@@ -17,20 +17,14 @@ You need to download the Oracle Instant Client and place it in the `binaries/ora
    binaries/oracle/LINUX.X64_193000_client_home.zip
    ```
 
-### OpenEdge Control Codes
+### Base Image
 
-Configure your OpenEdge control codes in `pas_orads/response.ini`:
+This image requires `pas_base` to be built first:
 
-1. Copy the example file:
-   ```bash
-   cp pas_orads/response_ini_example.txt pas_orads/response.ini
-   ```
-
-2. Edit `pas_orads/response.ini` and add your:
-   - Company name
-   - Serial number
-   - Control code
-   - Ensure `installDataServer=true` is set
+```powershell
+# Build pas_base first
+pwsh ./tools/build-image.ps1 -Component pas_base -Version 12.8.7 -Tag 12.8.7
+```
 
 ## Building
 
@@ -79,19 +73,15 @@ docker run -d \
 
 ## Image Details
 
-- **Base OS**: Ubuntu 22.04
-- **User**: pscadmin (UID 1000)
-- **Oracle User**: oracle (for Oracle client files)
-- **PASOE Instance**: prodpas (production profile)
-- **Exposed Ports**: 8220 (HTTP), 8221 (HTTPS), 8899 (Health Check)
+- **Base Image**: `rdroge/oe_pas_base` (inherits all pas_base features)
+- **Additional User**: oracle (for Oracle client files)
+- **Additional Groups**: oinstall, dba, oper
 - **Oracle Client**: 19.3 installed in `/opt/oracle/client`
-
-## Environment Variables
-
-- `DLC=/usr/dlc`
-- `WRKDIR=/usr/wrk`
-- `JAVA_HOME=/opt/java/openjdk`
-- `PATH` includes DLC, Java, and Oracle client libraries
+- **Inherited from pas_base**:
+  - User: openedge (UID 1000)
+  - PASOE Instance: prodpas (production profile)
+  - Exposed Ports: 8220 (HTTP), 8221 (HTTPS), 8899 (Health Check)
+  - Environment variables (DLC, WRKDIR, JAVA_HOME, PATH)
 
 ## Notes
 

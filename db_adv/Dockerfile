@@ -32,8 +32,8 @@ ENV DLC=/usr/dlc
 ENV WRKDIR=/usr/wrk
 ENV TERM=linux
 COPY --from=install $JAVA_HOME $JAVA_HOME
-COPY --from=install $DLC $DLC
-COPY --from=install $WRKDIR $WRKDIR
+COPY --from=install --chown=root:openedge $DLC $DLC
+COPY --from=install --chown=root:openedge $WRKDIR $WRKDIR
 
 COPY db_adv/protocols /etc/
 COPY db_adv/services /etc/
@@ -54,18 +54,16 @@ RUN groupadd -g 1000 openedge && \
 
 # allow for progress.cfg to be copied into $DLC
 # kubernetes does not support volume mount of single files
-RUN chown root:openedge $DLC && \
-    chmod 775 $DLC && \
+RUN chmod 775 $DLC && \
     touch /usr/dlc/progress.cfg && \
-    chown openedge:openedge /usr/dlc/progress.cfg
+    chown openedge:openedge /usr/dlc/progress.cfg && \
+    mkdir -p /app/backup /app/config /app/data /app/db /app/schema /app/scripts /app/tmp && \
+    chown -R openedge:openedge /app/
 
 # create directories and files as root
-COPY db_adv/scripts/* /app/scripts/
-COPY db_adv/conf/* /app/db/
-COPY scripts/* /app/scripts/
-RUN mkdir -p /app/backup /app/config /app/data /app/db /app/schema /app/scripts /app/tmp && \
-    chmod +x /app/scripts/*.sh && \
-    chown -R openedge:openedge /app/ 
+COPY --chown=openedge:openedge --chmod=755 db_adv/scripts/* /app/scripts/
+COPY --chown=openedge:openedge db_adv/conf/* /app/db/
+COPY --chown=openedge:openedge --chmod=755 scripts/* /app/scripts/ 
 
 USER openedge
 

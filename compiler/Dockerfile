@@ -36,7 +36,7 @@ RUN apt-get update && \
     groupadd -g 1000 openedge && \
     useradd -m -r -u 1000 -g openedge openedge && \
     apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 
 ENV JAVA_HOME=/opt/java/openjdk
@@ -45,25 +45,19 @@ ENV WRKDIR=/usr/wrk
 ENV TERM=xterm
 
 COPY --from=install $JAVA_HOME $JAVA_HOME
-COPY --from=install $DLC $DLC
-COPY --from=install $WRKDIR $WRKDIR
+COPY --from=install --chown=root:openedge $DLC $DLC
+COPY --from=install --chown=root:openedge $WRKDIR $WRKDIR
 COPY --from=install /etc/openedge.d /etc/openedge.d
 COPY --from=install /etc/openedge /etc/openedge
 COPY --from=install /etc/progress /etc/progress
 # allow for progress to be copied into $DLC
 # kubernetes does not support volume mount of single files
 WORKDIR /usr/dlc/bin
-RUN chown root:openedge $DLC $WRKDIR && \
-    chmod 775 $DLC && \
-    chmod 777 $WRKDIR
-
-# if not present ESAM starts complaining
-# this file is necessary in order for a Dockerfile which uses the openedge-pas image to 
-# be able to use oeprop.sh to set properties
-RUN touch /usr/dlc/progress.cfg  && \
-    chown openedge:openedge /usr/dlc/progress.cfg
-
-RUN mkdir -p /app/src /artifacts && \
+RUN chmod 775 $DLC && \
+    chmod 777 $WRKDIR && \
+    touch /usr/dlc/progress.cfg  && \
+    chown openedge:openedge /usr/dlc/progress.cfg && \
+    mkdir -p /app/src /artifacts && \
     chown -R openedge:openedge /app /artifacts
 
 USER openedge

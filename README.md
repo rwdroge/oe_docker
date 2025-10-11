@@ -29,10 +29,11 @@ This repository supports building the following OpenEdge container images:
   - Minimal configuration for production deployment
 
 - **`pas_orads`**: Production PASOE with Oracle DataServer:
-  - All features of `pas_base`
-  - Oracle Instant Client 19.3 installed
+  - **Builds on top of `pas_base`** (layered image)
+  - Adds Oracle Instant Client 19.3
   - Oracle DataServer components included
   - Requires Oracle client installer in `binaries/oracle/` directory
+  - **Note**: Must build `pas_base` first
 
 ## Getting Started
 
