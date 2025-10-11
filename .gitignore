@@ -9,7 +9,7 @@
 /binaries/oe/12.2
 /kafka
 /efk
-
+/mttenant
 
 # OE Setups (tar.gz and response files except for sample)
 *.tar.gz
