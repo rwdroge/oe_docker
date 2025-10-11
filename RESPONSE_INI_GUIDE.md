@@ -2,28 +2,14 @@
 
 ## Overview
 
-OpenEdge Docker builds require `response.ini` files containing license information for unattended installations. For certain OpenEdge versions, you need **two separate response.ini files**:
+OpenEdge Docker builds require `response.ini` files containing license information for unattended installations.
 
-1. **`response.ini`** - For base version installation (e.g., OE 12.2, 12.8)
-2. **`response_update.ini`** - For patch/update installation (e.g., 12.2.17, 12.8.7)
+**Most versions** use a single `response.ini` file. However, **versions 12.2.17-12.2.18 and 12.8.4-12.8.8** require two separate files:
 
-**Versions requiring dual response files:**
-- **12.2.17, 12.2.18**
-- **12.8.4, 12.8.5, 12.8.6, 12.8.7, 12.8.8**
+1. **`response.ini`** - Base version installation
+2. **`response_update.ini`** - Patch/update installation
 
-## Why Two Files?
-
-For specific OpenEdge versions, Progress changed the installation process to use base + patch with separate response files:
-
-**12.2 Series:**
-- **12.2.17-12.2.18**: Base (12.2) + patch requires separate response files
-- **12.2.19+**: Back to single installer
-
-**12.8 Series:**
-- **12.8.4-12.8.8**: Base (12.8) + patch requires separate response files  
-- **12.8.9+**: Back to single installer
-
-The build system automatically detects and uses the correct file during installation.
+The build system automatically detects which files are needed based on the version.
 
 ## File Structure
 
@@ -56,74 +42,38 @@ ControlCode=YOUR-CONTROL-CODE
 
 ## Setup Instructions
 
-### For Each Component (compiler, db_adv, pas_dev, pas_base)
+**Required for:** `compiler`, `db_adv`, `pas_dev`, `pas_base`  
+**Not required for:** `devcontainer`, `pas_orads`, `sports2020-db` (extend base images)
 
-1. **Create base response.ini**:
+### Steps
+
+1. **Copy example file(s)** for each component:
    ```bash
-   cp <component>/response_ini_example.txt <component>/response.ini
+   # All versions
+   cp compiler/response_ini_example.txt compiler/response.ini
+   
+   # Only for 12.2.17-12.2.18 and 12.8.4-12.8.8
+   cp compiler/response_update_ini_example.txt compiler/response_update.ini
    ```
 
-2. **Edit response.ini** and add your license information:
+2. **Edit the file(s)** and add your license information:
    - Company name
-   - Serial number
+   - Serial number  
    - Control code
    - Component-specific settings
 
-3. **Create update response.ini** (for 12.8.4+):
-   ```bash
-   cp <component>/response_update_ini_example.txt <component>/response_update.ini
-   ```
+3. **Repeat** for `db_adv`, `pas_dev`, and `pas_base`
 
-4. **Edit response_update.ini** and add your license information:
-   - Company name
-   - Serial number
-   - Control code
-   - Keep the `[Update]` section
+## Version Requirements
 
-### Example for compiler
-
-```powershell
-# PowerShell
-Copy-Item compiler/response_ini_example.txt compiler/response.ini
-Copy-Item compiler/response_update_ini_example.txt compiler/response_update.ini
-
-# Edit both files with your license information
-notepad compiler/response.ini
-notepad compiler/response_update.ini
-```
-
-## Version-Specific Behavior
-
-### OpenEdge 12.2.0 - 12.2.15
-- ✅ Only requires `response.ini`
-- ❌ No `response_update.ini` needed
-- Single installer for the full version
-
-### OpenEdge 12.2.16 - 12.2.19 ⚠️
-- ✅ Requires both `response.ini` and `response_update.ini`
-- Base + patch installers with separate response files
-- Build system automatically uses correct file for each installation phase
-
-### OpenEdge 12.2.20+
-- ✅ Only requires `response.ini`
-- ❌ No `response_update.ini` needed
-- **Single installer** for the full version (simplified)
-
-### OpenEdge 12.8.0 - 12.8.3
-- ✅ Only requires `response.ini`
-- ❌ No `response_update.ini` needed
-- Single installer for the full version
-
-### OpenEdge 12.8.4 - 12.8.8 ⚠️
-- ✅ Requires both `response.ini` and `response_update.ini`
-- Base + patch installers with separate response files
-- Build system automatically uses correct file for each installation phase
-
-### OpenEdge 12.8.9+
-- ✅ Only requires `response.ini`
-- ❌ No `response_update.ini` needed
-- **Single installer** for the full version (simplified)
-- Example: `PROGRESS_OE_12.8.9_LNX_64.tar.gz` contains the complete 12.8.9 installation
+| Version | response.ini | response_update.ini | Installer Type |
+|---------|--------------|---------------------|----------------|
+| 12.2.0-12.2.16 | ✅ Required | ❌ Not needed | Single |
+| **12.2.17-12.2.18** | **✅ Required** | **✅ Required** | **Base + Patch** |
+| 12.2.19+ | ✅ Required | ❌ Not needed | Single |
+| 12.8.0-12.8.3 | ✅ Required | ❌ Not needed | Single |
+| **12.8.4-12.8.8** | **✅ Required** | **✅ Required** | **Base + Patch** |
+| 12.8.9+ | ✅ Required | ❌ Not needed | Single |
 
 ## How It Works
 
@@ -157,28 +107,6 @@ The system is backward compatible:
 - Older versions (12.2.x, 12.8.0-12.8.3) work without changes
 - New versions (12.8.4+) benefit from separate update file
 
-## Component-Specific Notes
-
-### compiler
-- Requires: `response.ini` (and `response_update.ini` for 12.8.4+)
-- Includes: Development tools, compiler, debugger
-
-### db_adv
-- Requires: `response.ini` (and `response_update.ini` for 12.8.4+)
-- Includes: Database server components
-
-### pas_dev
-- Requires: `response.ini` (and `response_update.ini` for 12.8.4+)
-- Includes: PASOE development instance
-
-### pas_base
-- Requires: `response.ini` (and `response_update.ini` for 12.8.4+)
-- Includes: PASOE production instance
-
-### pas_orads
-- **Does NOT require response.ini files**
-- Extends `pas_base` image (inherits OpenEdge installation)
-- Only requires Oracle client installer
 
 ## Security Best Practices
 
@@ -202,7 +130,7 @@ The system is backward compatible:
 - Verify filename is exactly `response.ini` (case-sensitive on Linux)
 
 ### Patch installation fails
-- For 12.8.4+, ensure `response_update.ini` exists
+- For 12.2.17-12.2.18 or 12.8.4-12.8.8, ensure `response_update.ini` exists
 - Verify `[Update]` section is present in `response_update.ini`
 - Check license information is correct in both files
 
@@ -223,14 +151,3 @@ The GitHub Actions workflow uses secrets for response.ini files:
 - [OpenEdge Installation Guide](https://docs.progress.com/bundle/openedge-install-guide)
 - [Response File Format](https://docs.progress.com/bundle/openedge-install-guide/page/Response-file-format.html)
 - [Unattended Installation](https://docs.progress.com/bundle/openedge-install-guide/page/Unattended-installation.html)
-
-## Quick Reference
-
-| Version | response.ini | response_update.ini | Installer Type | Notes |
-|---------|--------------|---------------------|----------------|-------|
-| 12.2.0-12.2.16 | ✅ Required | ❌ Not needed | Single | Full version installer |
-| **12.2.17-12.2.18** | **✅ Required** | **✅ Required** | **Base + Patch** | **Separate response files** |
-| 12.2.19+ | ✅ Required | ❌ Not needed | Single | Full version installer (simplified) |
-| 12.8.0-12.8.3 | ✅ Required | ❌ Not needed | Single | Full version installer |
-| **12.8.4-12.8.8** | **✅ Required** | **✅ Required** | **Base + Patch** | **Separate response files** |
-| 12.8.9+ | ✅ Required | ❌ Not needed | Single | Full version installer (simplified) |

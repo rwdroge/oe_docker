@@ -5,22 +5,11 @@
 
 # private projects
 
-/authentication/
 /binaries/oe/11.7
 /binaries/oe/12.2
-/exact_db
-/exact_pas
 /kafka
-/anticimex
-/exact
-/rcd
-/pasoe
+/efk
 
-
-
-# unused files
-docker-compose-amazon.yml
-.dockerignore
 
 # OE Setups (tar.gz and response files except for sample)
 *.tar.gz
@@ -35,10 +24,6 @@ docker-compose-amazon.yml
 *.r
 *.crt
 *.key
-
-# Jenkins binaries
-jenkins/agent/binaries/OpenEdge.BusinessLogic.pl
-jenkins/agent/binaries/PCT.jar
 
 # PAS dev keystore
 pas_dev/config/keystore/tomcat-keystore.p12
