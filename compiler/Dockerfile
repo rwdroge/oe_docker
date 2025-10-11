@@ -17,7 +17,8 @@ ADD scripts/install-oe.sh /install/
 RUN if [ "${OEVERSION}" = "122" ] ; then mkdir /etc/progress; else echo "false" ; fi && \
     if [ "${OEVERSION}" = "122" ] ; then mkdir /etc/openedge; else echo "false" ; fi && \
     if [ "${OEVERSION}" = "122" ] ; then touch /etc/openedge.d; else echo "false" ; fi 
-COPY compiler/response.ini /install/openedge/response.ini
+
+COPY compiler/response*.ini /install/openedge/
 ENV TERM=xterm
 
 COPY scripts/clean-oe-files.sh /install/openedge/clean-oe-files.sh 

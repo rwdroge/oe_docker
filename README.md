@@ -94,37 +94,50 @@ If your tarball names differ, you can override filenames via script parameters (
 
 > ⚠️ **Required:** You must configure valid OpenEdge control codes before building images.
 
-Each component directory contains an example response.ini file called `response_ini_example.txt` that you can use as a template:
+> 📖 **See [RESPONSE_INI_GUIDE.md](RESPONSE_INI_GUIDE.md) for detailed instructions**, especially for versions **12.2.17-12.2.18** and **12.8.4-12.8.8** which require two response files.
 
-- `compiler/response_ini_example.txt`
-- `db_adv/response_ini_example.txt`
-- `pas_dev/response_ini_example.txt`
-- `pas_base/response_ini_example.txt`
-- `pas_orads/response_ini_example.txt`
+Each component directory contains example response.ini files:
 
-**To configure:**
+- `compiler/response_ini_example.txt` (and `response_update_ini_example.txt` for dual-response versions)
+- `db_adv/response_ini_example.txt` (and `response_update_ini_example.txt` for dual-response versions)
+- `pas_dev/response_ini_example.txt` (and `response_update_ini_example.txt` for dual-response versions)
+- `pas_base/response_ini_example.txt` (and `response_update_ini_example.txt` for dual-response versions)
+- ~~`pas_orads/`~~ - No response.ini needed (extends pas_base)
 
-1. Copy or rename `response_ini_example.txt` to `response.ini` in each component directory
-2. Edit the **Product Configuration** section(s) in each `response.ini` file
-3. Add your company name, serial numbers, and control codes
+**Quick setup:**
 
-**Example Product Configuration section:**
-```ini
-[Product Configuration 1]
-name=YourCompanyName
-serial=YourSerialNumber
-version=12.8
-control=YourControlCode
-prodname=4GL Development System
+1. Copy `response_ini_example.txt` to `response.ini` in each component directory
+2. **For OpenEdge 12.2.17-12.2.18 or 12.8.4-12.8.8**: Also copy `response_update_ini_example.txt` to `response_update.ini`
+3. Edit the file(s) and add your company name, serial numbers, and control codes
+
+> **Note**: Most versions use a single installer/response file. Only 12.2.17-12.2.18 and 12.8.4-12.8.8 require dual response files.
+
+**Example for dual-response versions (12.2.17-12.2.18, 12.8.4-12.8.8):**
+```powershell
+# Base installation file (always needed)
+cp compiler/response_ini_example.txt compiler/response.ini
+
+# Update/patch installation file (ONLY for dual-response versions)
+cp compiler/response_update_ini_example.txt compiler/response_update.ini
+
+# Edit both files with your license info
+```
+
+**Example for single-installer versions (most versions):**
+```powershell
+# Only one file needed
+cp compiler/response_ini_example.txt compiler/response.ini
+
+# Edit with your license info
 ```
 
 **Required files after configuration:**
 
-- `compiler/response.ini`
-- `db_adv/response.ini`
-- `pas_dev/response.ini`
-- `pas_base/response.ini`
-- `pas_orads/response.ini`
+- `compiler/response.ini` (+ `response_update.ini` for 12.2.17-12.2.18, 12.8.4-12.8.8)
+- `db_adv/response.ini` (+ `response_update.ini` for 12.2.17-12.2.18, 12.8.4-12.8.8)
+- `pas_dev/response.ini` (+ `response_update.ini` for 12.2.17-12.2.18, 12.8.4-12.8.8)
+- `pas_base/response.ini` (+ `response_update.ini` for 12.2.17-12.2.18, 12.8.4-12.8.8)
+- ~~`pas_orads/response.ini`~~ - Not needed (extends pas_base)
 
 **What happens if missing:**
 - `build-image.ps1` will fail immediately with a clear error message pointing to the missing file

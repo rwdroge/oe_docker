@@ -12,7 +12,7 @@ ADD installer/PROGRESS_OE.tar.gz /install/openedge/
 ADD installer/PROGRESS_PATCH_OE.tar.gz /install/patch/
 ADD scripts/install-oe.sh /install/
 
-COPY db_adv/response.ini /install/openedge/response.ini
+COPY db_adv/response*.ini /install/openedge/
 ENV TERM=linux
 
 COPY scripts/clean-oe-files.sh /install/openedge/clean-oe-files.sh 
