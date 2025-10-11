@@ -2,8 +2,6 @@
 
 This repository contains Dockerfiles and tooling to build local OpenEdge Docker container images such as `compiler`, `db_adv`, `pas_dev`, `pas_base`, and `pas_orads` using locally provided installers.
 
-> **Note:** Pro2 replication demos have been moved to a separate repository: [oe_pro2_docker](https://github.com/rwdroge/oe_pro2_docker)
-
 ## Available Image Types
 
 This repository supports building the following OpenEdge container images:
@@ -260,5 +258,6 @@ Examples:
 - 12.7 base+patch:
   - `binaries/oe/12.7/PROGRESS_OE_12.7_LNX_64.tar.gz`
   - `binaries/oe/12.7/PROGRESS_OE_12.7.x_LNX_64.tar.gz` (patch)
+
 
 
