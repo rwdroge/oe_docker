@@ -41,6 +41,22 @@ The **`devcontainer`**, **`sports2020_db`**, and **`pas_dev`** images built from
 
 This provides a complete containerized OpenEdge development environment with VS Code integration.
 
+### Building Images for Dev Containers Only
+
+**If you only need images for dev container setups**, you can use the `-DevcontainerOnly` flag to build just the required images (compiler, devcontainer, pas_dev, db_adv, sports2020-db) and skip production-focused images like pas_base and pas_orads:
+
+**Windows PowerShell:**
+```powershell
+pwsh ./tools/build-all-images.ps1 -Version 12.8.6 -Tag 12.8.6 -DevcontainerOnly
+```
+
+**Linux/macOS Bash:**
+```bash
+./tools/build-all-images.sh -v 12.8.6 -t 12.8.6 -D
+```
+
+This significantly reduces build time by only creating the images needed for development container workflows.
+
 ## Getting Started
 
 ### Prerequisites
