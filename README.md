@@ -1,4 +1,4 @@
-# oe_demos_docker
+# oe_docker
 
 This repository contains Dockerfiles and tooling to build local OpenEdge Docker container images such as `compiler`, `db_adv`, `pas_dev`, `pas_base`, and `pas_orads` using locally provided installers.
 
@@ -30,7 +30,7 @@ This repository supports building the following OpenEdge container images:
 
 - **`pas_orads`**: Production PASOE with Oracle DataServer:
   - **Builds on top of `pas_base`** (layered image)
-  - Adds Oracle Instant Client 19.3
+  - Adds Oracle Client 19.3 (Linux 64-bit)
   - Oracle DataServer components included
   - Requires Oracle client installer in `binaries/oracle/` directory
   - **Note**: Must build `pas_base` first
@@ -42,8 +42,8 @@ This repository supports building the following OpenEdge container images:
 First, clone this repository to your local machine:
 
 ```bash
-git clone https://github.com/rwdroge/oe_demos_docker.git
-cd oe_demos_docker
+git clone https://github.com/rwdroge/oe_docker.git
+cd oe_docker
 ```
 
 ### 2. Add OpenEdge installers
@@ -374,3 +374,4 @@ Examples:
 - 12.7 base+patch:
   - `binaries/oe/12.7/PROGRESS_OE_12.7_LNX_64.tar.gz`
   - `binaries/oe/12.7/PROGRESS_OE_12.7.x_LNX_64.tar.gz` (patch)
+
