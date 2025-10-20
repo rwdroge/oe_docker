@@ -1,10 +1,5 @@
 # Set default behavior to automatically normalize line endings
-* text=auto
-*.txt text eol=lf
-
-# Force LF line endings for shell scripts and Linux-specific files
-*.sh text eol=lf
-*.bash text eol=lf
+* text=auto eol=lf
 
 # Force CRLF for Windows-specific files
 *.ps1 text eol=crlf
