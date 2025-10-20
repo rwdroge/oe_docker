@@ -61,7 +61,7 @@ $rootDir = Split-Path -Parent $scriptDir
 # Container build configurations
 $buildConfigs = @{
     "compiler" = @{
-        "Products" = @("4GL Development System", "Client Networking", "Progress Dev AS for OE")
+        "Products" = @("4GL Development System", "Client Networking", "Progress Dev AppServer for OE")
         "Path" = Join-Path $rootDir "compiler"
     }
     "db_adv" = @{
@@ -69,7 +69,7 @@ $buildConfigs = @{
         "Path" = Join-Path $rootDir "db_adv"
     }
     "pas_dev" = @{
-        "Products" = @("Progress Dev AppServer for OE")
+        "Products" = @("Progress Dev AS for OE", "Progress Dev AppServer for OE")
         "Path" = Join-Path $rootDir "pas_dev"
     }
     "pas_base" = @{
@@ -182,7 +182,7 @@ function Get-LicenseProducts {
                 $prevLine = $lines[$j]
                 
                 # Match various product name patterns
-                if ($prevLine -match '^\s*(4GL Development System|Client Networking|Progress Dev AS for OE|Progress Prod AppServer for OE|OE RDBMS Adv Enterprise|OE AuthenticationGateway|Progress App Server for OE)') {
+                if ($prevLine -match '^\s*(4GL Development System|Client Networking|Progress Dev AS for OE|Progress Dev AppServer for OE|Progress Prod AppServer for OE|OE RDBMS Adv Enterprise|OE AuthenticationGateway|Progress App Server for OE)') {
                     $productName = $Matches[1].Trim()
                     
                     $productKey = "$productName|$serial"
