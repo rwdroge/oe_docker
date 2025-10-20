@@ -151,22 +151,9 @@ Next steps:
 
 ## License File Format
 
-The script expects a Progress Software License Addendum file with the following structure:
+The script expects a Progress Software License Addendum file downloaded from ESD (https://esd.progress.com/).
 
-```
-Progress Software Corporation ('PSC') License Addendum
 
-Customer/Partner:10011021                 Registered To:10157947
-    Progress Software                         Progress Software ESD
-    ...
-
-Product                   Ship      Units  Release  MediaID Title
-PSC Order #               Ord. Date
-------------------------- --------- ------ -------- ------- --------------
- 4GL Development System             1      12.8     1000128 OE 12.8 FF
-    US263472              01/11/24 PO: 12.8 Linux 64b DryRun
-    Linux 64bit        Serial #:    006275022  Rel: 12.8    Control#:YZFRS XQP2M NMG?R
-```
 
 ## Supported Products
 
@@ -178,7 +165,7 @@ The script recognizes and processes the following products:
 - Progress Prod AppServer for OE
 - Progress App Server for OE
 - OE RDBMS Adv Enterprise
-- OE AuthenticationGateway
+
 
 ## Troubleshooting
 
