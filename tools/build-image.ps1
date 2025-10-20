@@ -14,6 +14,9 @@ param(
   [Parameter(Position=4)]
   [string]$BinariesRoot = $null,
 
+  [Parameter(Position=5)]
+  [string]$DockerUsername = 'rdroge',
+
   [int]$JDKVERSION = 21,
   [string]$OEVERSION = $null,
   [switch]$BuildDevcontainer = $false,
@@ -35,6 +38,7 @@ if ($Component -like '-*') {
       '^-(Tag)$'         { if ($i+1 -lt $raw.Count) { $Tag         = $raw[$i+1] } }
       '^-(ImageName)$'   { if ($i+1 -lt $raw.Count) { $ImageName   = $raw[$i+1] } }
       '^-(BinariesRoot)$'{ if ($i+1 -lt $raw.Count) { $BinariesRoot= $raw[$i+1] } }
+      '^-(DockerUsername)$'{ if ($i+1 -lt $raw.Count) { $DockerUsername= $raw[$i+1] } }
       '^-(JDKVERSION)$'  { if ($i+1 -lt $raw.Count) { $JDKVERSION  = [int]$raw[$i+1] } }
       '^-(OEVERSION)$'   { if ($i+1 -lt $raw.Count) { $OEVERSION   = $raw[$i+1] } }
     }
@@ -64,11 +68,11 @@ if(-not $Tag){ $Tag = $Version }
 
 # Defaults per component
 switch ($Component) {
-  'compiler'  { if(-not $ImageName){ $ImageName = 'rdroge/oe_compiler' }  ; $CTYPE='compiler' }
-  'db_adv'    { if(-not $ImageName){ $ImageName = 'rdroge/oe_db_adv' }    ; $CTYPE='db' }
-  'pas_dev'   { if(-not $ImageName){ $ImageName = 'rdroge/oe_pas_dev' }   ; $CTYPE='pas' }
-  'pas_base'  { if(-not $ImageName){ $ImageName = 'rdroge/oe_pas_base' }  ; $CTYPE='pas' }
-  'pas_orads' { if(-not $ImageName){ $ImageName = 'rdroge/oe_pas_orads' } ; $CTYPE='pas' }
+  'compiler'  { if(-not $ImageName){ $ImageName = "$DockerUsername/oe_compiler" }  ; $CTYPE='compiler' }
+  'db_adv'    { if(-not $ImageName){ $ImageName = "$DockerUsername/oe_db_adv" }    ; $CTYPE='db' }
+  'pas_dev'   { if(-not $ImageName){ $ImageName = "$DockerUsername/oe_pas_dev" }   ; $CTYPE='pas' }
+  'pas_base'  { if(-not $ImageName){ $ImageName = "$DockerUsername/oe_pas_base" }  ; $CTYPE='pas' }
+  'pas_orads' { if(-not $ImageName){ $ImageName = "$DockerUsername/oe_pas_orads" } ; $CTYPE='pas' }
 }
 
 # Map OEVERSION if not provided (122, 127, 128)
@@ -123,7 +127,7 @@ $dockerfileContent = $dockerfileContent.Replace('JDKVERSION', $JdkVersionValue)
 
 # For pas_orads, replace the base image tag with the current tag
 if ($Component -eq 'pas_orads') {
-  $dockerfileContent = $dockerfileContent.Replace('rdroge/oe_pas_base:latest', "rdroge/oe_pas_base:$Tag")
+  $dockerfileContent = $dockerfileContent.Replace("$DockerUsername/oe_pas_base:latest", "$DockerUsername/oe_pas_base:$Tag")
 }
 
 $dockerfileContent | Set-Content -NoNewline $tempDockerfile
@@ -178,7 +182,7 @@ if ($BuildDevcontainer) {
   $firstLine = (Get-Content $devTempDockerfile -TotalCount 5)[2]
   Write-Host "  Verified: $firstLine"
   
-  $devImageName = 'rdroge/oe_devcontainer'
+  $devImageName = "$DockerUsername/oe_devcontainer"
   $devTagRef = "$($devImageName):$Tag"
   
   Write-Host "Building $devTagRef using $devcontainerDockerfile"
@@ -230,7 +234,7 @@ if ($BuildSports2020Db) {
   $firstLine = (Get-Content $sportsTempDockerfile -TotalCount 1)[0]
   Write-Host "  Verified: $firstLine"
   
-  $sportsImageName = 'rdroge/oe_sports2020_db'
+  $sportsImageName = "$DockerUsername/oe_sports2020_db"
   $sportsTagRef = "$($sportsImageName):$Tag"
   
   Write-Host "Building $sportsTagRef using $sports2020Dockerfile"

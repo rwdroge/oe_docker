@@ -29,3 +29,4 @@ DOCKERFILE_OPTIMIZATIONS.md
 
 # PAS dev keystore
 pas_dev/config/keystore/tomcat-keystore.p12
+addendum/US263472 License Addendum.txt

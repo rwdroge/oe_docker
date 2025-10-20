@@ -105,7 +105,38 @@ If your tarball names differ, you can override filenames via script parameters (
 **Not required** (extend base images):
 - `devcontainer`, `pas_orads`, `sports2020-db`
 
-**Setup steps:**
+#### Automated Setup (Recommended)
+
+Use the automated script to generate response.ini files from your license addendum:
+
+**Windows PowerShell:**
+```powershell
+cd tools
+.\Generate-ResponseIni.ps1
+```
+
+**Linux/macOS:**
+```bash
+cd tools
+./generate-response-ini.sh
+```
+
+**For devcontainer images:**
+```powershell
+.\Generate-ResponseIni.ps1 -Devcontainer
+```
+
+The script will:
+- ✅ Validate your license addendum file format
+- ✅ Extract company name, serial numbers, and control codes
+- ✅ Generate response.ini files for all required components
+- ✅ Match products to the correct container configurations
+
+> 📖 **See [tools/README_Generate-ResponseIni.md](tools/README_Generate-ResponseIni.md) for detailed usage**
+
+#### Manual Setup
+
+If you prefer manual configuration:
 
 Execute the following command from the root folder of the repository
 
