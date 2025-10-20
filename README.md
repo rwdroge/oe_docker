@@ -10,27 +10,30 @@ This repository supports building the following OpenEdge container images:
 - **`devcontainer`** - Development container (extends compiler image)
 - **`db_adv`** - OpenEdge database server (Advanced Enterprise Edition)
 - **`pas_dev`** - PASOE development instance with volumes for source code and libraries
-- **`pas_base`** - PASOE production instance (basic configuration)
-- **`pas_orads`** - PASOE production instance with Oracle DataServer (extends pas_base image)
+- **`pas_base`** - PASOE testing instance with Production-type configuration (basic configuration)
+- **`pas_orads`** - PASOE testing instance with Production-type configuration and Oracle DataServer (extends pas_base image)
 - **`sports2020_db`** - Sports2020 demo database (extends db_adv image)
 
 ### PASOE Image Differences
 
 - **`pas_dev`**: Development-focused PASOE with:
   - Volumes for `/app/src`, `/app/lib`, `/app/config`
-  - Development profile configuration
+  - Development-type PASOE instance
   - Suitable for local development and testing
 
-- **`pas_base`**: Production PASOE with:
-  - Pre-created production instance (`prodpas`)
+- **`pas_base`**: Testing-focused PASOE with:
+  - Pre-created Production-type instance (`prodpas`)
   - Health check enabled
-  - Minimal configuration for production deployment
+  - Minimal configuration
+  - **Note**: Despite the Production-type instance, this image is intended for testing purposes
 
-- **`pas_orads`**: Production PASOE with Oracle DataServer:
+- **`pas_orads`**: Testing-focused PASOE with Oracle DataServer:
   - **Builds on top of `pas_base`** (layered image)
+  - Production-type PASOE instance with Oracle DataServer support
   - Adds Oracle Client 19.3 (Linux 64-bit)
   - Oracle DataServer components included
   - Requires Oracle client installer in `binaries/oracle/` directory
+  - **Note**: Despite the Production-type instance, this image is intended for testing purposes
   - **Note**: Must build `pas_base` first
 
 ## Using with Dev Containers
@@ -43,7 +46,7 @@ This provides a complete containerized OpenEdge development environment with VS 
 
 ### Building Images for Dev Containers Only
 
-**If you only need images for dev container setups**, you can use the `-DevcontainerOnly` flag to build just the required images (compiler, devcontainer, pas_dev, db_adv, sports2020-db) and skip production-focused images like pas_base and pas_orads:
+**If you only need images for dev container setups**, you can use the `-DevcontainerOnly` flag to build just the required images (compiler, devcontainer, pas_dev, db_adv, sports2020-db) and skip testing-focused images like pas_base and pas_orads:
 
 **Windows PowerShell:**
 ```powershell

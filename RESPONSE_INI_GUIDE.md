@@ -16,29 +16,103 @@ The build system automatically detects which files are needed based on the versi
 ### response.ini (Base Installation)
 
 ```ini
-[General]
-CompanyName=Your Company Name
-SerialNumber=YOUR-SERIAL-NUMBER
-ControlCode=YOUR-CONTROL-CODE
+[Install Method]
+ApplyAsServicePack=0
 
-[Install]
-# Component-specific settings
-# See response_ini_example.txt in each component directory
+[Welcome Dialog]
+Result=1
+
+[Configuration Count]
+NumberofConfigurations=3
+
+[Product Configuration 1]
+name=<your company name>
+serial=<your serial number>
+version=12.8
+control=<your control code>
+prodname=4GL Development System
+
+[Product Configuration 2]
+name=<your company name>
+serial=<your serial number>
+version=12.8
+control=<your control code>
+prodname=Client Networking
+
+[Product Configuration 3]
+name=<your company name>
+serial=<your serial number>
+version=12.8
+control=<your control code>
+prodname=Progress Dev AS for OE
+
+[OpenEdge Explorer]
+enable=false
+
+[Java]
+JavaHome=/opt/java/openjdk
+
+[Type and Destination]
+type=COMPLETE
+path=/usr/dlc
+workpath=/usr/wrk
+oem_path=/usr/oemgmt
+oem_workpath=/usr/wrk_oemgmt
+
+[Server Engine]
+UseSqlServerEngine=0
+
+[Language Default]
+DefaultLanguage=English - International
+
+[Language Choice]
+lang1=English - International
+
+[International Settings]
+cpinternal=UTF-8
+cpcollation=Basic
+cpcase=Basic
+dateformat=mdy
+numsep=44
+numdec=46
+
+# Additional sections for PAS, authentication, etc.
+# See response_ini_example.txt in each component directory for full details
 ```
 
 ### response_update.ini (Patch Installation)
 
 ```ini
-[Update]
-ProgressInstallDir=/usr/dlc
+[InstallShield Information]
+Version=22.0.0.330
 
-[General]
-CompanyName=Your Company Name
-SerialNumber=YOUR-SERIAL-NUMBER
-ControlCode=YOUR-CONTROL-CODE
+[Application]
+Name=OpenEdge
+Version=12.8
+Company=<your company name>
+File=Response File
+
+[PreviousAdminServiceRunning]
+Result=1
+
+[Welcome Dialog]
+Result=1
+
+[OpenEdge Backup Directory Dialog]
+_nSPBackup=0
+_sSPBackupDir=/usr/dlc/Backup12.8.7
+Result=1
+
+[Summary Dialog]
+Result=1
+
+[SdFinish]
+Result=1
+bOpt1=0
+bOpt2=0
 ```
 
-**Key difference**: The `[Update]` section tells the installer to update an existing installation.
+**Key difference**: This file is specifically for patch/update installations and has a simpler structure focused on the update process rather than full product configuration.
 
 ## Setup Instructions
 
@@ -56,11 +130,15 @@ ControlCode=YOUR-CONTROL-CODE
    cp compiler/response_update_ini_example.txt compiler/response_update.ini
    ```
 
-2. **Edit the file(s)** and add your license information:
-   - Company name
-   - Serial number  
-   - Control code
-   - Component-specific settings
+2. **Edit response.ini** and add your license information in the `[Product Configuration N]` sections:
+   - `name=` - Your company name
+   - `serial=` - Your serial number (use 0 for unlicensed components like Client Networking)
+   - `control=` - Your control code
+   - Adjust version numbers and other settings as needed
+   
+   **Edit response_update.ini** (if required) and update:
+   - `Company=` - Your company name in the `[Application]` section
+   - Adjust version and backup directory path as needed
 
 3. **Repeat** for `db_adv`, `pas_dev`, and `pas_base`
 
