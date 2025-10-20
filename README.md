@@ -66,7 +66,7 @@ This significantly reduces build time by only creating the images needed for dev
 
 Before building images, ensure you have:
 
-1. **OpenEdge installer binaries** placed in `binaries/oe/<major.minor>/` (see below)
+1. **OpenEdge installer binaries** placed in `binaries/oe/<major.minor>/` (see [Binaries folder layout](#binaries-folder-layout))
 2. **Valid control codes** configured in base component `response.ini` files (see [Configure control codes](#configure-control-codes))
    - Required for: `compiler`, `db_adv`, `pas_dev`, `pas_base`
    - Not required for: `devcontainer`, `pas_orads`, `sports2020-db` (these extend base images)
@@ -99,8 +99,6 @@ If your tarball names differ, you can override filenames via script parameters (
 
 > ⚠️ **Required:** You must configure valid OpenEdge control codes before building images.
 
-> 📖 **See [RESPONSE_INI_GUIDE.md](RESPONSE_INI_GUIDE.md) for detailed instructions**, especially for versions **12.2.17-12.2.18** and **12.8.4-12.8.8** which require two response files.
-
 **Required components** (need response.ini):
 - `compiler`, `db_adv`, `pas_dev`, `pas_base`
 
@@ -124,6 +122,8 @@ If your tarball names differ, you can override filenames via script parameters (
 3. Repeat for each required component: `compiler`, `db_adv`, `pas_dev`, `pas_base`
 
 > **Note:** Build scripts will validate required files exist before starting and fail with clear error messages if any are missing.
+
+> 📖 **See [RESPONSE_INI_GUIDE.md](RESPONSE_INI_GUIDE.md) for detailed instructions**, especially for versions **12.2.17-12.2.18** and **12.8.4-12.8.8** which require two response files.
 
 ## Building Images
 
@@ -287,21 +287,23 @@ Example skipping optional images:
 
 The script will display a summary at the end showing the build status and duration for each component.
 
-### Series note (12.2, 12.7, 12.8)
+### Series note (12.2, 12.8)
 
-For 12.2 and 12.7 series the base installer filename follows the same convention as 12.8: the base tar omits `.0` in the filename.
+For 12.2 the base installer filename follows the same convention as 12.8: the base tar omits `.0` in the filename.
 
 Examples:
 
 - 12.2 base+patch:
   - `binaries/oe/12.2/PROGRESS_OE_12.2_LNX_64.tar.gz`
   - `binaries/oe/12.2/PROGRESS_OE_12.2.x_LNX_64.tar.gz` (patch)
-- 12.7 base+patch:
-  - `binaries/oe/12.7/PROGRESS_OE_12.7_LNX_64.tar.gz`
-  - `binaries/oe/12.7/PROGRESS_OE_12.7.x_LNX_64.tar.gz` (patch)
+- 12.8 base+patch:
+  - `binaries/oe/12.8/PROGRESS_OE_12.8_LNX_64.tar.gz`
+  - `binaries/oe/12.8/PROGRESS_OE_12.8.x_LNX_64.tar.gz` (patch)
 
 ## Credits
 
 This project was also inspired by the OpenEdge and Docker work of [Bronco Oostermeijer](https://github.com/bfv). Many thanks for the pioneering efforts in containerizing OpenEdge!
+
+
 
 
