@@ -107,6 +107,8 @@ If your tarball names differ, you can override filenames via script parameters (
 
 **Setup steps:**
 
+Execute the following command from the root folder of the repository
+
 1. Copy example file(s) to `response.ini` (and `response_update.ini` for dual-response versions):
    ```bash
    # Most versions (single file)
@@ -117,9 +119,9 @@ If your tarball names differ, you can override filenames via script parameters (
    cp compiler/response_update_ini_example.txt compiler/response_update.ini
    ```
 
-2. Edit the file(s) and add your company name, serial numbers, and control codes
+2. Edit the file(s) and add your company name, serial numbers, and control codes based on the License Addendum downloaded from ESD
 
-3. Repeat for each required component: `compiler`, `db_adv`, `pas_dev`, `pas_base`
+3. Adjust the resulting response.ini/response_update.ini files for all required Docker images that you want to build: `compiler` (example as shown above), `db_adv`, `pas_dev`, `pas_base`
 
 > **Note:** Build scripts will validate required files exist before starting and fail with clear error messages if any are missing.
 
@@ -303,6 +305,7 @@ Examples:
 ## Credits
 
 This project was also inspired by the OpenEdge and Docker work of [Bronco Oostermeijer](https://github.com/bfv). Many thanks for the pioneering efforts in containerizing OpenEdge!
+
 
 
 
