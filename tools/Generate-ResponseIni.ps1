@@ -69,7 +69,7 @@ $buildConfigs = @{
         "Path" = Join-Path $rootDir "db_adv"
     }
     "pas_dev" = @{
-        "Products" = @("Progress Dev AS for OE")
+        "Products" = @("Progress Dev AppServer for OE")
         "Path" = Join-Path $rootDir "pas_dev"
     }
     "pas_base" = @{
