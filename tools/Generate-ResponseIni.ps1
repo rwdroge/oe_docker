@@ -61,7 +61,7 @@ $rootDir = Split-Path -Parent $scriptDir
 # Container build configurations
 $buildConfigs = @{
     "compiler" = @{
-        "Products" = @("4GL Development System", "Client Networking", "Progress Dev AppServer for OE")
+        "Products" = @("4GL Development System", "Client Networking", "Progress Dev AS for OE")
         "Path" = Join-Path $rootDir "compiler"
     }
     "db_adv" = @{
@@ -69,11 +69,11 @@ $buildConfigs = @{
         "Path" = Join-Path $rootDir "db_adv"
     }
     "pas_dev" = @{
-        "Products" = @("Progress Dev AS for OE", "Progress Dev AppServer for OE")
+        "Products" = @("Progress Dev AS for OE")
         "Path" = Join-Path $rootDir "pas_dev"
     }
     "pas_base" = @{
-        "Products" = @("Progress App Server for OE", "Progress Prod AppServer for OE")
+        "Products" = @("Progress App Server for OE")
         "Path" = Join-Path $rootDir "pas_base"
     }
 }
