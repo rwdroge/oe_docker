@@ -121,7 +121,7 @@ Execute the following command from the root folder of the repository
 
 2. Edit the file(s) and add your company name, serial numbers, and control codes based on the License Addendum downloaded from ESD
 
-3. Adjust the resulting response.ini/response_update.ini files for all required Docker images that you want to build: `compiler` (example as shown above), `db_adv`, `pas_dev`, `pas_base`
+3. You'll need to adjust the response.ini/response_update.ini files for every required Docker image that you want to build: `compiler` (example as shown above), `db_adv`, `pas_dev`, `pas_base`
 
 > **Note:** Build scripts will validate required files exist before starting and fail with clear error messages if any are missing.
 
@@ -305,6 +305,7 @@ Examples:
 ## Credits
 
 This project was also inspired by the OpenEdge and Docker work of [Bronco Oostermeijer](https://github.com/bfv). Many thanks for the pioneering efforts in containerizing OpenEdge!
+
 
 
 
