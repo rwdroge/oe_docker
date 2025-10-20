@@ -135,7 +135,7 @@ function Test-LicenseFileFormat {
         throw "Invalid license file format: Missing serial number and control code information"
     }
     
-    Write-Host "✓ License file format validated" -ForegroundColor Green
+    Write-Host "License file format validated" -ForegroundColor Green
     return $true
 }
 
@@ -143,17 +143,51 @@ function Get-CompanyName {
     param([string]$Content)
     
     # Extract company name from "Registered To" section
-    if ($Content -match 'Registered To:\d+\s+(.+?)(?:\r?\n)') {
-        $companyName = $Matches[1].Trim()
-        Write-Verbose "Found company name: $companyName"
-        return $companyName
+    # Format: "Registered To:   12345  Full Company Name (ABBREV)"
+    # Or:     "Registered To:   12345  Company Name                         Extended Name"
+    if ($Content -match 'Registered To:\s*\d+\s+(.+?)(?:\r?\n)') {
+        $fullName = $Matches[1].Trim()
+        
+        # If there are 5+ consecutive spaces, take only the part before them
+        # This handles cases like "Progress Software                         Progress Software ESD"
+        if ($fullName -match '^(.+?)\s{5,}') {
+            $companyName = $Matches[1].Trim()
+            Write-Verbose "Found company name (before whitespace): $companyName (from: $fullName)"
+            return $companyName
+        }
+        
+        # Try to extract abbreviated name in parentheses
+        if ($fullName -match '\(([^)]+)\)\s*$') {
+            $companyName = $Matches[1].Trim()
+            Write-Verbose "Found abbreviated company name: $companyName (from: $fullName)"
+            return $companyName
+        }
+        
+        # If no special formatting, use full name
+        Write-Verbose "Found company name: $fullName"
+        return $fullName
     }
     
     # Fallback: try Customer/Partner section
-    if ($Content -match 'Customer/Partner:\d+\s+(.+?)(?:\r?\n)') {
-        $companyName = $Matches[1].Trim()
-        Write-Verbose "Found company name (fallback): $companyName"
-        return $companyName
+    if ($Content -match 'Customer/Partner:\s*\d+\s+(.+?)(?:\r?\n)') {
+        $fullName = $Matches[1].Trim()
+        
+        # If there are 5+ consecutive spaces, take only the part before them
+        if ($fullName -match '^(.+?)\s{5,}') {
+            $companyName = $Matches[1].Trim()
+            Write-Verbose "Found company name (fallback, before whitespace): $companyName (from: $fullName)"
+            return $companyName
+        }
+        
+        # Try to extract abbreviated name in parentheses
+        if ($fullName -match '\(([^)]+)\)\s*$') {
+            $companyName = $Matches[1].Trim()
+            Write-Verbose "Found abbreviated company name (fallback): $companyName (from: $fullName)"
+            return $companyName
+        }
+        
+        Write-Verbose "Found company name (fallback): $fullName"
+        return $fullName
     }
     
     throw "Could not extract company name from license file"
@@ -182,7 +216,7 @@ function Get-LicenseProducts {
                 $prevLine = $lines[$j]
                 
                 # Match various product name patterns
-                if ($prevLine -match '^\s*(4GL Development System|Client Networking|Progress Dev AS for OE|Progress Dev AppServer for OE|Progress Prod AppServer for OE|OE RDBMS Adv Enterprise|OE AuthenticationGateway|Progress App Server for OE)') {
+                if ($prevLine -match '^\s*(4GL Development System|Client Networking|Progress Dev AS for OE|Progress Dev AppServer for OE|Progress Prod AppServer for OE|OE RDBMS Adv Enterprise|OE AuthenticationGateway|Progress App Server for OE|Progress AppServer for OE)') {
                     $productName = $Matches[1].Trim()
                     
                     $productKey = "$productName|$serial"
@@ -195,6 +229,8 @@ function Get-LicenseProducts {
                             "Control" = $control
                         }
                         Write-Verbose "Found product: $productName (Serial: $serial, Control: $control)"
+                    } else {
+                        Write-Verbose "Duplicate product key found: $productKey (skipping)"
                     }
                     break
                 }
@@ -204,29 +240,39 @@ function Get-LicenseProducts {
         # Also check for bundle products with separate control codes
         # Format: "      Progress Dev AppServer for OE          Units: 1"
         # Followed by: "      Serial #:    006275040   Rel: 12.8     Control#:Z8DRS 2PP2N N4C?4"
-        if ($line -match '^\s+(4GL Development System|Client Networking|Progress Dev AS for OE|Progress Prod AppServer for OE|OE RDBMS Adv Enterprise|OE AuthenticationGateway|Progress App Server for OE)\s+Units:\s+\d+') {
-            $productName = $Matches[1].Trim()
+        # Match any line with "Units:" and extract the product name before it
+        if ($line -match '^\s+(.+?)\s{2,}Units:\s+\d+') {
+            $potentialProductName = $Matches[1].Trim()
             
-            # Look ahead for serial and control
-            for ($j = $i + 1; $j -lt $lines.Count -and $j -le ($i + 3); $j++) {
-                $nextLine = $lines[$j]
-                if ($nextLine -match 'Serial #:\s+(\d+)\s+Rel:\s+([\d\.]+)\s+Control#:(.+)$') {
-                    $serial = $Matches[1].Trim()
-                    $release = $Matches[2].Trim()
-                    $control = $Matches[3].Trim()
-                    
-                    $productKey = "$productName|$serial"
-                    
-                    if (-not $products.ContainsKey($productKey)) {
-                        $products[$productKey] = @{
-                            "Name" = $productName
-                            "Serial" = $serial
-                            "Release" = $release
-                            "Control" = $control
+            # Check if this matches one of our known products
+            $knownProducts = @('4GL Development System', 'Client Networking', 'Progress Dev AS for OE', 'Progress Dev AppServer for OE', 'Progress Prod AppServer for OE', 'OE RDBMS Adv Enterprise', 'OE AuthenticationGateway', 'Progress App Server for OE', 'Progress AppServer for OE')
+            
+            if ($knownProducts -contains $potentialProductName) {
+                $productName = $potentialProductName
+                
+                # Look ahead for serial and control
+                for ($j = $i + 1; $j -lt $lines.Count -and $j -le ($i + 3); $j++) {
+                    $nextLine = $lines[$j]
+                    if ($nextLine -match 'Serial #:\s+(\d+)\s+Rel:\s+([\d\.]+)\s+Control#:(.+)$') {
+                        $serial = $Matches[1].Trim()
+                        $release = $Matches[2].Trim()
+                        $control = $Matches[3].Trim()
+                        
+                        $productKey = "$productName|$serial"
+                        
+                        if (-not $products.ContainsKey($productKey)) {
+                            $products[$productKey] = @{
+                                "Name" = $productName
+                                "Serial" = $serial
+                                "Release" = $release
+                                "Control" = $control
+                            }
+                            Write-Verbose "Found bundle product: $productName (Serial: $serial, Control: $control)"
+                        } else {
+                            Write-Verbose "Duplicate bundle product key found: $productKey (skipping)"
                         }
-                        Write-Verbose "Found bundle product: $productName (Serial: $serial, Control: $control)"
+                        break
                     }
-                    break
                 }
             }
         }
@@ -259,44 +305,71 @@ function New-ResponseIni {
         throw "Template file not found: $TemplateFile"
     }
     
-    $template = Get-Content $TemplateFile -Raw
+    $content = Get-Content $TemplateFile -Raw
     
-    # Update configuration count
-    $configCount = $Products.Count
-    $template = $template -replace "NumberofConfigurations=\d+", "NumberofConfigurations=$configCount"
+    # Note: We do NOT change NumberofConfigurations - the template already has the correct value
+    # for the specific products it expects. We only update the license fields (name, serial, control).
     
-    # Generate product configurations
-    $productConfigs = @()
-    for ($i = 0; $i -lt $Products.Count; $i++) {
-        $product = $Products[$i]
-        $configNum = $i + 1
+    # Parse all Product Configuration sections from template
+    $configNum = 1
+    while ($content -match "\[Product Configuration $configNum\][^\[]*prodname=([^\r\n]+)") {
+        $templateProdName = $Matches[1].Trim()
         
-        $config = @"
-
-[Product Configuration $configNum]
-name=$CompanyName
-serial=$($product.Serial)
-version=$($product.Release)
-control=$($product.Control)
-prodname=$($product.Name)
-"@
-        $productConfigs += $config
-    }
-    
-    # Replace existing product configurations
-    $template = $template -replace '(?s)\[Product Configuration 1\].*?(?=\r?\n\r?\n\[|\r?\n;|\Z)', ''
-    
-    # Insert new configurations after [Configuration Count] section
-    $insertPoint = $template.IndexOf('[Configuration Count]')
-    if ($insertPoint -ge 0) {
-        $endOfSection = $template.IndexOf("`n`n", $insertPoint)
-        if ($endOfSection -ge 0) {
-            $template = $template.Substring(0, $endOfSection) + ($productConfigs -join "") + $template.Substring($endOfSection)
+        # Find matching product from license data
+        # Normalize names for comparison (handle "AS" vs "AppServer" variations, "Prod" vs "Production")
+        $normalizedTemplateName = $templateProdName -replace '\s+', ' ' -replace 'AppServer', 'AS' -replace 'App Server', 'AS' -replace 'ProdAS', 'AS' -replace 'Prod AS', 'AS' -replace 'Prod ', '' -replace 'Production ', ''
+        
+        $matchingProduct = $Products | Where-Object { 
+            $normalizedProductName = $_.Name -replace '\s+', ' ' -replace 'AppServer', 'AS' -replace 'App Server', 'AS' -replace 'ProdAS', 'AS' -replace 'Prod AS', 'AS' -replace 'Prod ', '' -replace 'Production ', ''
+            
+            # Exact match (normalized)
+            $normalizedProductName -eq $normalizedTemplateName -or
+            # Template contains product name
+            $normalizedTemplateName -like "*$normalizedProductName*" -or
+            # Product name contains template name
+            $normalizedProductName -like "*$normalizedTemplateName*" -or
+            # Original exact match
+            $_.Name -eq $templateProdName
+        } | Sort-Object { 
+            # Prefer products with control codes (non-empty)
+            if ([string]::IsNullOrWhiteSpace($_.Control)) { 1 } else { 0 }
+        } | Select-Object -First 1
+        
+        if ($matchingProduct) {
+            Write-Verbose "Matched template product '$templateProdName' to license product '$($matchingProduct.Name)' (Serial: $($matchingProduct.Serial), Control: $($matchingProduct.Control))"
+            
+            # Find the section and update its fields
+            $sectionPattern = "(\[Product Configuration $configNum\][^\[]*)"
+            
+            if ($content -match $sectionPattern) {
+                $section = $Matches[1]
+                $updatedSection = $section
+                
+                # Update name field (use line boundaries to avoid matching prodname)
+                $updatedSection = $updatedSection -replace "(?m)^name=.*$", "name=$CompanyName"
+                
+                # Update serial field
+                $updatedSection = $updatedSection -replace "(?m)^serial=.*$", "serial=$($matchingProduct.Serial)"
+                
+                # Update control field
+                $updatedSection = $updatedSection -replace "(?m)^control=.*$", "control=$($matchingProduct.Control)"
+                
+                Write-Verbose "Updated section for Product Configuration $configNum"
+                
+                # Replace the section in content
+                $content = $content -replace [regex]::Escape($section), $updatedSection
+            } else {
+                Write-Verbose "Warning: Could not find section pattern for Product Configuration $configNum"
+            }
+        } else {
+            Write-Verbose "Warning: No license data found for template product: $templateProdName"
         }
+        
+        $configNum++
     }
     
     # Write output
-    $template | Out-File -FilePath $outputFile -Encoding UTF8 -NoNewline
+    $content | Out-File -FilePath $outputFile -Encoding UTF8 -NoNewline
     Write-Host "Generated: $outputFile" -ForegroundColor Green
 }
 
@@ -390,6 +463,16 @@ try {
     $allProducts = Get-LicenseProducts -Content $licenseContent
     Write-Host "Found $($allProducts.Count) licensed products" -ForegroundColor Cyan
     
+    # Debug: Show all parsed products with verbose
+    if ($VerbosePreference -eq 'Continue') {
+        Write-Verbose "=== All Parsed Products ==="
+        foreach ($key in $allProducts.Keys) {
+            $p = $allProducts[$key]
+            Write-Verbose "  $($p.Name) | Serial: $($p.Serial) | Control: $($p.Control)"
+        }
+        Write-Verbose "==========================="
+    }
+    
     # Detect version from license file if not provided
     $detectedVersion = $null
     if ([string]::IsNullOrEmpty($Version)) {
@@ -429,7 +512,7 @@ try {
             foreach ($required in $requiredProducts) {
                 if ($product.Name -eq $required -or $product.Name -like "*$required*") {
                     $matchedProducts += $product
-                    Write-Host "  - Found: $($product.Name) (Serial: $($product.Serial))" -ForegroundColor Gray
+                    Write-Host "  - Found: $($product.Name) (Serial: $($product.Serial), Control: $($product.Control))" -ForegroundColor Gray
                     break
                 }
             }

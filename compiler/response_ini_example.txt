@@ -21,7 +21,7 @@ prodname=4GL Development System
 
 [Product Configuration 2]
 name=
-serial=0
+serial=
 version=12.8
 control=
 prodname=Client Networking

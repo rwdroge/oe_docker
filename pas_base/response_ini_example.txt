@@ -17,7 +17,7 @@ name=
 serial=
 version=12.8
 control=
-prodname=Progress App Server for OE
+prodname=Progress ProdAS for OE
 
 ;
 ; DESCRIPTION of OpenEdge Explorer
