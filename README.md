@@ -70,40 +70,81 @@ This provides a complete containerized OpenEdge development environment with VS 
 
 This significantly reduces build time by only creating the images needed for development container workflows.
 
+## Prerequisites
+
+Before running the quickstart script, ensure you have the following:
+
+### 1. **Docker Installed**
+- **Windows:** [Docker Desktop for Windows](https://docs.docker.com/desktop/install/windows-install/)
+- **Linux:** [Docker Engine](https://docs.docker.com/engine/install/) or [Docker Desktop for Linux](https://docs.docker.com/desktop/install/linux-install/)
+- **macOS:** [Docker Desktop for Mac](https://docs.docker.com/desktop/install/mac-install/)
+
+Verify Docker is running:
+```bash
+docker --version
+docker ps
+```
+
+### 2. **Valid License Addendum File**
+Download your OpenEdge license addendum file from **[Progress ESD](https://downloads.progress.com)** and place it in the `addendum/` folder:
+
+**For OpenEdge 12.8.x:**
+```
+addendum/
+├── US263472 License Addendum.txt  ← Your license file here
+└── license_addendum_placeholder.txt
+```
+
+**For OpenEdge 12.2.x:**
+```
+addendum/
+├── your_12.2_license_addendum.txt  ← Your license file here
+└── license_addendum_placeholder.txt
+```
+
+> 📝 **Note:** The quickstart script will help you generate `response.ini` files from your license addendum.
+
+### 3. **OpenEdge Installer Binaries**
+Download your OpenEdge installer files from **[Progress ESD](https://downloads.progress.com)** and place them in the `binaries/oe/<version>/` folder:
+
+**Single installer example (12.8.9):**
+```
+binaries/oe/12.8/
+└── PROGRESS_OE_12.8.9_LNX_64.tar.gz
+```
+
+**Base + incremental installer example (12.8.6):**
+```
+binaries/oe/12.8/
+├── PROGRESS_OE_12.8_LNX_64.tar.gz     ← Base installer (12.8.0)
+└── PROGRESS_OE_12.8.6_LNX_64.tar.gz   ← Update installer (12.8.6)
+```
+
+> ⚠️ **Important for 12.8.4 - 12.8.8:** You must place both the base installer (12.8.0) and the update installer in the same directory for incremental installations.
+
 ## Getting Started
 
-### Prerequisites
+Once you have the prerequisites ready, simply run the quickstart script and it will guide you through the process:
 
-Before building images, ensure you have:
+**Windows:**
+```powershell
+.\oe_container_build_quickstart.ps1
+```
 
-1. **OpenEdge installer binaries** placed in `binaries/oe/<major.minor>/` (see [Binaries folder layout](#binaries-folder-layout))
-2. **Valid control codes** configured in base component `response.ini` files (see [Configure control codes](#configure-control-codes))
-   - Required for: `compiler`, `db_adv`, `pas_dev`, `pas_base`
-   - Not required for: `devcontainer`, `pas_orads`, `sports2020-db` (these extend base images)
-   - Example files (`response_ini_example.txt`) are provided in each component directory
-   - Copy/rename to `response.ini` and add your company name, serials, and control codes
+**Linux/macOS:**
+```bash
+./oe_container_build_quickstart.sh
+```
 
-> ⚠️ **Important:** The build scripts will validate that both installers and required `response.ini` files exist before starting the build. Missing files will result in clear error messages.
+The script will:
+1. Ask for your Docker Hub username
+2. Present an interactive menu with build options
+3. Validate all prerequisites before starting
+4. Generate response.ini files from your license (if needed)
+5. Build the requested Docker images
 
-### Binaries folder layout
+> ✅ **Validation:** The quickstart script automatically validates that all required files exist before starting any build process.
 
-Place your binaries under `binaries/oe/<major.minor>/` relative to the repo root:
-
-- Single installer example:
-  - `binaries/oe/12.8/PROGRESS_OE_12.8.9_LNX_64.tar.gz`
-- Base + patch example:
-  - `binaries/oe/12.8/PROGRESS_OE_12.8_LNX_64.tar.gz` (base)
-  - `binaries/oe/12.8/PROGRESS_OE_12.8.6_LNX_64.tar.gz` (patch)
-
-> **Important (OpenEdge 12.8.4 - 12.8.8):** You must place the 12.8 base installer next to the update installer (OE 12.8.x) in the same directory. The tooling expects both base and update to be present side-by-side to stage and install correctly.
-
-Example required pair for 12.8.6:
-
-- `binaries/oe/12.8/PROGRESS_OE_12.8_LNX_64.tar.gz` (base)
-- `binaries/oe/12.8/PROGRESS_OE_12.8.6_LNX_64.tar.gz` (update)
-
-
-If your tarball names differ, you can override filenames via script parameters (see below). The scripts will stage the patch file to `installer/PROGRESS_PATCH_OE.tar.gz` for the Dockerfile.
 
 ### Configure control codes
 
