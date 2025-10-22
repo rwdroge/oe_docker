@@ -70,40 +70,81 @@ This provides a complete containerized OpenEdge development environment with VS 
 
 This significantly reduces build time by only creating the images needed for development container workflows.
 
+## Prerequisites
+
+Before running the quickstart script, ensure you have the following:
+
+### 1. **Docker Installed**
+- **Windows:** [Docker Desktop for Windows](https://docs.docker.com/desktop/install/windows-install/)
+- **Linux:** [Docker Engine](https://docs.docker.com/engine/install/) or [Docker Desktop for Linux](https://docs.docker.com/desktop/install/linux-install/)
+- **macOS:** [Docker Desktop for Mac](https://docs.docker.com/desktop/install/mac-install/)
+
+Verify Docker is running:
+```bash
+docker --version
+docker ps
+```
+
+### 2. **Valid License Addendum File**
+Download your OpenEdge license addendum file from **[Progress ESD](https://downloads.progress.com)** and place it in the `addendum/` folder:
+
+**For OpenEdge 12.8.x:**
+```
+addendum/
+├── US263472 License Addendum.txt  ← Your license file here
+└── license_addendum_placeholder.txt
+```
+
+**For OpenEdge 12.2.x:**
+```
+addendum/
+├── your_12.2_license_addendum.txt  ← Your license file here
+└── license_addendum_placeholder.txt
+```
+
+> 📝 **Note:** The quickstart script will help you generate `response.ini` files from your license addendum.
+
+### 3. **OpenEdge Installer Binaries**
+Download your OpenEdge installer files from **[Progress ESD](https://downloads.progress.com)** and place them in the `binaries/oe/<version>/` folder:
+
+**Single installer example (12.8.9):**
+```
+binaries/oe/12.8/
+└── PROGRESS_OE_12.8.9_LNX_64.tar.gz
+```
+
+**Base + incremental installer example (12.8.6):**
+```
+binaries/oe/12.8/
+├── PROGRESS_OE_12.8_LNX_64.tar.gz     ← Base installer (12.8.0)
+└── PROGRESS_OE_12.8.6_LNX_64.tar.gz   ← Update installer (12.8.6)
+```
+
+> ⚠️ **Important for 12.8.4 - 12.8.8:** You must place both the base installer (12.8.0) and the update installer in the same directory for incremental installations.
+
 ## Getting Started
 
-### Prerequisites
+Once you have the prerequisites ready, simply run the quickstart script and it will guide you through the process:
 
-Before building images, ensure you have:
+**Windows:**
+```powershell
+.\oe_container_build_quickstart.ps1
+```
 
-1. **OpenEdge installer binaries** placed in `binaries/oe/<major.minor>/` (see [Binaries folder layout](#binaries-folder-layout))
-2. **Valid control codes** configured in base component `response.ini` files (see [Configure control codes](#configure-control-codes))
-   - Required for: `compiler`, `db_adv`, `pas_dev`, `pas_base`
-   - Not required for: `devcontainer`, `pas_orads`, `sports2020-db` (these extend base images)
-   - Example files (`response_ini_example.txt`) are provided in each component directory
-   - Copy/rename to `response.ini` and add your company name, serials, and control codes
+**Linux/macOS:**
+```bash
+./oe_container_build_quickstart.sh
+```
 
-> ⚠️ **Important:** The build scripts will validate that both installers and required `response.ini` files exist before starting the build. Missing files will result in clear error messages.
+The script will:
+1. Ask for your Docker Hub username
+2. Present an interactive menu with build options
+3. Validate all prerequisites before starting
+4. Generate response.ini files from your license (if needed)
+5. Build the requested Docker images
 
-### Binaries folder layout
+> ✅ **Validation:** The quickstart script automatically validates that all required files exist before starting any build process.
 
-Place your binaries under `binaries/oe/<major.minor>/` relative to the repo root:
-
-- Single installer example:
-  - `binaries/oe/12.8/PROGRESS_OE_12.8.9_LNX_64.tar.gz`
-- Base + patch example:
-  - `binaries/oe/12.8/PROGRESS_OE_12.8_LNX_64.tar.gz` (base)
-  - `binaries/oe/12.8/PROGRESS_OE_12.8.6_LNX_64.tar.gz` (patch)
-
-> **Important (OpenEdge 12.8.4 - 12.8.8):** You must place the 12.8 base installer next to the update installer (OE 12.8.x) in the same directory. The tooling expects both base and update to be present side-by-side to stage and install correctly.
-
-Example required pair for 12.8.6:
-
-- `binaries/oe/12.8/PROGRESS_OE_12.8_LNX_64.tar.gz` (base)
-- `binaries/oe/12.8/PROGRESS_OE_12.8.6_LNX_64.tar.gz` (update)
-
-
-If your tarball names differ, you can override filenames via script parameters (see below). The scripts will stage the patch file to `installer/PROGRESS_PATCH_OE.tar.gz` for the Dockerfile.
 
 ### Configure control codes
 
@@ -178,14 +219,11 @@ You can run a single command that prepares installers and builds the image:
 pwsh ./tools/build-image.ps1 -Component compiler  -Version 12.8.6 -Tag 12.8.6
 pwsh ./tools/build-image.ps1 -Component db_adv    -Version 12.8.6 -Tag 12.8.6
 pwsh ./tools/build-image.ps1 -Component pas_dev   -Version 12.8.6 -Tag 12.8.6
-pwsh ./tools/build-image.ps1 -Component pas_base  -Version 12.8.6 -Tag 12.8.6
-pwsh ./tools/build-image.ps1 -Component pas_orads -Version 12.8.6 -Tag 12.8.6
 ```
 
 Options:
 - `-ImageName` to override default repository name per component.
 - `-BinariesRoot` to point to a custom binaries root.
-- `-JDKVERSION` to control the Java version propagated as build-arg.
 - `-OEVERSION` to override the automatic mapping of series to OEVERSION (defaults: 12.2→122, 12.7→127, 12.8→128).
 - `-BuildDevcontainer` (compiler only) to also build a devcontainer image using the just-created local compiler image as the base. The devcontainer image will be tagged as `rdroge/oe_devcontainer:<Tag>`.
 - `-BuildSports2020Db` (db_adv only) to also build a sports2020-db image using the just-created local db_adv image as the base. The sports2020-db image will be tagged as `rdroge/oe_sports2020_db:<Tag>`.
@@ -212,14 +250,11 @@ You can run a single command that prepares installers and builds the image:
 ./tools/build-image.sh -c compiler  -v 12.8.6 -t 12.8.6
 ./tools/build-image.sh -c db_adv    -v 12.8.6 -t 12.8.6
 ./tools/build-image.sh -c pas_dev   -v 12.8.6 -t 12.8.6
-./tools/build-image.sh -c pas_base  -v 12.8.6 -t 12.8.6
-./tools/build-image.sh -c pas_orads -v 12.8.6 -t 12.8.6
 ```
 
 Options:
 - `-i <image>` to override default repository name per component
 - `-b <binroot>` to point to a custom binaries root
-- `-j <jdkversion>` to control the Java version propagated as build-arg
 - `-o <oeversion>` to override the automatic mapping of series to OEVERSION (defaults: 12.2→122, 12.7→127, 12.8→128)
 - `-d` (compiler only) to also build a devcontainer image using the just-created local compiler image as the base
 - `-s` (db_adv only) to also build a sports2020-db image using the just-created local db_adv image as the base
@@ -240,7 +275,7 @@ Example with sports2020-db:
 
 ### Build all images (Windows PowerShell)
 
-You can build all images (compiler, devcontainer, pas_dev, pas_base, pas_orads, db_adv, sports2020-db) with a single command:
+You can build all images (compiler, devcontainer, pas_dev, db_adv, sports2020-db) with a single command:
 
 ```powershell
 pwsh ./tools/build-all-images.ps1 -Version 12.8.6 -Tag 12.8.6
@@ -250,18 +285,14 @@ pwsh ./tools/build-all-images.ps1 -Version 12.8.6 -Tag 12.8.6
 1. compiler image
 2. devcontainer image (using the local compiler image as base)
 3. pas_dev image
-4. pas_base image
-5. pas_orads image (using the local pas_base image as base)
-6. db_adv image
-7. sports2020-db image (using the local db_adv image as base)
+4. db_adv image
+5. sports2020-db image (using the local db_adv image as base)
 
 Options (use Skip* flags to exclude specific images):
 - `-SkipDevcontainer` to skip building the devcontainer image
-- `-SkipPasOrads` to skip building the pas_orads image
 - `-SkipSports2020Db` to skip building the sports2020-db image
 - `-DevcontainerOnly` to build only images required for devcontainer setups (compiler, devcontainer, pas_dev, db_adv, sports2020-db)
 - `-BinariesRoot` to point to a custom binaries root
-- `-JDKVERSION` to control the Java version propagated as build-arg
 - `-OEVERSION` to override the automatic mapping of series to OEVERSION
 
 Example building only devcontainer images:
@@ -276,17 +307,17 @@ Example skipping devcontainer:
 pwsh ./tools/build-all-images.ps1 -Version 12.8.6 -Tag 12.8.6 -SkipDevcontainer
 ```
 
-Example skipping optional images:
+Example skipping sports2020-db:
 
 ```powershell
-pwsh ./tools/build-all-images.ps1 -Version 12.8.6 -Tag 12.8.6 -SkipPasOrads -SkipSports2020Db
+pwsh ./tools/build-all-images.ps1 -Version 12.8.6 -Tag 12.8.6 -SkipSports2020Db
 ```
 
 The script will display a summary at the end showing the build status and duration for each component.
 
 ### Build all images (Linux/macOS Bash)
 
-You can build all images (compiler, devcontainer, pas_dev, pas_base, pas_orads, db_adv, sports2020-db) with a single command:
+You can build all images (compiler, devcontainer, pas_dev, db_adv, sports2020-db) with a single command:
 
 ```bash
 ./tools/build-all-images.sh -v 12.8.6 -t 12.8.6
@@ -296,18 +327,14 @@ You can build all images (compiler, devcontainer, pas_dev, pas_base, pas_orads, 
 1. compiler image
 2. devcontainer image (using the local compiler image as base)
 3. pas_dev image
-4. pas_base image
-5. pas_orads image (using the local pas_base image as base)
-6. db_adv image
-7. sports2020-db image (using the local db_adv image as base)
+4. db_adv image
+5. sports2020-db image (using the local db_adv image as base)
 
 Options (use skip flags to exclude specific images):
 - `-s` to skip building the devcontainer image
-- `-P` to skip building the pas_orads image
 - `-S` to skip building the sports2020-db image
 - `-D` to build only images required for devcontainer setups (compiler, devcontainer, pas_dev, db_adv, sports2020-db)
 - `-b <binroot>` to point to a custom binaries root
-- `-j <jdkversion>` to control the Java version propagated as build-arg
 - `-o <oeversion>` to override the automatic mapping of series to OEVERSION
 
 Example building only devcontainer images:
@@ -322,10 +349,10 @@ Example skipping devcontainer:
 ./tools/build-all-images.sh -v 12.8.6 -t 12.8.6 -s
 ```
 
-Example skipping optional images:
+Example skipping sports2020-db:
 
 ```bash
-./tools/build-all-images.sh -v 12.8.6 -t 12.8.6 -P -S
+./tools/build-all-images.sh -v 12.8.6 -t 12.8.6 -S
 ```
 
 The script will display a summary at the end showing the build status and duration for each component.
