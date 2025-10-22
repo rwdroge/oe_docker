@@ -8,25 +8,23 @@ param(
   [Parameter(Position=2)]
   [string]$BinariesRoot = $null,
 
-  [int]$JDKVERSION = 21,
   [string]$OEVERSION = $null,
   [switch]$SkipDevcontainer = $false,
   [switch]$SkipSports2020Db = $false,
-  [switch]$SkipPasOrads = $false,
   [switch]$DevcontainerOnly = $false
 )
 
 $ErrorActionPreference = 'Stop'
 
 <#
-  Build all OpenEdge images (compiler, devcontainer, pas_dev, pas_base, pas_orads, db_adv, sports2020-db) in one command.
+  Build all OpenEdge images (compiler, devcontainer, pas_dev, db_adv, sports2020-db) in one command.
   By default, all images are built. Use Skip* parameters to exclude specific images.
   Use -DevcontainerOnly to build only images required for devcontainer setups (compiler, devcontainer, pas_dev, db_adv, sports2020-db).
   
   Example:
     pwsh ./tools/build-all-images.ps1 -Version 12.8.7 -Tag 12.8.7
     pwsh ./tools/build-all-images.ps1 -Version 12.8.7 -Tag 12.8.7 -SkipDevcontainer
-    pwsh ./tools/build-all-images.ps1 -Version 12.8.7 -Tag 12.8.7 -SkipSports2020Db -SkipPasOrads
+    pwsh ./tools/build-all-images.ps1 -Version 12.8.7 -Tag 12.8.7 -SkipSports2020Db
     pwsh ./tools/build-all-images.ps1 -Version 12.8.7 -Tag 12.8.7 -DevcontainerOnly
 #>
 
@@ -42,23 +40,16 @@ if ($DevcontainerOnly) {
   $components = @('compiler', 'pas_dev', 'db_adv')
   $buildDevcontainer = $true
   $buildSports2020 = $true
-  $buildPasOrads = $false
 } else {
-  $components = @('compiler', 'pas_dev', 'pas_base', 'pas_orads', 'db_adv')
+  $components = @('compiler', 'pas_dev', 'db_adv')
   $buildDevcontainer = -not $SkipDevcontainer
   $buildSports2020 = -not $SkipSports2020Db
-  $buildPasOrads = -not $SkipPasOrads
 }
 
 # Validate all response.ini files exist before starting
-# Note: pas_orads builds from pas_base and doesn't need its own response.ini
 $root = Resolve-Path (Join-Path $PSScriptRoot '..')
 $missingResponseIni = @()
 foreach ($comp in $components) {
-  # Skip pas_orads as it builds from pas_base and doesn't need response.ini
-  if ($comp -eq 'pas_orads') {
-    continue
-  }
   $responseIni = Join-Path $root (Join-Path $comp 'response.ini')
   if (-not (Test-Path $responseIni)) {
     $missingResponseIni += $responseIni
@@ -86,7 +77,6 @@ Write-Host "  Version: $Version" -ForegroundColor Cyan
 Write-Host "  Tag: $Tag" -ForegroundColor Cyan
 Write-Host "  Components: $($components -join ', ')" -ForegroundColor Cyan
 Write-Host "  Devcontainer: $buildDevcontainer" -ForegroundColor Cyan
-Write-Host "  PAS for ORADS: $buildPasOrads" -ForegroundColor Cyan
 Write-Host "  Sports2020-db: $buildSports2020" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
@@ -95,12 +85,6 @@ $startTime = Get-Date
 $results = @()
 
 foreach ($component in $components) {
-  # Skip pas_orads if requested
-  if ($component -eq 'pas_orads' -and -not $buildPasOrads) {
-    Write-Host ""
-    Write-Host "Skipping pas_orads (use without -SkipPasOrads to build)" -ForegroundColor Yellow
-    continue
-  }
   
   Write-Host ""
   Write-Host "========================================" -ForegroundColor Yellow
@@ -121,9 +105,6 @@ foreach ($component in $components) {
       $buildArgs['BinariesRoot'] = $BinariesRoot
     }
     
-    if ($JDKVERSION) {
-      $buildArgs['JDKVERSION'] = $JDKVERSION
-    }
     
     if ($OEVERSION) {
       $buildArgs['OEVERSION'] = $OEVERSION
@@ -217,12 +198,6 @@ if ($failCount -gt 0) {
     Write-Host "  - rdroge/oe_devcontainer:$Tag" -ForegroundColor White
   }
   Write-Host "  - rdroge/oe_pas_dev:$Tag" -ForegroundColor White
-  if (-not $DevcontainerOnly) {
-    Write-Host "  - rdroge/oe_pas_base:$Tag" -ForegroundColor White
-  }
-  if ($buildPasOrads) {
-    Write-Host "  - rdroge/oe_pas_orads:$Tag" -ForegroundColor White
-  }
   Write-Host "  - rdroge/oe_db_adv:$Tag" -ForegroundColor White
   if ($buildSports2020) {
     Write-Host "  - rdroge/oe_sports2020_db:$Tag" -ForegroundColor White

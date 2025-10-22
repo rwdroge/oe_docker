@@ -53,104 +53,125 @@ JavaHome=/opt/java/openjdk
 type=COMPLETE
 path=/usr/dlc
 workpath=/usr/wrk
-oem_path=/usr/dlc
-oem_workpath=/usr/wrk
+oem_path=/usr/oemgmt
+oem_workpath=/usr/wrk_oemgmt
 
 ;
-; DESCRIPTION of Installation Options
+; DESCRIPTION of Server Engine
 ;
-;  installPASforOE - indicates whether or not you want to install the Progress Application Server for OpenEdge.
-;   - a value of false indicates you do NOT want to install the Progress Application Server for OpenEdge.
-;   - a value of true indicates you want to install the Progress Application Server for OpenEdge.
-;  installOEMgmt - indicates whether or not you want to install the OpenEdge Management.
-;   - a value of false indicates you do NOT want to install the OpenEdge Management.
-;   - a value of true indicates you want to install the OpenEdge Management.
-;  installAppServer - indicates whether or not you want to install the AppServer.
-;   - a value of false indicates you do NOT want to install the AppServer.
-;   - a value of true indicates you want to install the AppServer.
-;  installWebSpeed - indicates whether or not you want to install the WebSpeed.
-;   - a value of false indicates you do NOT want to install the WebSpeed.
-;   - a value of true indicates you want to install the WebSpeed.
-;  installDataServer - indicates whether or not you want to install the DataServer.
-;   - a value of false indicates you do NOT want to install the DataServer.
-;   - a value of true indicates you want to install the DataServer.
-;  installOEReplication - indicates whether or not you want to install the OpenEdge Replication.
-;   - a value of false indicates you do NOT want to install the OpenEdge Replication.
-;   - a value of true indicates you want to install the OpenEdge Replication.
-;  installOERDBMS - indicates whether or not you want to install the OpenEdge RDBMS.
-;   - a value of false indicates you do NOT want to install the OpenEdge RDBMS.
-;   - a value of true indicates you want to install the OpenEdge RDBMS.
-;  installOEClient - indicates whether or not you want to install the OpenEdge Client Networking.
-;   - a value of false indicates you do NOT want to install the OpenEdge Client Networking.
-;   - a value of true indicates you want to install the OpenEdge Client Networking.
-;  installOEDevStudio - indicates whether or not you want to install the OpenEdge Developer Studio.
-;   - a value of false indicates you do NOT want to install the OpenEdge Developer Studio.
-;   - a value of true indicates you want to install the OpenEdge Developer Studio.
-;  installOEArchitect - indicates whether or not you want to install the OpenEdge Architect.
-;   - a value of false indicates you do NOT want to install the OpenEdge Architect.
-;   - a value of true indicates you want to install the OpenEdge Architect.
-;  installOEGUI4NET - indicates whether or not you want to install the OpenEdge GUI for .NET.
-;   - a value of false indicates you do NOT want to install the OpenEdge GUI for .NET.
-;   - a value of true indicates you want to install the OpenEdge GUI for .NET.
-;  installOERESTAdapter - indicates whether or not you want to install the OpenEdge REST Adapter.
-;   - a value of false indicates you do NOT want to install the OpenEdge REST Adapter.
-;   - a value of true indicates you want to install the OpenEdge REST Adapter.
+; UseSqlServerEngine - valid values are 0 and 1.
+;   0 - indicates that the SQL Database Engine is to not be installed.
+;   1 - indicates that the SQL Database Engine is to be installed.
 ;
 
-[Installation Options]
-installPASforOE=true
-installOEMgmt=false
-installAppServer=false
-installWebSpeed=false
-installDataServer=false
-installOEReplication=false
-installOERDBMS=false
-installOEClient=false
-installOEDevStudio=false
-installOEArchitect=false
-installOEGUI4NET=false
-installOERESTAdapter=false
+[Server Engine]
+UseSqlServerEngine=0
 
 ;
-; DESCRIPTION of Shortcuts
+; DESCRIPTION of Language Default
 ;
-;  createShortcuts - indicates whether or not you want to create shortcuts.
-;   - a value of false indicates you do NOT want to create shortcuts.
-;   - a value of true indicates you want to create shortcuts.
-;
-
-[Shortcuts]
-createShortcuts=false
-
-;
-; DESCRIPTION of License Agreement
-;
-;  licenseAccepted - indicates whether or not you accept the license agreement.
-;   - a value of false indicates you do NOT accept the license agreement.
-;   - a value of true indicates you accept the license agreement.
-;
-
-[License Agreement]
-licenseAccepted=true
-
-;
-; DESCRIPTION of Pre-Installation Summary
-;
-;  Result - indicates whether or not you want to continue with the installation.
-;   - a value of 0 indicates you do NOT want to continue with the installation.
-;   - a value of 1 indicates you want to continue with the installation.
+;  DefaultLanguage - identifies the language in which PROMSGS appears by default.
+;    -Valid values are:
+;      Czech
+;      Dutch
+;      English - American
+;      English - International
+;      French
+;      German
+;      Italian
+;      Polish
+;      Portuguese
+;      Portuguese - Brazilian
+;      Spanish
+;      Spanish - Latin
+;      Swedish
 ;
 
-[Pre-Installation Summary]
-Result=1
+[Language Default]
+DefaultLanguage=English - International
 
 ;
-; DESCRIPTION of Install Complete
+; DESCRIPTION of Language Choice
 ;
-;  Result - indicates whether or not you want to view the README file.
-;   - a value of 0 indicates you do NOT want to view the README file.
-;   - a value of 1 indicates you want to view the README file.
+;  lang1, lang2, lang3 ... - Identifies all the PROMSGS languages installed during installation including the default language.
 ;
 
-[Install Complete]
-Result=0
+[Language Choice]
+lang1=English - International
+
+;
+; DESCRIPTION of International Settings
+;
+;   NOTE: For specific information please refer to the intlsets.txt file located at the root level of the cdrom from which this information is derived.
+;   cpinternal - identifies the -cpinternal and -cpstream values included in the startup.pf file.
+;   cpcollation - identifies the -cpcoll value included in the startup.pf file.
+;   cpcase - identifies the -cpcase value included in the startup.pf file.
+;   dateformat - identifies the -d value included in the startup.pf file.
+;   numsep - identifies the -numsep value included in the startup.pf file.
+;   numdec - identifies the -numdec value included in the startup.pf file.
+;
+;   The following is a table of the numbers and the separators they represent:
+;   32  - space
+;   36  - dollar
+;   39  - apostrophe
+;   44  - comma
+;   46  - period
+;
+
+[International Settings]
+cpinternal=UTF-8
+cpcollation=Basic
+cpcase=Basic
+dateformat=mdy
+numsep=44
+numdec=46
+;
+; DESCRIPTION of PacificAppServerPortDetails
+;
+;  nPortHttp - A port for HTTP connections.
+;  nPortHttps - A port for HTTPS connections.
+;  nPortShutdown - Port on which the shutdown process will run.
+;
+
+[PacificAppServerPortDetails]
+nPortHttp=7710
+nPortHttps=7711
+nPortShutdown=7712
+;
+; DESCRIPTION of OEAuthenticationGatewatyConfigurationDetails
+;
+;  Instance_Name - Name of the OE Authentication Gateway instance.
+;  Port_Number - An unused port number should be used.
+;  Username - User name for OE Authentication Gateway.
+;  Password - Clear text password.
+;  Password_Confirmation - Confirmation for the password.
+;  Instance_Location - Directory for required files.
+;
+
+[OEAuthenticationGatewatyConfigurationDetails]
+Instance_Name=oeauthserver
+Port_Number=7713
+Username=admin
+Password=password
+Password_Confirmation=password
+Instance_Location=/usr/wrk
+;
+; DESCRIPTION of STS Key Plugin Dialog
+;
+;  EnableAuthGatewaySTSClient - Enable Authentication Gateway. Enable = 1, Disable = 0
+;  OEAuthGatewayURL - Gateway URL.
+;  ServerKeyPassword - Password
+;  STSKeystorePath- Path for storing keys.
+;  NoHostVerify - Enable = 1, Disable = 0
+;  EnableAdminSrvSTSKeyPlugin - Enable = 1, Disable = 0
+;  PollingInterVal - Polling interval (in minutes).
+;
+
+[STS Key Plugin Dialog]
+EnableAuthGatewaySTSClient=0
+OEAuthGatewayURL=
+ServerKeyPassword=
+STSKeystorePath=
+NoHostVerify=0
+EnableAdminSrvSTSKeyPlugin=0
+PollingInterVal=

@@ -211,12 +211,24 @@ function Get-LicenseProducts {
             $release = $Matches[2].Trim()
             $control = $Matches[3].Trim()
             
-            # Look backwards for product name
-            for ($j = $i - 1; $j -ge 0 -and $j -ge ($i - 10); $j--) {
+            # Look backwards for product name (but skip empty lines and platform lines)
+            # Limit to 5 lines to avoid matching products from previous entries
+            for ($j = $i - 1; $j -ge 0 -and $j -ge ($i - 5); $j--) {
                 $prevLine = $lines[$j]
                 
+                # Skip empty lines
+                if ([string]::IsNullOrWhiteSpace($prevLine)) {
+                    continue
+                }
+                
+                # Skip platform/architecture lines (e.g., "Linux 64bit", "Windows 64bit")
+                if ($prevLine -match '^\s*(Linux|Windows|Solaris|AIX|HP-UX|Mac)\s+(32bit|64bit)') {
+                    continue
+                }
+                
                 # Match various product name patterns
-                if ($prevLine -match '^\s*(4GL Development System|Client Networking|Progress Dev AS for OE|Progress Dev AppServer for OE|Progress Prod AppServer for OE|OE RDBMS Adv Enterprise|OE AuthenticationGateway|Progress App Server for OE|Progress AppServer for OE)') {
+                # Note: Order matters - match more specific patterns first (e.g., "OE RDBMS Adv Enterprise" before "OE RDBMS")
+                if ($prevLine -match '^\s*(4GL Development System|Client Networking|Progress Dev AS for OE|Progress Dev AppServer for OE|Progress Prod AppServer for OE|OE RDBMS Adv Enterprise|OE RDBMS Enterprise|OE WorkGroup RDBMS|OE RDBMS Workgroup|OE RDBMS Personal|OE RDBMS|OpenEdge Transparent Dat|OE AuthenticationGateway|Progress App Server for OE|Progress AppServer for OE)') {
                     $productName = $Matches[1].Trim()
                     
                     $productKey = "$productName|$serial"
@@ -228,9 +240,9 @@ function Get-LicenseProducts {
                             "Release" = $release
                             "Control" = $control
                         }
-                        Write-Verbose "Found product: $productName (Serial: $serial, Control: $control)"
+                        Write-Verbose "Found product (backward search): $productName (Serial: $serial, Control: $control, Line: $i, matched from line: $j)"
                     } else {
-                        Write-Verbose "Duplicate product key found: $productKey (skipping)"
+                        Write-Verbose "Duplicate product key found (backward search): $productKey (skipping, Line: $i)"
                     }
                     break
                 }
@@ -245,7 +257,8 @@ function Get-LicenseProducts {
             $potentialProductName = $Matches[1].Trim()
             
             # Check if this matches one of our known products
-            $knownProducts = @('4GL Development System', 'Client Networking', 'Progress Dev AS for OE', 'Progress Dev AppServer for OE', 'Progress Prod AppServer for OE', 'OE RDBMS Adv Enterprise', 'OE AuthenticationGateway', 'Progress App Server for OE', 'Progress AppServer for OE')
+            # Note: Order matters - check more specific patterns first
+            $knownProducts = @('4GL Development System', 'Client Networking', 'Progress Dev AS for OE', 'Progress Dev AppServer for OE', 'Progress Prod AppServer for OE', 'OE RDBMS Adv Enterprise', 'OE RDBMS Enterprise', 'OE WorkGroup RDBMS', 'OE RDBMS Workgroup', 'OE RDBMS Personal', 'OE RDBMS', 'OpenEdge Transparent Dat', 'OE AuthenticationGateway', 'Progress App Server for OE', 'Progress AppServer for OE')
             
             if ($knownProducts -contains $potentialProductName) {
                 $productName = $potentialProductName
@@ -267,9 +280,9 @@ function Get-LicenseProducts {
                                 "Release" = $release
                                 "Control" = $control
                             }
-                            Write-Verbose "Found bundle product: $productName (Serial: $serial, Control: $control)"
+                            Write-Verbose "Found bundle product (Units search): $productName (Serial: $serial, Control: $control, Line: $i)"
                         } else {
-                            Write-Verbose "Duplicate bundle product key found: $productKey (skipping)"
+                            Write-Verbose "Duplicate bundle product key found (Units search): $productKey (skipping, Line: $i)"
                         }
                         break
                     }
@@ -542,7 +555,7 @@ try {
             if (Test-Path $updateTemplateFile) {
                 New-ResponseUpdateIni -TargetPath $buildPath -CompanyName $companyName -Version $detectedVersion -TemplateFile $updateTemplateFile
             } else {
-                Write-Host "   Warning: response_update_ini_example.txt not found in $buildPath" -ForegroundColor Yellow
+                Write-Host "Warning: response_update_ini_example.txt not found in $buildPath" -ForegroundColor Yellow
             }
         }
         
