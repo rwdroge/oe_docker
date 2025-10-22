@@ -17,7 +17,6 @@ param(
   [Parameter(Position=5)]
   [string]$DockerUsername = 'rdroge',
 
-  [int]$JDKVERSION = 21,
   [string]$OEVERSION = $null,
   [switch]$BuildDevcontainer = $false,
   [switch]$BuildSports2020Db = $false
@@ -39,14 +38,13 @@ if ($Component -like '-*') {
       '^-(ImageName)$'   { if ($i+1 -lt $raw.Count) { $ImageName   = $raw[$i+1] } }
       '^-(BinariesRoot)$'{ if ($i+1 -lt $raw.Count) { $BinariesRoot= $raw[$i+1] } }
       '^-(DockerUsername)$'{ if ($i+1 -lt $raw.Count) { $DockerUsername= $raw[$i+1] } }
-      '^-(JDKVERSION)$'  { if ($i+1 -lt $raw.Count) { $JDKVERSION  = [int]$raw[$i+1] } }
       '^-(OEVERSION)$'   { if ($i+1 -lt $raw.Count) { $OEVERSION   = $raw[$i+1] } }
     }
   }
 }
 
-if (@('compiler','db_adv','pas_dev','pas_base','pas_orads') -notcontains $Component) {
-  throw "Invalid -Component '$Component'. Allowed: compiler, db_adv, pas_dev, pas_base, pas_orads"
+if (@('compiler','db_adv','pas_dev') -notcontains $Component) {
+  throw "Invalid -Component '$Component'. Allowed: compiler, db_adv, pas_dev"
 }
 
 if ($BuildDevcontainer -and $Component -ne 'compiler') {
@@ -71,8 +69,6 @@ switch ($Component) {
   'compiler'  { if(-not $ImageName){ $ImageName = "$DockerUsername/oe_compiler" }  ; $CTYPE='compiler' }
   'db_adv'    { if(-not $ImageName){ $ImageName = "$DockerUsername/oe_db_adv" }    ; $CTYPE='db' }
   'pas_dev'   { if(-not $ImageName){ $ImageName = "$DockerUsername/oe_pas_dev" }   ; $CTYPE='pas' }
-  'pas_base'  { if(-not $ImageName){ $ImageName = "$DockerUsername/oe_pas_base" }  ; $CTYPE='pas' }
-  'pas_orads' { if(-not $ImageName){ $ImageName = "$DockerUsername/oe_pas_orads" } ; $CTYPE='pas' }
 }
 
 # Map OEVERSION if not provided (122, 127, 128)
@@ -85,12 +81,10 @@ if(-not $OEVERSION){
 # Get root directory
 $root = Resolve-Path (Join-Path $PSScriptRoot '..')
 
-# Validate response.ini exists before building (skip for pas_orads - it uses base image)
-if ($Component -ne 'pas_orads') {
-  $responseIni = Join-Path $root (Join-Path $Component 'response.ini')
-  if(-not (Test-Path $responseIni)){
-    throw "response.ini not found at: $responseIni`n`nPlease configure OpenEdge control codes in the response.ini file before building.`nSee the 'Configure control codes' section in README.md for details."
-  }
+# Validate response.ini exists before building
+$responseIni = Join-Path $root (Join-Path $Component 'response.ini')
+if(-not (Test-Path $responseIni)){
+  throw "response.ini not found at: $responseIni`n`nPlease configure OpenEdge control codes in the response.ini file before building.`nSee the 'Configure control codes' section in README.md for details."
 }
 
 # Prepare installers
@@ -133,7 +127,7 @@ if ($Component -eq 'pas_orads') {
 $dockerfileContent | Set-Content -NoNewline $tempDockerfile
 Write-Host "Using JDK version: $JdkVersionValue (key: $jdkKey)"
 
-$buildArgs = @('--build-arg', "CTYPE=$CTYPE", '--build-arg', "JDKVERSION=$JDKVERSION")
+$buildArgs = @('--build-arg', "CTYPE=$CTYPE")
 if($OEVERSION){ $buildArgs += @('--build-arg', "OEVERSION=$OEVERSION") }
 
 $tagRef = "$( $ImageName):$Tag"

@@ -1,40 +1,48 @@
 # oe_docker
 
-This repository contains Dockerfiles and tooling to build local OpenEdge Docker container images such as `compiler`, `db_adv`, `pas_dev`, `pas_base`, and `pas_orads` using locally provided installers.
+This repository contains Dockerfiles and tooling to build local OpenEdge Docker container images such as `compiler`, `db_adv`, and `pas_dev` using locally provided installers. Focused on DevContainer workflows.
+
+## 🚀 Quick Start
+
+**New to this repository?** Use the quickstart tool for an easy interactive setup:
+
+**Windows PowerShell:**
+```powershell
+.\oe_container_build_quickstart.ps1
+```
+
+**Linux/macOS:**
+```bash
+./oe_container_build_quickstart.sh
+```
+
+This provides an interactive menu to:
+1. Generate `response.ini` files from your license addendum
+2. Create all images for DevContainer configuration
+3. Create specific container images with dependency validation
 
 ## Available Image Types
 
 This repository supports building the following OpenEdge container images:
 
+### Base Images (can be built independently)
 - **`compiler`** - OpenEdge compiler and development tools
-- **`devcontainer`** - Development container (extends compiler image)
-- **`db_adv`** - OpenEdge database server (Advanced Enterprise Edition)
 - **`pas_dev`** - PASOE development instance with volumes for source code and libraries
-- **`pas_base`** - PASOE testing instance with Production-type configuration (basic configuration)
-- **`pas_orads`** - PASOE testing instance with Production-type configuration and Oracle DataServer (extends pas_base image)
-- **`sports2020_db`** - Sports2020 demo database (extends db_adv image)
+- **`db_adv`** - OpenEdge database server (Advanced Enterprise Edition)
 
-### PASOE Image Differences
+### Dependent Images (require parent images)
+- **`devcontainer`** - Development container (requires: compiler)
+- **`sports2020_db`** - Sports2020 demo database (requires: db_adv)
 
+### DevContainer Focus
+
+This repository is optimized for **DevContainer workflows**, providing:
 - **`pas_dev`**: Development-focused PASOE with:
   - Volumes for `/app/src`, `/app/lib`, `/app/config`
   - Development-type PASOE instance
   - Suitable for local development and testing
-
-- **`pas_base`**: Testing-focused PASOE with:
-  - Pre-created Production-type instance (`prodpas`)
-  - Health check enabled
-  - Minimal configuration
-  - **Note**: Despite the Production-type instance, this image is intended for testing purposes
-
-- **`pas_orads`**: Testing-focused PASOE with Oracle DataServer:
-  - **Builds on top of `pas_base`** (layered image)
-  - Production-type PASOE instance with Oracle DataServer support
-  - Adds Oracle Client 19.3 (Linux 64-bit)
-  - Oracle DataServer components included
-  - Requires Oracle client installer in `binaries/oracle/` directory
-  - **Note**: Despite the Production-type instance, this image is intended for testing purposes
-  - **Note**: Must build `pas_base` first
+- **`devcontainer`**: Complete development environment with OpenEdge compiler and tools
+- **Dependency validation**: Ensures dependent images are built in correct order
 
 ## Using with Dev Containers
 
@@ -46,16 +54,18 @@ This provides a complete containerized OpenEdge development environment with VS 
 
 ### Building Images for Dev Containers Only
 
-**If you only need images for dev container setups**, you can use the `-DevcontainerOnly` flag to build just the required images (compiler, devcontainer, pas_dev, db_adv, sports2020-db) and skip testing-focused images like pas_base and pas_orads:
+**If you only need images for dev container setups**, you can use the quickstart tool's option 2 to build all required images (compiler, devcontainer, pas_dev, db_adv, sports2020-db):
 
-**Windows PowerShell:**
+**Windows:**
 ```powershell
-pwsh ./tools/build-all-images.ps1 -Version 12.8.6 -Tag 12.8.6 -DevcontainerOnly
+.\oe_container_build_quickstart.ps1
+# Then select option 2: "Create all images for DevContainer configuration"
 ```
 
-**Linux/macOS Bash:**
+**Linux/macOS:**
 ```bash
-./tools/build-all-images.sh -v 12.8.6 -t 12.8.6 -D
+./oe_container_build_quickstart.sh
+# Then select option 2: "Create all images for DevContainer configuration"
 ```
 
 This significantly reduces build time by only creating the images needed for development container workflows.

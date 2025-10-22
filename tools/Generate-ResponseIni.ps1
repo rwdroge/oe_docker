@@ -555,7 +555,7 @@ try {
             if (Test-Path $updateTemplateFile) {
                 New-ResponseUpdateIni -TargetPath $buildPath -CompanyName $companyName -Version $detectedVersion -TemplateFile $updateTemplateFile
             } else {
-                Write-Host "   Warning: response_update_ini_example.txt not found in $buildPath" -ForegroundColor Yellow
+                Write-Host "Warning: response_update_ini_example.txt not found in $buildPath" -ForegroundColor Yellow
             }
         }
         

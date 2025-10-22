@@ -55,7 +55,10 @@ if($useSingle){
     $tmp = New-Item -ItemType Directory -Path (Join-Path $env:TEMP ("oe_empty_patch_" + [guid]::NewGuid().ToString()))
     try {
       Push-Location $tmp.FullName
-      & $tarCmd.Source -czf $emptyTar -T $null 2>$null
+      # Create an empty file list for tar to read from
+      $emptyFileList = Join-Path $tmp.FullName 'empty_files.txt'
+      New-Item -ItemType File -Path $emptyFileList -Force | Out-Null
+      & $tarCmd.Source -czf $emptyTar -T $emptyFileList 2>$null
       if(-not (Test-Path $emptyTar)){ throw "Failed to create empty patch tar at $emptyTar" }
     } finally {
       Pop-Location

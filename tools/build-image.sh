@@ -16,7 +16,6 @@ Optional:
   -t <tag>           Docker image tag (defaults to version)
   -i <image>         Override default image name
   -b <binroot>       Custom binaries root directory
-  -j <jdkversion>    JDK version (default: 21)
   -o <oeversion>     OE version code (default: auto-mapped from series)
   -d                 Build devcontainer (compiler only)
   -s                 Build sports2020-db (db_adv only)
@@ -36,7 +35,6 @@ VERSION=""
 TAG=""
 IMAGE_NAME=""
 BINARIES_ROOT=""
-JDKVERSION=21
 OEVERSION=""
 BUILD_DEVCONTAINER=0
 BUILD_SPORTS2020=0
@@ -48,7 +46,6 @@ while getopts ":c:v:t:i:b:j:o:dsh" opt; do
     t) TAG="$OPTARG";;
     i) IMAGE_NAME="$OPTARG";;
     b) BINARIES_ROOT="$OPTARG";;
-    j) JDKVERSION="$OPTARG";;
     o) OEVERSION="$OPTARG";;
     d) BUILD_DEVCONTAINER=1;;
     s) BUILD_SPORTS2020=1;;
@@ -194,10 +191,6 @@ trap "rm -rf $TEMP_DIR" EXIT
 TEMP_DOCKERFILE="$TEMP_DIR/Dockerfile"
 sed "s/JDKVERSION/$JDK_VERSION_VALUE/g" "$DOCKERFILE" > "$TEMP_DOCKERFILE"
 
-# For pas_orads, replace the base image tag with the current tag
-if [[ "$COMPONENT" == "pas_orads" ]]; then
-  sed -i "s|rdroge/oe_pas_base:latest|rdroge/oe_pas_base:$TAG|g" "$TEMP_DOCKERFILE"
-fi
 
 echo "Using JDK version: $JDK_VERSION_VALUE (key: $JDK_KEY)"
 
@@ -207,7 +200,6 @@ echo "Building $TAG_REF using $DOCKERFILE"
 # Build the image
 docker build -f "$TEMP_DOCKERFILE" \
   --build-arg CTYPE="$CTYPE" \
-  --build-arg JDKVERSION="$JDKVERSION" \
   --build-arg OEVERSION="$OEVERSION" \
   -t "$TAG_REF" \
   "$ROOT"
