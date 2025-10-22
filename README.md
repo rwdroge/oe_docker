@@ -219,14 +219,11 @@ You can run a single command that prepares installers and builds the image:
 pwsh ./tools/build-image.ps1 -Component compiler  -Version 12.8.6 -Tag 12.8.6
 pwsh ./tools/build-image.ps1 -Component db_adv    -Version 12.8.6 -Tag 12.8.6
 pwsh ./tools/build-image.ps1 -Component pas_dev   -Version 12.8.6 -Tag 12.8.6
-pwsh ./tools/build-image.ps1 -Component pas_base  -Version 12.8.6 -Tag 12.8.6
-pwsh ./tools/build-image.ps1 -Component pas_orads -Version 12.8.6 -Tag 12.8.6
 ```
 
 Options:
 - `-ImageName` to override default repository name per component.
 - `-BinariesRoot` to point to a custom binaries root.
-- `-JDKVERSION` to control the Java version propagated as build-arg.
 - `-OEVERSION` to override the automatic mapping of series to OEVERSION (defaults: 12.2→122, 12.7→127, 12.8→128).
 - `-BuildDevcontainer` (compiler only) to also build a devcontainer image using the just-created local compiler image as the base. The devcontainer image will be tagged as `rdroge/oe_devcontainer:<Tag>`.
 - `-BuildSports2020Db` (db_adv only) to also build a sports2020-db image using the just-created local db_adv image as the base. The sports2020-db image will be tagged as `rdroge/oe_sports2020_db:<Tag>`.
@@ -253,14 +250,11 @@ You can run a single command that prepares installers and builds the image:
 ./tools/build-image.sh -c compiler  -v 12.8.6 -t 12.8.6
 ./tools/build-image.sh -c db_adv    -v 12.8.6 -t 12.8.6
 ./tools/build-image.sh -c pas_dev   -v 12.8.6 -t 12.8.6
-./tools/build-image.sh -c pas_base  -v 12.8.6 -t 12.8.6
-./tools/build-image.sh -c pas_orads -v 12.8.6 -t 12.8.6
 ```
 
 Options:
 - `-i <image>` to override default repository name per component
 - `-b <binroot>` to point to a custom binaries root
-- `-j <jdkversion>` to control the Java version propagated as build-arg
 - `-o <oeversion>` to override the automatic mapping of series to OEVERSION (defaults: 12.2→122, 12.7→127, 12.8→128)
 - `-d` (compiler only) to also build a devcontainer image using the just-created local compiler image as the base
 - `-s` (db_adv only) to also build a sports2020-db image using the just-created local db_adv image as the base
@@ -281,7 +275,7 @@ Example with sports2020-db:
 
 ### Build all images (Windows PowerShell)
 
-You can build all images (compiler, devcontainer, pas_dev, pas_base, pas_orads, db_adv, sports2020-db) with a single command:
+You can build all images (compiler, devcontainer, pas_dev, db_adv, sports2020-db) with a single command:
 
 ```powershell
 pwsh ./tools/build-all-images.ps1 -Version 12.8.6 -Tag 12.8.6
@@ -291,18 +285,14 @@ pwsh ./tools/build-all-images.ps1 -Version 12.8.6 -Tag 12.8.6
 1. compiler image
 2. devcontainer image (using the local compiler image as base)
 3. pas_dev image
-4. pas_base image
-5. pas_orads image (using the local pas_base image as base)
-6. db_adv image
-7. sports2020-db image (using the local db_adv image as base)
+4. db_adv image
+5. sports2020-db image (using the local db_adv image as base)
 
 Options (use Skip* flags to exclude specific images):
 - `-SkipDevcontainer` to skip building the devcontainer image
-- `-SkipPasOrads` to skip building the pas_orads image
 - `-SkipSports2020Db` to skip building the sports2020-db image
 - `-DevcontainerOnly` to build only images required for devcontainer setups (compiler, devcontainer, pas_dev, db_adv, sports2020-db)
 - `-BinariesRoot` to point to a custom binaries root
-- `-JDKVERSION` to control the Java version propagated as build-arg
 - `-OEVERSION` to override the automatic mapping of series to OEVERSION
 
 Example building only devcontainer images:
@@ -317,17 +307,17 @@ Example skipping devcontainer:
 pwsh ./tools/build-all-images.ps1 -Version 12.8.6 -Tag 12.8.6 -SkipDevcontainer
 ```
 
-Example skipping optional images:
+Example skipping sports2020-db:
 
 ```powershell
-pwsh ./tools/build-all-images.ps1 -Version 12.8.6 -Tag 12.8.6 -SkipPasOrads -SkipSports2020Db
+pwsh ./tools/build-all-images.ps1 -Version 12.8.6 -Tag 12.8.6 -SkipSports2020Db
 ```
 
 The script will display a summary at the end showing the build status and duration for each component.
 
 ### Build all images (Linux/macOS Bash)
 
-You can build all images (compiler, devcontainer, pas_dev, pas_base, pas_orads, db_adv, sports2020-db) with a single command:
+You can build all images (compiler, devcontainer, pas_dev, db_adv, sports2020-db) with a single command:
 
 ```bash
 ./tools/build-all-images.sh -v 12.8.6 -t 12.8.6
@@ -337,18 +327,14 @@ You can build all images (compiler, devcontainer, pas_dev, pas_base, pas_orads, 
 1. compiler image
 2. devcontainer image (using the local compiler image as base)
 3. pas_dev image
-4. pas_base image
-5. pas_orads image (using the local pas_base image as base)
-6. db_adv image
-7. sports2020-db image (using the local db_adv image as base)
+4. db_adv image
+5. sports2020-db image (using the local db_adv image as base)
 
 Options (use skip flags to exclude specific images):
 - `-s` to skip building the devcontainer image
-- `-P` to skip building the pas_orads image
 - `-S` to skip building the sports2020-db image
 - `-D` to build only images required for devcontainer setups (compiler, devcontainer, pas_dev, db_adv, sports2020-db)
 - `-b <binroot>` to point to a custom binaries root
-- `-j <jdkversion>` to control the Java version propagated as build-arg
 - `-o <oeversion>` to override the automatic mapping of series to OEVERSION
 
 Example building only devcontainer images:
@@ -363,10 +349,10 @@ Example skipping devcontainer:
 ./tools/build-all-images.sh -v 12.8.6 -t 12.8.6 -s
 ```
 
-Example skipping optional images:
+Example skipping sports2020-db:
 
 ```bash
-./tools/build-all-images.sh -v 12.8.6 -t 12.8.6 -P -S
+./tools/build-all-images.sh -v 12.8.6 -t 12.8.6 -S
 ```
 
 The script will display a summary at the end showing the build status and duration for each component.
