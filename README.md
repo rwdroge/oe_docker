@@ -60,7 +60,7 @@ binaries/oe/12.8/
 └── PROGRESS_OE_12.8.6_LNX_64.tar.gz   ← Update installer (12.8.6)
 ```
 
-> ⚠️ **Important for 12.8.4 - 12.8.8:** You must place both the base installer (12.8.0) and the update installer in the same directory for incremental installations.
+> ⚠️ **Important for 12.2.17-12.2.18 and 12.8.4 - 12.8.8:** You must place both the base installer (12.2.0/12.8.0) and the update installer in the same directory for incremental installations.
 
 ## 🚀 Quick Start
 
@@ -108,34 +108,85 @@ This provides a complete containerized OpenEdge development environment with VS 
 
 ## Advanced Usage
 
-For advanced users who prefer command-line tools over the interactive quickstart script:
+For advanced users who prefer command-line automation over the interactive quickstart script:
 
-### Generate response.ini files only
+### Quickstart Script - Batch Mode
+
+**Generate response.ini files only:**
+```powershell
+# Windows
+.\oe_container_build_quickstart.ps1 -Action generate -Version 12.8.9 -DockerUsername your-username -Batch
+
+# Linux/macOS  
+./oe_container_build_quickstart.sh -a generate -v 12.8.9 -u your-username -b
+```
+
+**Build specific components:**
+```powershell
+# Windows - Single component
+.\oe_container_build_quickstart.ps1 -Action build -Version 12.8.9 -DockerUsername your-username -Component compiler -Batch
+
+# Windows - Multiple components
+.\oe_container_build_quickstart.ps1 -Action build -Version 12.8.9 -DockerUsername your-username -Component "compiler,pas_dev" -Batch
+
+# Linux/macOS - Single component
+./oe_container_build_quickstart.sh -a build -v 12.8.9 -u your-username -c compiler -b
+
+# Linux/macOS - Multiple components  
+./oe_container_build_quickstart.sh -a build -v 12.8.9 -u your-username -c "compiler,pas_dev" -b
+```
+
+**Build all DevContainer images:**
+```powershell
+# Windows - All images
+.\oe_container_build_quickstart.ps1 -Action build -Version 12.8.9 -DockerUsername your-username -Component all -Batch
+
+# Linux/macOS - All images  
+./oe_container_build_quickstart.sh -a build -v 12.8.9 -u your-username -c all -b
+```
+
+**Generate and build in one command:**
+```powershell
+# Windows - Complete workflow
+.\oe_container_build_quickstart.ps1 -Action both -Version 12.8.9 -DockerUsername your-username -Component all -Batch
+
+# Linux/macOS - Complete workflow
+./oe_container_build_quickstart.sh -a both -v 12.8.9 -u your-username -c all -b
+```
+
+### Direct Tool Usage
+
+**Generate response.ini files only:**
 ```powershell
 # Windows
 .\tools\Generate-ResponseIni.ps1 -Version 12.8.9
 
 # Linux/macOS  
-./tools/generate-response-ini.sh
+./tools/generate-response-ini.sh -v 12.8.9
 ```
 
-### Build specific images
+**Build specific images:**
 ```powershell
 # Windows - Single component
-.\tools\build-image.ps1 -Component compiler -Version 12.8.9
+.\tools\build-image.ps1 -Component compiler -Version 12.8.9 -DockerUsername your-username
 
 # Linux/macOS - Single component
-./tools/build-image.sh -c compiler -v 12.8.9
+./tools/build-image.sh -c compiler -v 12.8.9 -u your-username
 ```
 
-### Build all images
+**Build all images:**
 ```powershell
 # Windows - All images
-.\tools\build-all-images.ps1 -Version 12.8.9
+.\tools\build-all-images.ps1 -Version 12.8.9 -DockerUsername your-username
 
 # Linux/macOS - All images  
-./tools/build-all-images.sh -v 12.8.9
+./tools/build-all-images.sh -v 12.8.9 -u your-username
 ```
+
+### Available Components
+- **Base Images:** `compiler`, `pas_dev`, `db_adv` (can be built independently)
+- **Dependent Images:** `devcontainer` (requires compiler), `sports2020-db` (requires db_adv)
+- **All DevContainer Images:** Use `all` to build: compiler, pas_dev, db_adv, devcontainer, sports2020-db
 
 > 📖 **For detailed documentation:** See [tools/README_Generate-ResponseIni.md](tools/README_Generate-ResponseIni.md)
 
