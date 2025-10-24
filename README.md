@@ -17,13 +17,21 @@ docker --version
 docker ps
 ```
 
-### 2. **Valid License Addendum File**
-Download your OpenEdge license addendum file from **[Progress ESD](https://downloads.progress.com)** and place it in the `addendum/` folder:
+### 2. **Clone This Repository**
+Clone the OpenEdge Docker repository to your local machine:
+
+```bash
+git clone https://github.com/rwdroge/oe_docker.git
+cd oe_docker
+```
+
+### 3. **Add Valid License Addendum File**
+Download your OpenEdge license addendum file (Click on the OpenEdge version i.e. Progress OpenEdge 12.8.x, select the specific update i.e. Progress® OpenEdge® 12.8.9 (all platforms) and choose 'View License' and then 'Download' the Linux 64-bit only!) from **[Progress ESD](https://downloads.progress.com)** and place it in the `addendum/` folder:
 
 **For OpenEdge 12.8.x:**
 ```
 addendum/
-├── US263472 License Addendum.txt  ← Your license file here
+├── your_12.8_license_addendum.txt  ← Your license file here
 └── license_addendum_placeholder.txt
 ```
 
@@ -36,7 +44,7 @@ addendum/
 
 > 📝 **Note:** The quickstart script will help you generate `response.ini` files from your license addendum.
 
-### 3. **OpenEdge Installer Binaries**
+### 4. **OpenEdge Installer Binaries**
 Download your OpenEdge installer files from **[Progress ESD](https://downloads.progress.com)** and place them in the `binaries/oe/<version>/` folder:
 
 **Single installer example (12.8.9):**
