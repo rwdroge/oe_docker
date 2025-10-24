@@ -40,9 +40,9 @@ show_menu() {
     local docker_username="$1"
     
     clear
-    echo -e "${CYAN}╔════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${CYAN}║      OpenEdge Container Build Quickstart                  ║${NC}"
-    echo -e "${CYAN}╚════════════════════════════════════════════════════════════╝${NC}"
+    echo -e "${CYAN}============================================================${NC}"
+    echo -e "${CYAN}      OpenEdge Container Build Quickstart                  ${NC}"
+    echo -e "${CYAN}============================================================${NC}"
     echo ""
     echo -e "  ${GREEN}Docker Username: $docker_username${NC}"
     echo ""
@@ -114,11 +114,11 @@ invoke_generate_response_ini() {
     
     if pwsh "$generate_script" "${pwsh_args[@]}"; then
         echo ""
-        echo -e "${GREEN}✓ Response.ini generation completed!${NC}"
+        echo -e "${GREEN} Response.ini generation completed!${NC}"
         return 0
     else
         echo ""
-        echo -e "${RED}✗ Response.ini generation failed!${NC}"
+        echo -e "${RED} Response.ini generation failed!${NC}"
         return 1
     fi
 }
@@ -147,7 +147,7 @@ invoke_build_images() {
             
             # Validate component
             if [[ ! "$comp" =~ ^(compiler|db_adv|pas_dev|devcontainer|sports2020-db)$ ]]; then
-                echo -e "${RED}✗ Invalid component: $comp${NC}"
+                echo -e "${RED}Invalid component: $comp${NC}"
                 echo -e "${YELLOW}Valid components: compiler, db_adv, pas_dev, devcontainer, sports2020-db${NC}"
                 return 1
             fi
@@ -166,13 +166,13 @@ invoke_build_images() {
             
             if ! "$build_script" "${build_args[@]}"; then
                 echo ""
-                echo -e "${RED}✗ Failed to build component: $comp${NC}"
+                echo -e "${RED} Failed to build component: $comp${NC}"
                 return 1
             fi
         done
         
         echo ""
-        echo -e "${GREEN}✓ All components built successfully!${NC}"
+        echo -e "${GREEN}All components built successfully!${NC}"
         return 0
         
     elif [[ "$component" == "all" || -z "$component" ]]; then
@@ -186,11 +186,11 @@ invoke_build_images() {
         
         if "$build_script" "${build_args[@]}"; then
             echo ""
-            echo -e "${GREEN}✓ Docker image build completed!${NC}"
+            echo -e "${GREEN}Docker image build completed!${NC}"
             return 0
         else
             echo ""
-            echo -e "${RED}✗ Docker image build failed!${NC}"
+            echo -e "${RED}Docker image build failed!${NC}"
             return 1
         fi
     else
@@ -200,11 +200,11 @@ invoke_build_images() {
         
         if "$build_script" "${build_args[@]}"; then
             echo ""
-            echo -e "${GREEN}✓ Docker image build completed!${NC}"
+            echo -e "${GREEN}Docker image build completed!${NC}"
             return 0
         else
             echo ""
-            echo -e "${RED}✗ Docker image build failed!${NC}"
+            echo -e "${RED}Docker image build failed!${NC}"
             return 1
         fi
     fi
@@ -250,14 +250,212 @@ validate_dependencies() {
     return 0
 }
 
+# Interactive component selection function
+get_component_selection() {
+    local title="${1:-Select Components to Build}"
+    
+    # Component definitions
+    declare -A components
+    declare -A descriptions
+    declare -A types
+    declare -A selected
+    
+    components[1]="compiler"
+    descriptions[1]="OpenEdge compiler and development tools"
+    types[1]="Base"
+    
+    components[2]="pas_dev"
+    descriptions[2]="OpenEdge PAS for development"
+    types[2]="Base"
+    
+    components[3]="db_adv"
+    descriptions[3]="OpenEdge database server"
+    types[3]="Base"
+    
+    components[4]="devcontainer"
+    descriptions[4]="DevContainer configuration (requires: compiler)"
+    types[4]="Dependent"
+    
+    components[5]="sports2020-db"
+    descriptions[5]="Sports2020 database (requires: db_adv)"
+    types[5]="Dependent"
+    
+    # Initialize selections
+    for i in {1..5}; do
+        selected[$i]=false
+    done
+    
+    while true; do
+        clear
+        echo -e "${CYAN}================================================================${NC}"
+        echo -e "${CYAN} $title${NC}"
+        echo -e "${CYAN}================================================================${NC}"
+        echo ""
+        
+        echo -e "${YELLOW}Use number keys to toggle selection, 'm' for manual entry, 'c' to continue, or 'q' to quit${NC}"
+        echo ""
+        
+        # Display base components
+        echo -e "${WHITE}Base Images (can be built independently):${NC}"
+        for i in 1 2 3; do
+            local checkbox="[ ]"
+            local color="${GRAY}"
+            if [[ "${selected[$i]}" == "true" ]]; then
+                checkbox="[X]"
+                color="${GREEN}"
+            fi
+            echo -e "  ${color}$i. $checkbox ${components[$i]} - ${descriptions[$i]}${NC}"
+        done
+        
+        echo ""
+        echo -e "${WHITE}Dependent Images (require parent images):${NC}"
+        for i in 4 5; do
+            local checkbox="[ ]"
+            local color="${GRAY}"
+            if [[ "${selected[$i]}" == "true" ]]; then
+                checkbox="[X]"
+                color="${GREEN}"
+            fi
+            echo -e "  ${color}$i. $checkbox ${components[$i]} - ${descriptions[$i]}${NC}"
+        done
+        
+        echo ""
+        echo -e -n "${YELLOW}Selected: ${NC}"
+        local selected_names=()
+        for i in {1..5}; do
+            if [[ "${selected[$i]}" == "true" ]]; then
+                selected_names+=("${components[$i]}")
+            fi
+        done
+        
+        if [[ ${#selected_names[@]} -gt 0 ]]; then
+            echo -e "${GREEN}$(IFS=', '; echo "${selected_names[*]}")${NC}"
+        else
+            echo -e "${RED}None${NC}"
+        fi
+        
+        echo ""
+        echo -e -n "${YELLOW}Enter choice (1-5 to toggle, 'm' for manual entry, 'c' to continue, 'q' to quit): ${NC}"
+        read -r choice
+        
+        case "$choice" in
+            1|2|3|4|5)
+                if [[ "${selected[$choice]}" == "true" ]]; then
+                    selected[$choice]=false
+                else
+                    selected[$choice]=true
+                fi
+                ;;
+            m|M)
+                echo ""
+                echo -e "${YELLOW}Enter component(s) to build (comma-separated):${NC}"
+                echo -e "${GRAY}Examples: compiler | pas_dev,db_adv | compiler,devcontainer${NC}"
+                read -p "Components: " manual_input
+                
+                if [[ -n "$manual_input" ]]; then
+                    # Reset all selections
+                    for i in {1..5}; do
+                        selected[$i]=false
+                    done
+                    
+                    # Parse manual input
+                    IFS=',' read -ra manual_components <<< "$manual_input"
+                    local valid_components=("compiler" "pas_dev" "db_adv" "devcontainer" "sports2020-db")
+                    local invalid_components=()
+                    local valid_input=true
+                    
+                    for comp in "${manual_components[@]}"; do
+                        comp=$(echo "$comp" | xargs) # trim whitespace
+                        if [[ ! " ${valid_components[*]} " =~ " ${comp} " ]]; then
+                            invalid_components+=("$comp")
+                            valid_input=false
+                        fi
+                    done
+                    
+                    if [[ "$valid_input" == "true" ]]; then
+                        # Set selected components
+                        for comp in "${manual_components[@]}"; do
+                            comp=$(echo "$comp" | xargs)
+                            for i in {1..5}; do
+                                if [[ "${components[$i]}" == "$comp" ]]; then
+                                    selected[$i]=true
+                                    break
+                                fi
+                            done
+                        done
+                        echo -e "${GREEN}Manual selection applied: $(IFS=', '; echo "${manual_components[*]}")${NC}"
+                    else
+                        echo -e "${RED}Invalid component(s): $(IFS=', '; echo "${invalid_components[*]}")${NC}"
+                        echo -e "${YELLOW}Valid components: $(IFS=', '; echo "${valid_components[*]}")${NC}"
+                    fi
+                    sleep 2
+                fi
+                ;;
+            c|C)
+                # Check if any components are selected
+                local selected_count=0
+                for i in {1..5}; do
+                    if [[ "${selected[$i]}" == "true" ]]; then
+                        ((selected_count++))
+                    fi
+                done
+                
+                if [[ $selected_count -eq 0 ]]; then
+                    echo -e "${RED}Please select at least one component.${NC}"
+                    sleep 2
+                    continue
+                fi
+                
+                # Check dependencies
+                local dependency_errors=()
+                if [[ "${selected[4]}" == "true" && "${selected[1]}" == "false" ]]; then
+                    dependency_errors+=("devcontainer requires compiler to be built first or included in the same build")
+                fi
+                if [[ "${selected[5]}" == "true" && "${selected[3]}" == "false" ]]; then
+                    dependency_errors+=("sports2020-db requires db_adv to be built first or included in the same build")
+                fi
+                
+                if [[ ${#dependency_errors[@]} -gt 0 ]]; then
+                    echo ""
+                    echo -e "${RED}Dependency errors:${NC}"
+                    for error in "${dependency_errors[@]}"; do
+                        echo -e "${RED}  - $error${NC}"
+                    done
+                    echo ""
+                    echo -e "${YELLOW}Press Enter to continue...${NC}"
+                    read -r
+                    continue
+                fi
+                
+                # Return selected components as comma-separated string
+                local result_components=()
+                for i in {1..5}; do
+                    if [[ "${selected[$i]}" == "true" ]]; then
+                        result_components+=("${components[$i]}")
+                    fi
+                done
+                echo "$(IFS=','; echo "${result_components[*]}")"
+                return 0
+                ;;
+            q|Q)
+                return 1
+                ;;
+            *)
+                echo -e "${RED}Invalid choice. Please try again.${NC}"
+                sleep 1
+                ;;
+        esac
+    done
+}
+
 # Main interactive mode
 run_interactive() {
     # Get Docker username first if not provided
     if [[ -z "$DOCKER_USERNAME" ]]; then
         clear
-        echo -e "${CYAN}╔════════════════════════════════════════════════════════════╗${NC}"
-        echo -e "${CYAN}║      OpenEdge Container Build Quickstart                  ║${NC}"
-        echo -e "${CYAN}╚════════════════════════════════════════════════════════════╝${NC}"
+        echo -e "${CYAN}============================================================${NC}"
+        echo -e "${CYAN}      OpenEdge Container Build Quickstart                  ${NC}"
+        echo -e "${CYAN}============================================================${NC}"
         echo ""
         echo -e "${WHITE}Please enter your Docker Hub username to continue.${NC}"
         echo -e "${GRAY}This will be used to tag the built images.${NC}"
@@ -289,7 +487,7 @@ run_interactive() {
         case "$choice" in
             "1")
                 # Generate response.ini
-                devcontainer_choice=$(get_user_choice "Generate for devcontainer? (y/n): " "y" "n")
+                devcontainer_choice=$(get_user_choice "Only generate response.ini files for DevContainer configuration (pas_dev,compiler,db_adv)? (y/n): " "y" "n")
                 devcontainer_flag="false"
                 if [[ "$devcontainer_choice" == "y" ]]; then
                     devcontainer_flag="true"
@@ -313,60 +511,12 @@ run_interactive() {
                 ;;
             "3")
                 # Create specific container images
-                echo ""
-                echo -e "${CYAN}=== Available Container Images ===${NC}"
-                echo -e "${WHITE}  Base Images (can be built independently):${NC}"
-                echo -e "${GRAY}    - compiler     (OpenEdge compiler and development tools)${NC}"
-                echo -e "${GRAY}    - pas_dev      (OpenEdge PAS for development)${NC}"
-                echo -e "${GRAY}    - db_adv       (OpenEdge database server)${NC}"
-                echo ""
-                echo -e "${WHITE}  Dependent Images (require parent images):${NC}"
-                echo -e "${GRAY}    - devcontainer (requires: compiler)${NC}"
-                echo -e "${GRAY}    - sports2020-db (requires: db_adv)${NC}"
-                echo ""
+                comp=$(get_component_selection "Select Components to Build")
                 
-                # Component selection with validation
-                while true; do
-                    echo -e "${YELLOW}Enter component(s) to build:${NC}"
-                    echo -e "${GRAY}Examples: compiler | pas_dev,db_adv | compiler,devcontainer${NC}"
-                    read -p "Components: " comp
-                    
-                    if [[ -z "$comp" ]]; then
-                        echo -e "${RED}Please enter at least one component.${NC}"
-                        continue
-                    fi
-                    
-                    # Validate component names
-                    valid_components=("compiler" "pas_dev" "db_adv" "devcontainer" "sports2020-db")
-                    invalid_components=()
-                    
-                    if [[ "$comp" == *","* ]]; then
-                        IFS=',' read -ra components <<< "$comp"
-                        for component in "${components[@]}"; do
-                            component=$(echo "$component" | xargs) # trim whitespace
-                            if [[ ! " ${valid_components[*]} " =~ " ${component} " ]]; then
-                                invalid_components+=("$component")
-                            fi
-                        done
-                    else
-                        if [[ ! " ${valid_components[*]} " =~ " ${comp} " ]]; then
-                            invalid_components+=("$comp")
-                        fi
-                    fi
-                    
-                    if [[ ${#invalid_components[@]} -gt 0 ]]; then
-                        echo -e "${RED}Invalid component(s): ${invalid_components[*]}${NC}"
-                        echo -e "${YELLOW}Valid components: ${valid_components[*]}${NC}"
-                        continue
-                    fi
-                    
-                    # Check dependencies
-                    if ! validate_dependencies "$comp"; then
-                        continue
-                    fi
-                    
-                    break
-                done
+                if [[ $? -ne 0 ]]; then
+                    # User chose to quit
+                    continue
+                fi
                 
                 invoke_build_images "$comp" "$VERSION" "$DOCKER_USERNAME" "false"
                 
