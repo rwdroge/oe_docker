@@ -114,11 +114,11 @@ invoke_generate_response_ini() {
     
     if pwsh "$generate_script" "${pwsh_args[@]}"; then
         echo ""
-        echo -e "${GREEN}✓ Response.ini generation completed!${NC}"
+        echo -e "${GREEN} Response.ini generation completed!${NC}"
         return 0
     else
         echo ""
-        echo -e "${RED}✗ Response.ini generation failed!${NC}"
+        echo -e "${RED} Response.ini generation failed!${NC}"
         return 1
     fi
 }
@@ -147,7 +147,7 @@ invoke_build_images() {
             
             # Validate component
             if [[ ! "$comp" =~ ^(compiler|db_adv|pas_dev|devcontainer|sports2020-db)$ ]]; then
-                echo -e "${RED}✗ Invalid component: $comp${NC}"
+                echo -e "${RED}Invalid component: $comp${NC}"
                 echo -e "${YELLOW}Valid components: compiler, db_adv, pas_dev, devcontainer, sports2020-db${NC}"
                 return 1
             fi
@@ -166,13 +166,13 @@ invoke_build_images() {
             
             if ! "$build_script" "${build_args[@]}"; then
                 echo ""
-                echo -e "${RED}✗ Failed to build component: $comp${NC}"
+                echo -e "${RED} Failed to build component: $comp${NC}"
                 return 1
             fi
         done
         
         echo ""
-        echo -e "${GREEN}✓ All components built successfully!${NC}"
+        echo -e "${GREEN}All components built successfully!${NC}"
         return 0
         
     elif [[ "$component" == "all" || -z "$component" ]]; then
@@ -186,11 +186,11 @@ invoke_build_images() {
         
         if "$build_script" "${build_args[@]}"; then
             echo ""
-            echo -e "${GREEN}✓ Docker image build completed!${NC}"
+            echo -e "${GREEN}Docker image build completed!${NC}"
             return 0
         else
             echo ""
-            echo -e "${RED}✗ Docker image build failed!${NC}"
+            echo -e "${RED}Docker image build failed!${NC}"
             return 1
         fi
     else
@@ -200,11 +200,11 @@ invoke_build_images() {
         
         if "$build_script" "${build_args[@]}"; then
             echo ""
-            echo -e "${GREEN}✓ Docker image build completed!${NC}"
+            echo -e "${GREEN}Docker image build completed!${NC}"
             return 0
         else
             echo ""
-            echo -e "${RED}✗ Docker image build failed!${NC}"
+            echo -e "${RED}Docker image build failed!${NC}"
             return 1
         fi
     fi

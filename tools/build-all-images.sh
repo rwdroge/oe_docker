@@ -167,7 +167,7 @@ for comp in "${COMPONENTS[@]}"; do
     SECONDS=$((COMP_DURATION % 60))
     
     echo ""
-    echo -e "\033[0;32m✓ $comp completed in ${MINUTES}m ${SECONDS}s\033[0m"
+    echo -e "\033[0;32m $comp completed in ${MINUTES}m ${SECONDS}s\033[0m"
   else
     COMP_END_TIME=$(date +%s)
     COMP_DURATION=$((COMP_END_TIME - COMP_START_TIME))
@@ -175,7 +175,7 @@ for comp in "${COMPONENTS[@]}"; do
     STATUSES+=("Failed")
     
     echo ""
-    echo -e "\033[0;31m✗ $comp failed\033[0m"
+    echo -e "\033[0;31m $comp failed\033[0m"
     echo ""
     echo -e "\033[0;31mStopping build process due to failure.\033[0m"
     break
@@ -204,10 +204,10 @@ for i in "${!COMPONENTS[@]}"; do
     SECONDS=$((duration % 60))
     
     if [[ "$status" == "Success" ]]; then
-      echo -e "\033[0;32m✓ $comp: $status (${MINUTES}m ${SECONDS}s)\033[0m"
+      echo -e "\033[0;32m $comp: $status (${MINUTES}m ${SECONDS}s)\033[0m"
       SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
     else
-      echo -e "\033[0;31m✗ $comp: $status (${MINUTES}m ${SECONDS}s)\033[0m"
+      echo -e "\033[0;31m $comp: $status (${MINUTES}m ${SECONDS}s)\033[0m"
       FAIL_COUNT=$((FAIL_COUNT + 1))
     fi
   fi

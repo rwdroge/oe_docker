@@ -143,12 +143,12 @@ function Invoke-GenerateResponseIni {
     
     if ($LASTEXITCODE -ne 0 -and $LASTEXITCODE -ne $null) {
         Write-Host ""
-        Write-Host '✗ Response.ini generation failed!' -ForegroundColor Red
+        Write-Host 'Response.ini generation failed!' -ForegroundColor Red
         return $false
     }
     
     Write-Host ""
-    Write-Host '✓ Response.ini generation completed!' -ForegroundColor Green
+    Write-Host 'Response.ini generation completed!' -ForegroundColor Green
     return $true
 }
 
@@ -183,7 +183,7 @@ function Invoke-BuildImages {
         
         foreach ($comp in $components) {
             if (@('compiler','db_adv','pas_dev','devcontainer','sports2020-db') -notcontains $comp) {
-                Write-Host '✗ Invalid component: ' -NoNewline -ForegroundColor Red; Write-Host $comp -ForegroundColor Red
+                Write-Host 'Invalid component: ' -NoNewline -ForegroundColor Red; Write-Host $comp -ForegroundColor Red
                 Write-Host 'Valid components: compiler, db_adv, pas_dev, devcontainer, sports2020-db' -ForegroundColor Yellow
                 return $false
             }
@@ -214,13 +214,13 @@ function Invoke-BuildImages {
             
             if ($LASTEXITCODE -ne 0 -and $LASTEXITCODE -ne $null) {
                 Write-Host ""
-                Write-Host '✗ Failed to build component: ' -NoNewline -ForegroundColor Red; Write-Host $comp -ForegroundColor Red
+                Write-Host 'Failed to build component: ' -NoNewline -ForegroundColor Red; Write-Host $comp -ForegroundColor Red
                 return $false
             }
         }
         
         Write-Host ""
-        Write-Host '✓ All components built successfully!' -ForegroundColor Green
+        Write-Host 'All components built successfully!' -ForegroundColor Green
         return $true
     }
     elseif ($Component -eq 'all' -or [string]::IsNullOrEmpty($Component)) {
@@ -242,12 +242,12 @@ function Invoke-BuildImages {
         
         if ($LASTEXITCODE -ne 0 -and $LASTEXITCODE -ne $null) {
             Write-Host ""
-            Write-Host '✗ Docker image build failed!' -ForegroundColor Red
+            Write-Host 'Docker image build failed!' -ForegroundColor Red
             return $false
         }
         
         Write-Host ""
-        Write-Host '✓ Docker image build completed!' -ForegroundColor Green
+        Write-Host 'Docker image build completed!' -ForegroundColor Green
         return $true
     }
     else {
@@ -269,12 +269,12 @@ function Invoke-BuildImages {
         
         if ($LASTEXITCODE -ne 0 -and $LASTEXITCODE -ne $null) {
             Write-Host ""
-            Write-Host '✗ Docker image build failed!' -ForegroundColor Red
+            Write-Host 'Docker image build failed!' -ForegroundColor Red
             return $false
         }
         
         Write-Host ""
-        Write-Host '✓ Docker image build completed!' -ForegroundColor Green
+        Write-Host 'Docker image build completed!' -ForegroundColor Green
         return $true
     }
 }
