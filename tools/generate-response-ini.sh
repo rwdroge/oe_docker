@@ -149,10 +149,12 @@ get_company_name() {
     local content="$1"
     
     # Extract company name from "Registered To" section
-    # Format: "Registered To:   12345  Full Company Name (ABBREV)"
-    # Or:     "Registered To:   12345  Company Name                         Extended Name"
+    # The format is actually:
+    # "Customer/Partner:10011021                 Registered To:10157947        "
+    # "Progress Software                         Progress Software ESD         "
+    # So we need to find the line with "Registered To" and get the company name from the NEXT line
     local full_name
-    full_name=$(echo "$content" | sed -n 's/^Registered To:[[:space:]]*[0-9][0-9]*[[:space:]]*\(.*\)$/\1/p' | head -1)
+    full_name=$(echo "$content" | awk '/Registered To:/ {getline; gsub(/^[[:space:]]+/, ""); print $0; exit}' | head -1)
     if [[ -n "$full_name" ]]; then
         # If there are 5+ consecutive spaces, take only the part before them
         if echo "$full_name" | grep -q '     '; then
@@ -180,7 +182,7 @@ get_company_name() {
     fi
     
     # Fallback: try Customer/Partner section
-    full_name=$(echo "$content" | sed -n 's/^Customer\/Partner:[[:space:]]*[0-9][0-9]*[[:space:]]*\(.*\)$/\1/p' | head -1)
+    full_name=$(echo "$content" | sed -n 's/.*Customer\/Partner:[[:space:]]*[0-9][0-9]*[[:space:]]\+\(.*\)/\1/p' | head -1)
     if [[ -n "$full_name" ]]; then
         # Similar processing as above
         if echo "$full_name" | grep -q '     '; then
@@ -248,67 +250,65 @@ parse_license_products() {
         if [[ "$line" =~ Serial\ \#:[[:space:]]+([0-9]+)[[:space:]]+Rel:[[:space:]]+([0-9.]+)[[:space:]]+Control\#:(.+)$ ]]; then
             local serial="${BASH_REMATCH[1]}"
             local release="${BASH_REMATCH[2]}"
-            local control="${BASH_REMATCH[3]}"
+            local control
+            control=$(echo "${BASH_REMATCH[3]}" | xargs)
             
-            # Look backwards for product name (skip empty lines and platform lines)
-            for ((j=i-1; j>=0 && j>=(i-5); j--)); do
-                local prev_line="${lines[j]}"
-                
-                # Skip empty lines
-                if [[ -z "${prev_line// }" ]]; then
-                    continue
-                fi
-                
-                # Skip platform/architecture lines
-                if [[ "$prev_line" =~ ^[[:space:]]*(Linux|Windows|Solaris|AIX|HP-UX|Mac)[[:space:]]+(32bit|64bit) ]]; then
-                    continue
-                fi
+            # Look for product name 2 lines back (based on actual format)
+            # Format:
+            # Line i-2: "   4GL Development System             1      12.8     1000128 OE 12.8 FF    "
+            # Line i-1: "      US263472              01/11/24 PO: 12.8 Linux 64b DryRun                        "
+            # Line i:   "      Linux 64bit        Serial #:    006275022  Rel: 12.8    Control#:YZFRS XQP2M NMG?R"
+            
+            if [[ $((i-2)) -ge 0 ]]; then
+                local product_line="${lines[$((i-2))]}"
                 
                 # Check against known products
                 for product in "${known_products[@]}"; do
-                    if [[ "$prev_line" =~ ^[[:space:]]*${product} ]]; then
+                    if [[ "$product_line" =~ ^[[:space:]]*${product}[[:space:]] ]]; then
                         local product_key="${product}|${serial}"
                         
                         # Check if already found (avoid duplicates)
                         if ! grep -q "^${product_key}|" "$temp_file" 2>/dev/null; then
                             echo "${product_key}|${release}|${control}" >> "$temp_file"
-                            log_verbose "Found product (backward search): $product (Serial: $serial, Control: $control, Line: $i, matched from line: $j)"
+                            log_verbose "Found product: $product (Serial: $serial, Control: $control, Line: $i)"
                         else
-                            log_verbose "Duplicate product key found (backward search): $product_key (skipping, Line: $i)"
+                            log_verbose "Duplicate product key found: $product_key (skipping, Line: $i)"
                         fi
-                        break 2  # Break both loops
+                        break
                     fi
                 done
-            done
+            fi
         fi
         
-        # Also check for bundle products with separate control codes
+        # Also check for bundle products with "Units:" format
         # Format: "      Progress Dev AppServer for OE          Units: 1"
-        if [[ "$line" =~ ^[[:space:]]+(.+)[[:space:]]{2,}Units:[[:space:]]+[0-9]+ ]]; then
-            local potential_product="${BASH_REMATCH[1]// /}"
-            potential_product="${potential_product// /}"
+        # The serial/control is on the NEXT line after this
+        if [[ "$line" =~ ^[[:space:]]+(.+)[[:space:]]+Units:[[:space:]]+[0-9]+ ]]; then
+            local potential_product="${BASH_REMATCH[1]}"
+            # Trim trailing whitespace
+            potential_product=$(echo "$potential_product" | sed 's/[[:space:]]*$//')
             
             # Check if this matches known products
             for product in "${known_products[@]}"; do
                 if [[ "$potential_product" == "$product" ]]; then
-                    # Look ahead for serial and control
-                    for ((j=i+1; j<${#lines[@]} && j<=(i+3); j++)); do
-                        local next_line="${lines[j]}"
+                    # Look ahead for serial and control on the NEXT line
+                    if [[ $((i+1)) -lt ${#lines[@]} ]]; then
+                        local next_line="${lines[$((i+1))]}"
                         if [[ "$next_line" =~ Serial\ \#:[[:space:]]+([0-9]+)[[:space:]]+Rel:[[:space:]]+([0-9.]+)[[:space:]]+Control\#:(.+)$ ]]; then
                             local serial="${BASH_REMATCH[1]}"
                             local release="${BASH_REMATCH[2]}"
-                            local control="${BASH_REMATCH[3]}"
+                            local control
+                            control=$(echo "${BASH_REMATCH[3]}" | xargs)
                             local product_key="${product}|${serial}"
                             
                             if ! grep -q "^${product_key}|" "$temp_file" 2>/dev/null; then
                                 echo "${product_key}|${release}|${control}" >> "$temp_file"
-                                log_verbose "Found bundle product (Units search): $product (Serial: $serial, Control: $control, Line: $i)"
+                                log_verbose "Found bundle product: $product (Serial: $serial, Control: $control, Line: $i)"
                             else
-                                log_verbose "Duplicate bundle product key found (Units search): $product_key (skipping, Line: $i)"
+                                log_verbose "Duplicate bundle product key found: $product_key (skipping, Line: $i)"
                             fi
-                            break 2
                         fi
-                    done
+                    fi
                     break
                 fi
             done
@@ -353,7 +353,8 @@ generate_response_ini() {
     # Parse Product Configuration sections from template
     local config_num=1
     while [[ "$content" =~ \[Product\ Configuration\ ${config_num}\][^\[]*prodname=([^\r\n]+) ]]; do
-        local template_prod_name="${BASH_REMATCH[1]// /}"
+        local template_prod_name
+        template_prod_name=$(echo "${BASH_REMATCH[1]}" | xargs)
         
         # Normalize template name for comparison
         local normalized_template_name
@@ -363,11 +364,8 @@ generate_response_ini() {
         local matching_product=""
         local best_match=""
         
-        while IFS='|' read -r product_key release control; do
-            if [[ -z "$product_key" ]]; then continue; fi
-            
-            local product_name="${product_key%|*}"
-            local serial="${product_key#*|}"
+        while IFS='|' read -r product_name serial release control; do
+            if [[ -z "$product_name" ]]; then continue; fi
             
             # Normalize product name
             local normalized_product_name
@@ -396,15 +394,26 @@ generate_response_ini() {
                 local section="${BASH_REMATCH[0]}"
                 local updated_section="$section"
                 
-                # Update fields using sed-like replacements
-                updated_section=$(echo "$updated_section" | sed "s/^name=.*/name=$company_name/m")
-                updated_section=$(echo "$updated_section" | sed "s/^serial=.*/serial=$match_serial/m")
-                updated_section=$(echo "$updated_section" | sed "s/^control=.*/control=$match_control/m")
+                # Update fields using sed replacements (escape special characters)
+                local escaped_company=$(echo "$company_name" | sed 's/[[\.*^$()+?{|]/\\&/g')
+                local escaped_serial=$(echo "$match_serial" | sed 's/[[\.*^$()+?{|]/\\&/g')
+                local escaped_control=$(echo "$match_control" | sed 's/[[\.*^$()+?{|]/\\&/g')
                 
                 log_verbose "Updated section for Product Configuration $config_num"
                 
-                # Replace section in content
-                content="${content/$section/$updated_section}"
+                # Replace section in content using sed for more reliable replacement
+                local temp_file
+                temp_file=$(mktemp)
+                echo "$content" > "$temp_file"
+                
+                # Use sed to replace the specific fields directly in the content
+                content=$(sed "/^\[Product Configuration ${config_num}\]/,/^\[.*\]/{
+                    s/^name=.*/name=$escaped_company/
+                    s/^serial=.*/serial=$escaped_serial/
+                    s/^control=.*/control=$escaped_control/
+                }" "$temp_file")
+                
+                rm -f "$temp_file"
             else
                 log_verbose "Warning: Could not find section pattern for Product Configuration $config_num"
             fi
@@ -551,10 +560,8 @@ main() {
     # Debug: Show all parsed products if verbose
     if [[ "$VERBOSE" == "true" ]]; then
         log_verbose "=== All Parsed Products ==="
-        while IFS='|' read -r product_key release control; do
-            if [[ -n "$product_key" ]]; then
-                local product_name="${product_key%|*}"
-                local serial="${product_key#*|}"
+        while IFS='|' read -r product_name serial release control; do
+            if [[ -n "$product_name" ]]; then
                 log_verbose "  $product_name | Serial: $serial | Control: $control"
             fi
         done <<< "$all_products"
@@ -588,16 +595,13 @@ main() {
         local matched_products=""
         IFS='|' read -ra required_array <<< "$required_products"
         
-        while IFS='|' read -r product_key release control; do
-            if [[ -z "$product_key" ]]; then continue; fi
-            
-            local product_name="${product_key%|*}"
-            local serial="${product_key#*|}"
+        while IFS='|' read -r product_name serial release control; do
+            if [[ -z "$product_name" ]]; then continue; fi
             
             # Check if this product matches any required product
             for required in "${required_array[@]}"; do
                 if [[ "$product_name" == "$required" ]] || [[ "$product_name" == *"$required"* ]]; then
-                    matched_products+="$product_key|$release|$control"$'\n'
+                    matched_products+="$product_name|$serial|$release|$control"$'\n'
                     echo -e "  ${GRAY}- Found: $product_name (Serial: $serial, Control: $control)${NC}"
                     break
                 fi
