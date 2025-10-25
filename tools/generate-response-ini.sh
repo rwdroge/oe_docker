@@ -151,7 +151,9 @@ get_company_name() {
     # Extract company name from "Registered To" section
     # Format: "Registered To:   12345  Full Company Name (ABBREV)"
     # Or:     "Registered To:   12345  Company Name                         Extended Name"
-    if echo "$content" | grep -oP 'Registered To:\s*\d+\s+\K.+?(?=\r?\n)' | head -1 | read -r full_name; then
+    local full_name
+    full_name=$(echo "$content" | sed -n 's/^Registered To:[[:space:]]*[0-9][0-9]*[[:space:]]*\(.*\)$/\1/p' | head -1)
+    if [[ -n "$full_name" ]]; then
         # If there are 5+ consecutive spaces, take only the part before them
         if echo "$full_name" | grep -q '     '; then
             company_name=$(echo "$full_name" | sed 's/     .*//' | xargs)
@@ -161,8 +163,10 @@ get_company_name() {
         fi
         
         # Try to extract abbreviated name in parentheses
-        if echo "$full_name" | grep -oP '\(([^)]+)\)\s*$' | head -1 | read -r abbrev; then
-            company_name=$(echo "$abbrev" | tr -d '()' | xargs)
+        local abbrev
+        abbrev=$(echo "$full_name" | sed -n 's/.*(\([^)]*\))[[:space:]]*$/\1/p')
+        if [[ -n "$abbrev" ]]; then
+            company_name=$(echo "$abbrev" | xargs)
             log_verbose "Found abbreviated company name: $company_name (from: $full_name)"
             echo "$company_name"
             return 0
@@ -176,7 +180,8 @@ get_company_name() {
     fi
     
     # Fallback: try Customer/Partner section
-    if echo "$content" | grep -oP 'Customer/Partner:\s*\d+\s+\K.+?(?=\r?\n)' | head -1 | read -r full_name; then
+    full_name=$(echo "$content" | sed -n 's/^Customer\/Partner:[[:space:]]*[0-9][0-9]*[[:space:]]*\(.*\)$/\1/p' | head -1)
+    if [[ -n "$full_name" ]]; then
         # Similar processing as above
         if echo "$full_name" | grep -q '     '; then
             company_name=$(echo "$full_name" | sed 's/     .*//' | xargs)
@@ -185,8 +190,9 @@ get_company_name() {
             return 0
         fi
         
-        if echo "$full_name" | grep -oP '\(([^)]+)\)\s*$' | head -1 | read -r abbrev; then
-            company_name=$(echo "$abbrev" | tr -d '()' | xargs)
+        abbrev=$(echo "$full_name" | sed -n 's/.*(\([^)]*\))[[:space:]]*$/\1/p')
+        if [[ -n "$abbrev" ]]; then
+            company_name=$(echo "$abbrev" | xargs)
             log_verbose "Found abbreviated company name (fallback): $company_name (from: $full_name)"
             echo "$company_name"
             return 0
