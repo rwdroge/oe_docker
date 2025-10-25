@@ -4,11 +4,12 @@
 # Interactive tool for building OpenEdge Docker containers on Linux/macOS
 #
 # This script provides an interactive menu to:
-# 1. Generate response.ini files from license addendum
+# 1. Generate response.ini files from license addendum (native Linux implementation)
 # 2. Create all images for DevContainer configuration
 # 3. Create specific container images with dependency validation
 #
 # Focused on devcontainer workflows with simplified interface.
+# No PowerShell required - uses native bash implementation for response.ini generation.
 #
 
 set -euo pipefail
@@ -72,7 +73,7 @@ get_user_choice() {
     done
 }
 
-# Helper function to run Generate-ResponseIni.ps1
+# Helper function to run generate-response-ini.sh
 invoke_generate_response_ini() {
     local version="$1"
     local license_file="$2"
@@ -85,34 +86,26 @@ invoke_generate_response_ini() {
     echo -e "${CYAN}═══════════════════════════════════════════════════════════${NC}"
     echo ""
     
-    # Check if pwsh is available
-    if ! command -v pwsh &> /dev/null; then
-        echo -e "${RED}Error: PowerShell Core (pwsh) is not installed.${NC}"
-        echo ""
-        echo "Please install PowerShell Core:"
-        echo "  Ubuntu/Debian: sudo apt-get install -y powershell"
-        echo "  macOS: brew install --cask powershell"
-        echo "  Other: https://github.com/PowerShell/PowerShell#get-powershell"
-        return 1
-    fi
-    
-    local generate_script="$TOOLS_DIR/Generate-ResponseIni.ps1"
-    local pwsh_args=()
+    local generate_script="$TOOLS_DIR/generate-response-ini.sh"
+    local script_args=()
     
     if [[ -n "$version" ]]; then
-        pwsh_args+=("-Version" "$version")
+        script_args+=("--version" "$version")
     fi
     if [[ -n "$license_file" ]]; then
-        pwsh_args+=("-LicenseFile" "$license_file")
+        script_args+=("--license" "$license_file")
     fi
     if [[ "$force" == "true" ]]; then
-        pwsh_args+=("-Force")
+        script_args+=("--force")
     fi
     if [[ "$devcontainer" == "true" ]]; then
-        pwsh_args+=("-Devcontainer")
+        script_args+=("--devcontainer")
     fi
     
-    if pwsh "$generate_script" "${pwsh_args[@]}"; then
+    # Make sure the script is executable
+    chmod +x "$generate_script"
+    
+    if "$generate_script" "${script_args[@]}"; then
         echo ""
         echo -e "${GREEN} Response.ini generation completed!${NC}"
         return 0
