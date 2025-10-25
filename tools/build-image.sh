@@ -179,9 +179,12 @@ if [[ -z "$OEVERSION" ]]; then
 fi
 
 JDK_KEY="jdk${OEVERSION}"
-JDK_VERSION_VALUE=$(jq -r ".${JDK_KEY}" "$JDK_JSON")
-if [[ -z "$JDK_VERSION_VALUE" || "$JDK_VERSION_VALUE" == "null" ]]; then
+# Parse JSON without jq dependency - extract value for the key
+JDK_VERSION_VALUE=$(awk -F'"' "/\"${JDK_KEY}\":/ {print \$4}" "$JDK_JSON")
+if [[ -z "$JDK_VERSION_VALUE" ]]; then
   echo "Error: No JDK mapping found for key '$JDK_KEY' in $JDK_JSON" >&2
+  echo "Available keys in $JDK_JSON:" >&2
+  grep -o '"jdk[^"]*"' "$JDK_JSON" | sed 's/"//g' >&2
   exit 1
 fi
 

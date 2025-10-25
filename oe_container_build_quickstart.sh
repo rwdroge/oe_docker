@@ -69,7 +69,7 @@ get_user_choice() {
                 return
             fi
         done
-        echo -e "${RED}Invalid choice. Please try again.${NC}"
+        echo -e "${RED}Invalid choice. Please try again.${NC}" >&2
     done
 }
 
@@ -537,8 +537,11 @@ run_interactive() {
                 
                 if [[ $? -ne 0 ]]; then
                     # User chose to quit
+                    echo -e "${YELLOW}Component selection cancelled${NC}"
                     continue
                 fi
+                
+                echo -e "${GREEN}Selected components: $comp${NC}"
                 
                 invoke_build_images "$comp" "$VERSION" "$DOCKER_USERNAME" "false"
                 
