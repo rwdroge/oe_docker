@@ -32,11 +32,31 @@ FORCE=false
 VERBOSE=false
 
 # Container build configurations
-declare -A BUILD_CONFIGS
-BUILD_CONFIGS[compiler]="4GL Development System|Client Networking|Progress Dev AppServer for OE"
-BUILD_CONFIGS[db_adv]="OE RDBMS Adv Enterprise"
-BUILD_CONFIGS[pas_dev]="Progress Dev AS for OE|Progress Dev AppServer for OE"
-BUILD_CONFIGS[pas_base]="Progress App Server for OE|Progress Prod AppServer for OE"
+get_build_config() {
+    local build_name="$1"
+    case "$build_name" in
+        "compiler")
+            echo "4GL Development System|Client Networking|Progress Dev AppServer for OE"
+            ;;
+        "db_adv")
+            echo "OE RDBMS Adv Enterprise"
+            ;;
+        "pas_dev")
+            echo "Progress Dev AS for OE|Progress Dev AppServer for OE"
+            ;;
+        "pas_base")
+            echo "Progress App Server for OE|Progress Prod AppServer for OE"
+            ;;
+        *)
+            echo ""
+            ;;
+    esac
+}
+
+# Get list of all build configurations
+get_build_names() {
+    echo "compiler db_adv pas_dev pas_base"
+}
 
 # Usage function
 show_usage() {
@@ -551,9 +571,10 @@ main() {
     echo ""
     
     # Generate response.ini for each build configuration
-    for build_name in "${!BUILD_CONFIGS[@]}"; do
+    for build_name in $(get_build_names); do
         local build_path="$ROOT_DIR/$build_name"
-        local required_products="${BUILD_CONFIGS[$build_name]}"
+        local required_products
+        required_products=$(get_build_config "$build_name")
         
         echo -e "${YELLOW}Processing: $build_name${NC}"
         
