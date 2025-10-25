@@ -308,17 +308,17 @@ get_component_selection() {
     }
     
     while true; do
-        clear
-        echo -e "${CYAN}================================================================${NC}"
-        echo -e "${CYAN} $title${NC}"
-        echo -e "${CYAN}================================================================${NC}"
-        echo ""
+        clear >&2
+        echo -e "${CYAN}================================================================${NC}" >&2
+        echo -e "${CYAN} $title${NC}" >&2
+        echo -e "${CYAN}================================================================${NC}" >&2
+        echo "" >&2
         
-        echo -e "${YELLOW}Use number keys to toggle selection, 'm' for manual entry, 'c' to continue, or 'q' to quit${NC}"
-        echo ""
+        echo -e "${YELLOW}Use number keys to toggle selection, 'm' for manual entry, 'c' to continue, or 'q' to quit${NC}" >&2
+        echo "" >&2
         
         # Display base components
-        echo -e "${WHITE}Base Images (can be built independently):${NC}"
+        echo -e "${WHITE}Base Images (can be built independently):${NC}" >&2
         for i in 1 2 3; do
             local checkbox="[ ]"
             local color="${GRAY}"
@@ -326,11 +326,11 @@ get_component_selection() {
                 checkbox="[X]"
                 color="${GREEN}"
             fi
-            echo -e "  ${color}$i. $checkbox $(get_component_name $i) - $(get_component_description $i)${NC}"
+            echo -e "  ${color}$i. $checkbox $(get_component_name $i) - $(get_component_description $i)${NC}" >&2
         done
         
-        echo ""
-        echo -e "${WHITE}Dependent Images (require parent images):${NC}"
+        echo "" >&2
+        echo -e "${WHITE}Dependent Images (require parent images):${NC}" >&2
         for i in 4 5; do
             local checkbox="[ ]"
             local color="${GRAY}"
@@ -338,11 +338,11 @@ get_component_selection() {
                 checkbox="[X]"
                 color="${GREEN}"
             fi
-            echo -e "  ${color}$i. $checkbox $(get_component_name $i) - $(get_component_description $i)${NC}"
+            echo -e "  ${color}$i. $checkbox $(get_component_name $i) - $(get_component_description $i)${NC}" >&2
         done
         
-        echo ""
-        echo -e -n "${YELLOW}Selected: ${NC}"
+        echo "" >&2
+        echo -e -n "${YELLOW}Selected: ${NC}" >&2
         local selected_names=()
         for i in {1..5}; do
             if [[ "$(get_selected $i)" == "true" ]]; then
@@ -351,13 +351,13 @@ get_component_selection() {
         done
         
         if [[ ${#selected_names[@]} -gt 0 ]]; then
-            echo -e "${GREEN}$(IFS=', '; echo "${selected_names[*]}")${NC}"
+            echo -e "${GREEN}$(IFS=', '; echo "${selected_names[*]}")${NC}" >&2
         else
-            echo -e "${RED}None${NC}"
+            echo -e "${RED}None${NC}" >&2
         fi
         
-        echo ""
-        echo -e -n "${YELLOW}Enter choice (1-5 to toggle, 'm' for manual entry, 'c' to continue, 'q' to quit): ${NC}"
+        echo "" >&2
+        echo -e -n "${YELLOW}Enter choice (1-5 to toggle, 'm' for manual entry, 'c' to continue, 'q' to quit): ${NC}" >&2
         read -r choice
         
         case "$choice" in
@@ -369,9 +369,9 @@ get_component_selection() {
                 fi
                 ;;
             m|M)
-                echo ""
-                echo -e "${YELLOW}Enter component(s) to build (comma-separated):${NC}"
-                echo -e "${GRAY}Examples: compiler | pas_dev,db_adv | compiler,devcontainer${NC}"
+                echo "" >&2
+                echo -e "${YELLOW}Enter component(s) to build (comma-separated):${NC}" >&2
+                echo -e "${GRAY}Examples: compiler | pas_dev,db_adv | compiler,devcontainer${NC}" >&2
                 read -p "Components: " manual_input
                 
                 if [[ -n "$manual_input" ]]; then
@@ -405,10 +405,10 @@ get_component_selection() {
                                 fi
                             done
                         done
-                        echo -e "${GREEN}Manual selection applied: $(IFS=', '; echo "${manual_components[*]}")${NC}"
+                        echo -e "${GREEN}Manual selection applied: $(IFS=', '; echo "${manual_components[*]}")${NC}" >&2
                     else
-                        echo -e "${RED}Invalid component(s): $(IFS=', '; echo "${invalid_components[*]}")${NC}"
-                        echo -e "${YELLOW}Valid components: $(IFS=', '; echo "${valid_components[*]}")${NC}"
+                        echo -e "${RED}Invalid component(s): $(IFS=', '; echo "${invalid_components[*]}")${NC}" >&2
+                        echo -e "${YELLOW}Valid components: $(IFS=', '; echo "${valid_components[*]}")${NC}" >&2
                     fi
                     sleep 2
                 fi
@@ -423,7 +423,7 @@ get_component_selection() {
                 done
                 
                 if [[ $selected_count -eq 0 ]]; then
-                    echo -e "${RED}Please select at least one component.${NC}"
+                    echo -e "${RED}Please select at least one component.${NC}" >&2
                     sleep 2
                     continue
                 fi
@@ -438,13 +438,13 @@ get_component_selection() {
                 fi
                 
                 if [[ ${#dependency_errors[@]} -gt 0 ]]; then
-                    echo ""
-                    echo -e "${RED}Dependency errors:${NC}"
+                    echo "" >&2
+                    echo -e "${RED}Dependency errors:${NC}" >&2
                     for error in "${dependency_errors[@]}"; do
-                        echo -e "${RED}  - $error${NC}"
+                        echo -e "${RED}  - $error${NC}" >&2
                     done
-                    echo ""
-                    echo -e "${YELLOW}Press Enter to continue...${NC}"
+                    echo "" >&2
+                    echo -e "${YELLOW}Press Enter to continue...${NC}" >&2
                     read -r
                     continue
                 fi
@@ -463,7 +463,7 @@ get_component_selection() {
                 return 1
                 ;;
             *)
-                echo -e "${RED}Invalid choice. Please try again.${NC}"
+                echo -e "${RED}Invalid choice. Please try again.${NC}" >&2
                 sleep 1
                 ;;
         esac
