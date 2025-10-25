@@ -17,6 +17,19 @@ docker --version
 docker ps
 ```
 
+> ⚠️ **Important for Mac Users with Apple M Processors (Apple Silicon):**
+> 
+> Set the following environment variable to ensure Linux/AMD64 images are built instead of ARM64:
+> ```bash
+> export DOCKER_DEFAULT_PLATFORM=linux/amd64
+> ```
+> 
+> Add this to your shell profile (`.bashrc`, `.zshrc`, etc.) to make it permanent:
+> ```bash
+> echo 'export DOCKER_DEFAULT_PLATFORM=linux/amd64' >> ~/.zshrc  # For zsh
+> echo 'export DOCKER_DEFAULT_PLATFORM=linux/amd64' >> ~/.bashrc # For bash
+> ```
+
 ### 2. **Clone This Repository**
 Clone the OpenEdge Docker repository to your local machine:
 
@@ -189,6 +202,21 @@ For advanced users who prefer command-line automation over the interactive quick
 - **All DevContainer Images:** Use `all` to build: compiler, pas_dev, db_adv, devcontainer, sports2020-db
 
 > 📖 **For detailed documentation:** See [tools/README_Generate-ResponseIni.md](tools/README_Generate-ResponseIni.md)
+
+## Troubleshooting
+
+### Common Issues
+
+**🍎 Mac with Apple M Processors (Apple Silicon)**
+- **Problem:** Images built for ARM64 instead of AMD64
+- **Solution:** Set the platform environment variable:
+  ```bash
+  export DOCKER_DEFAULT_PLATFORM=linux/amd64
+  ```
+
+**📄 License Issues**
+- **Problem:** "Could not extract company name from license file"
+- **Solution:** Ensure you downloaded the correct Linux 64-bit license addendum from Progress ESD
 
 ## Credits
 
