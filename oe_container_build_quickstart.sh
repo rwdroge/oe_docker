@@ -49,7 +49,7 @@ show_menu() {
     echo ""
     echo -e "  ${YELLOW}1. Generate response.ini files from license addendum${NC}"
     echo -e "  ${YELLOW}2. Create all images for DevContainer configuration${NC}"
-    echo -e "  ${YELLOW}3. Create specific container images${NC}"
+    echo -e "  ${YELLOW}3. Select which container images to build${NC}"
     echo -e "  ${YELLOW}4. Exit${NC}"
     echo ""
 }
