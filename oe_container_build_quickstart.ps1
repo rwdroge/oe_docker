@@ -98,7 +98,7 @@ function Show-Menu {
     Write-Host ''
     Write-Host '  1. Generate response.ini files from license addendum' -ForegroundColor Yellow
     Write-Host '  2. Create all images for DevContainer configuration' -ForegroundColor Yellow
-    Write-Host '  3. Create specific container images' -ForegroundColor Yellow
+    Write-Host '  3. Select which container images to build' -ForegroundColor Yellow
     Write-Host '  4. Exit' -ForegroundColor Yellow
     Write-Host ''
 }
