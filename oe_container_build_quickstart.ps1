@@ -446,7 +446,7 @@ function Invoke-Main {
         
         do {
             Show-Menu -DockerUsername $DockerUsername
-            $choice = Get-UserChoice -Prompt 'Select an option (1-4)' -ValidChoices @('1', '2', '3', '4')
+            $choice = Get-UserChoice -Prompt 'Select an option (1-4): ' -ValidChoices @('1', '2', '3', '4')
             
             if ($choice -eq '4') {
                 Write-Host 'Exiting...' -ForegroundColor Yellow
@@ -456,13 +456,13 @@ function Invoke-Main {
             # Get version if not provided
             if ([string]::IsNullOrEmpty($Version)) {
                 Write-Host ""
-                $Version = Read-Host 'Enter OpenEdge version (e.g., 12.8.9)'
+                $Version = Read-Host 'Enter OpenEdge version (e.g., 12.8.9): '
             }
             
             switch ($choice) {
                 '1' {
                     # Generate response.ini
-                    $devcontainer = Get-UserChoice -Prompt 'Only generate response.ini files for DevContainer configuration (pas_dev,compiler,db_adv)? (y/n)' -ValidChoices @('y', 'n')
+                    $devcontainer = Get-UserChoice -Prompt 'Only generate response.ini files for DevContainer configuration (pas_dev,compiler,db_adv)? (y/n): ' -ValidChoices @('y', 'n')
                     $success = Invoke-GenerateResponseIni -Version $Version -Force:$Force -Devcontainer:($devcontainer -eq 'y')
                     
                     Write-Host ""
