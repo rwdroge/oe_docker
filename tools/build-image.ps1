@@ -14,8 +14,8 @@ param(
   [Parameter(Position=4)]
   [string]$BinariesRoot = $null,
 
-  [Parameter(Position=5)]
-  [string]$DockerUsername = 'rdroge',
+  [Parameter(Mandatory=$true, Position=5)]
+  [string]$DockerUsername,
 
   [string]$OEVERSION = $null,
   [switch]$BuildDevcontainer = $false,

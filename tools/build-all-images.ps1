@@ -8,6 +8,9 @@ param(
   [Parameter(Position=2)]
   [string]$BinariesRoot = $null,
 
+  [Parameter(Mandatory=$true, Position=3)]
+  [string]$DockerUsername,
+
   [string]$OEVERSION = $null,
   [switch]$SkipDevcontainer = $false,
   [switch]$SkipSports2020Db = $false,
@@ -22,10 +25,10 @@ $ErrorActionPreference = 'Stop'
   Use -DevcontainerOnly to build only images required for devcontainer setups (compiler, devcontainer, pas_dev, db_adv, sports2020-db).
   
   Example:
-    pwsh ./tools/build-all-images.ps1 -Version 12.8.7 -Tag 12.8.7
-    pwsh ./tools/build-all-images.ps1 -Version 12.8.7 -Tag 12.8.7 -SkipDevcontainer
-    pwsh ./tools/build-all-images.ps1 -Version 12.8.7 -Tag 12.8.7 -SkipSports2020Db
-    pwsh ./tools/build-all-images.ps1 -Version 12.8.7 -Tag 12.8.7 -DevcontainerOnly
+    pwsh ./tools/build-all-images.ps1 -Version 12.8.7 -DockerUsername myusername
+    pwsh ./tools/build-all-images.ps1 -Version 12.8.7 -DockerUsername myusername -SkipDevcontainer
+    pwsh ./tools/build-all-images.ps1 -Version 12.8.7 -DockerUsername myusername -SkipSports2020Db
+    pwsh ./tools/build-all-images.ps1 -Version 12.8.7 -DockerUsername myusername -DevcontainerOnly
 #>
 
 if (-not $Tag) { $Tag = $Version }
@@ -99,6 +102,7 @@ foreach ($component in $components) {
       Component = $component
       Version = $Version
       Tag = $Tag
+      DockerUsername = $DockerUsername
     }
     
     if ($BinariesRoot) {
@@ -193,13 +197,13 @@ if ($failCount -gt 0) {
   
   Write-Host ""
   Write-Host "Built images:" -ForegroundColor Cyan
-  Write-Host "  - rdroge/oe_compiler:$Tag" -ForegroundColor White
+  Write-Host "  - $DockerUsername/oe_compiler:$Tag" -ForegroundColor White
   if ($buildDevcontainer) {
-    Write-Host "  - rdroge/oe_devcontainer:$Tag" -ForegroundColor White
+    Write-Host "  - $DockerUsername/oe_devcontainer:$Tag" -ForegroundColor White
   }
-  Write-Host "  - rdroge/oe_pas_dev:$Tag" -ForegroundColor White
-  Write-Host "  - rdroge/oe_db_adv:$Tag" -ForegroundColor White
+  Write-Host "  - $DockerUsername/oe_pas_dev:$Tag" -ForegroundColor White
+  Write-Host "  - $DockerUsername/oe_db_adv:$Tag" -ForegroundColor White
   if ($buildSports2020) {
-    Write-Host "  - rdroge/oe_sports2020_db:$Tag" -ForegroundColor White
+    Write-Host "  - $DockerUsername/oe_sports2020_db:$Tag" -ForegroundColor White
   }
 }

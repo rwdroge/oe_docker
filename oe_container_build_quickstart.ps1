@@ -24,7 +24,7 @@
     Component to build (for build action): compiler, db_adv, pas_dev, sports2020-db, or all
 
 .PARAMETER DockerUsername
-    Docker Hub username (default: rdroge)
+    Docker Hub username (default: empty)
 
 .PARAMETER BuildDevcontainer
     Build devcontainer image after building components
@@ -69,7 +69,7 @@ param(
     [string]$Component,
     
     [Parameter(Mandatory=$false)]
-    [string]$DockerUsername = "rdroge",
+    [string]$DockerUsername = "",
     
     [Parameter(Mandatory=$false)]
     [switch]$BuildDevcontainer,
@@ -371,6 +371,7 @@ function Invoke-BuildImages {
         
         $params = @{
             'Version' = $Version
+            'DockerUsername' = $DockerUsername
         }
         if ($Tag) { $params['Tag'] = $Tag }
         if ($BinariesRoot) { $params['BinariesRoot'] = $BinariesRoot }
@@ -426,7 +427,7 @@ function Invoke-Main {
     # Interactive mode
     if ([string]::IsNullOrEmpty($Action) -and -not $Batch) {
         # Get Docker username first if not provided
-        if ([string]::IsNullOrEmpty($DockerUsername) -or $DockerUsername -eq "rdroge") {
+        if ([string]::IsNullOrEmpty($DockerUsername) -or $DockerUsername -eq "") {
             Clear-Host
             Write-Host '============================================================' -ForegroundColor Cyan
             Write-Host '      OpenEdge Container Build Quickstart                  ' -ForegroundColor Cyan
