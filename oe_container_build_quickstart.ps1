@@ -456,7 +456,7 @@ function Invoke-Main {
             # Get version if not provided
             if ([string]::IsNullOrEmpty($Version)) {
                 Write-Host ""
-                $Version = Read-Host 'Enter OpenEdge version (e.g., 12.8.9): '
+                $Version = Read-Host 'Enter OpenEdge version (e.g., 12.8.9)'
             }
             
             switch ($choice) {
