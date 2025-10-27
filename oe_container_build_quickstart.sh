@@ -314,7 +314,7 @@ get_component_selection() {
         echo -e "${CYAN}================================================================${NC}" >&2
         echo "" >&2
         
-        echo -e "${YELLOW}Use number keys to toggle selection, 'm' for manual entry, 'c' to continue, or 'q' to quit${NC}" >&2
+        echo -e "${YELLOW}Use number keys to toggle selection, 'm' for manual entry, 'c' to continue, or 'q' to quit: ${NC}" >&2
         echo "" >&2
         
         # Display base components
