@@ -148,13 +148,13 @@ invoke_build_images() {
             echo ""
             echo -e "${CYAN}Building component: $comp${NC}"
             
-            local build_args=("-c" "$comp" "-v" "$version")
+            local build_args=("-c" "$comp" "-v" "$version" "-u" "$docker_username")
             
             # Special handling for devcontainer and sports2020-db
             if [[ "$comp" == "devcontainer" ]]; then
-                build_args=("-c" "compiler" "-v" "$version" "-d")
+                build_args=("-c" "compiler" "-v" "$version" "-u" "$docker_username" "-d")
             elif [[ "$comp" == "sports2020-db" ]]; then
-                build_args=("-c" "db_adv" "-v" "$version" "-s")
+                build_args=("-c" "db_adv" "-v" "$version" "-u" "$docker_username" "-s")
             fi
             
             if ! "$build_script" "${build_args[@]}"; then
@@ -171,7 +171,7 @@ invoke_build_images() {
     elif [[ "$component" == "all" || -z "$component" ]]; then
         # Build all images
         local build_script="$TOOLS_DIR/build-all-images.sh"
-        local build_args=("-v" "$version")
+        local build_args=("-v" "$version" "-u" "$docker_username")
         
         if [[ "$devcontainer_only" == "true" ]]; then
             build_args+=("-D")
@@ -189,7 +189,7 @@ invoke_build_images() {
     else
         # Build single component
         local build_script="$TOOLS_DIR/build-image.sh"
-        local build_args=("-c" "$component" "-v" "$version")
+        local build_args=("-c" "$component" "-v" "$version" "-u" "$docker_username")
         
         if "$build_script" "${build_args[@]}"; then
             echo ""

@@ -6,11 +6,12 @@ set -euo pipefail
 
 usage() {
   cat >&2 <<EOF
-Usage: $0 -c <component> -v <version> [options]
+Usage: $0 -c <component> -v <version> -u <username> [options]
 
 Required:
   -c <component>     Component to build: compiler, db_adv, or pas_dev
   -v <version>       Version in MAJOR.MINOR.PATCH format (e.g., 12.8.6)
+  -u <username>      Docker username for image tagging
 
 Optional:
   -t <tag>           Docker image tag (defaults to version)
@@ -22,10 +23,10 @@ Optional:
   -h                 Show this help
 
 Examples:
-  $0 -c compiler -v 12.8.6 -t 12.8.6
-  $0 -c compiler -v 12.8.6 -t 12.8.6 -d
-  $0 -c db_adv -v 12.8.6 -t 12.8.6
-  $0 -c db_adv -v 12.8.6 -t 12.8.6 -s
+  $0 -c compiler -v 12.8.6 -t 12.8.6 -u myusername
+  $0 -c compiler -v 12.8.6 -t 12.8.6 -u myusername -d
+  $0 -c db_adv -v 12.8.6 -t 12.8.6 -u myusername
+  $0 -c db_adv -v 12.8.6 -t 12.8.6 -u myusername -s
 EOF
 }
 
@@ -35,17 +36,19 @@ VERSION=""
 TAG=""
 IMAGE_NAME=""
 BINARIES_ROOT=""
+DOCKER_USERNAME=""
 OEVERSION=""
 BUILD_DEVCONTAINER=0
 BUILD_SPORTS2020=0
 
-while getopts ":c:v:t:i:b:j:o:dsh" opt; do
+while getopts ":c:v:t:i:b:u:j:o:dsh" opt; do
   case $opt in
     c) COMPONENT="$OPTARG";;
     v) VERSION="$OPTARG";;
     t) TAG="$OPTARG";;
     i) IMAGE_NAME="$OPTARG";;
     b) BINARIES_ROOT="$OPTARG";;
+    u) DOCKER_USERNAME="$OPTARG";;
     o) OEVERSION="$OPTARG";;
     d) BUILD_DEVCONTAINER=1;;
     s) BUILD_SPORTS2020=1;;
@@ -55,8 +58,8 @@ while getopts ":c:v:t:i:b:j:o:dsh" opt; do
 done
 
 # Validate required arguments
-if [[ -z "$COMPONENT" || -z "$VERSION" ]]; then
-  echo "Error: -c and -v are required" >&2
+if [[ -z "$COMPONENT" || -z "$VERSION" || -z "$DOCKER_USERNAME" ]]; then
+  echo "Error: -c, -v, and -u are required" >&2
   usage
   exit 1
 fi
@@ -97,23 +100,23 @@ fi
 # Set defaults per component
 case "$COMPONENT" in
   compiler)
-    [[ -z "$IMAGE_NAME" ]] && IMAGE_NAME="rdroge/oe_compiler"
+    [[ -z "$IMAGE_NAME" ]] && IMAGE_NAME="$DOCKER_USERNAME/oe_compiler"
     CTYPE="compiler"
     ;;
   db_adv)
-    [[ -z "$IMAGE_NAME" ]] && IMAGE_NAME="rdroge/oe_db_adv"
+    [[ -z "$IMAGE_NAME" ]] && IMAGE_NAME="$DOCKER_USERNAME/oe_db_adv"
     CTYPE="db"
     ;;
   pas_dev)
-    [[ -z "$IMAGE_NAME" ]] && IMAGE_NAME="rdroge/oe_pas_dev"
+    [[ -z "$IMAGE_NAME" ]] && IMAGE_NAME="$DOCKER_USERNAME/oe_pas_dev"
     CTYPE="pas"
     ;;
   pas_base)
-    [[ -z "$IMAGE_NAME" ]] && IMAGE_NAME="rdroge/oe_pas_base"
+    [[ -z "$IMAGE_NAME" ]] && IMAGE_NAME="$DOCKER_USERNAME/oe_pas_base"
     CTYPE="pas"
     ;;
   pas_orads)
-    [[ -z "$IMAGE_NAME" ]] && IMAGE_NAME="rdroge/oe_pas_orads"
+    [[ -z "$IMAGE_NAME" ]] && IMAGE_NAME="$DOCKER_USERNAME/oe_pas_orads"
     CTYPE="pas"
     ;;
 esac
@@ -241,7 +244,7 @@ if [[ $BUILD_DEVCONTAINER -eq 1 ]]; then
   FIRST_FROM=$(grep "^FROM" "$DEV_TEMP_DOCKERFILE" | head -1)
   echo "  Verified: $FIRST_FROM"
   
-  DEV_IMAGE_NAME="rdroge/oe_devcontainer"
+  DEV_IMAGE_NAME="$DOCKER_USERNAME/oe_devcontainer"
   DEV_TAG_REF="${DEV_IMAGE_NAME}:${TAG}"
   
   echo "Building $DEV_TAG_REF using $DEVCONTAINER_DOCKERFILE"
@@ -285,7 +288,7 @@ if [[ $BUILD_SPORTS2020 -eq 1 ]]; then
   FIRST_FROM=$(grep "^FROM" "$SPORTS_TEMP_DOCKERFILE" | head -1)
   echo "  Verified: $FIRST_FROM"
   
-  SPORTS_IMAGE_NAME="rdroge/oe_sports2020_db"
+  SPORTS_IMAGE_NAME="$DOCKER_USERNAME/oe_sports2020_db"
   SPORTS_TAG_REF="${SPORTS_IMAGE_NAME}:${TAG}"
   
   echo "Building $SPORTS_TAG_REF using $SPORTS2020_DOCKERFILE"

@@ -6,10 +6,11 @@ set -euo pipefail
 
 usage() {
   cat >&2 <<EOF
-Usage: $0 -v <version> [options]
+Usage: $0 -v <version> -u <username> [options]
 
 Required:
   -v <version>       Version in MAJOR.MINOR.PATCH format (e.g., 12.8.6)
+  -u <username>      Docker username for image tagging
 
 Optional:
   -t <tag>           Docker image tag (defaults to version)
@@ -21,10 +22,10 @@ Optional:
   -h                 Show this help
 
 Examples:
-  $0 -v 12.8.6 -t 12.8.6
-  $0 -v 12.8.6 -t 12.8.6 -s
-  $0 -v 12.8.6 -t 12.8.6 -S
-  $0 -v 12.8.6 -t 12.8.6 -D
+  $0 -v 12.8.6 -t 12.8.6 -u myusername
+  $0 -v 12.8.6 -t 12.8.6 -u myusername -s
+  $0 -v 12.8.6 -t 12.8.6 -u myusername -S
+  $0 -v 12.8.6 -t 12.8.6 -u myusername -D
 EOF
 }
 
@@ -32,16 +33,18 @@ EOF
 VERSION=""
 TAG=""
 BINARIES_ROOT=""
+DOCKER_USERNAME=""
 OEVERSION=""
 SKIP_DEVCONTAINER=0
 SKIP_SPORTS2020=0
 DEVCONTAINER_ONLY=0
 
-while getopts ":v:t:b:j:o:sSDh" opt; do
+while getopts ":v:t:b:u:j:o:sSDh" opt; do
   case $opt in
     v) VERSION="$OPTARG";;
     t) TAG="$OPTARG";;
     b) BINARIES_ROOT="$OPTARG";;
+    u) DOCKER_USERNAME="$OPTARG";;
     o) OEVERSION="$OPTARG";;
     s) SKIP_DEVCONTAINER=1;;
     S) SKIP_SPORTS2020=1;;
@@ -52,8 +55,8 @@ while getopts ":v:t:b:j:o:sSDh" opt; do
 done
 
 # Validate required arguments
-if [[ -z "$VERSION" ]]; then
-  echo "Error: -v is required" >&2
+if [[ -z "$VERSION" || -z "$DOCKER_USERNAME" ]]; then
+  echo "Error: -v and -u are required" >&2
   usage
   exit 1
 fi
@@ -135,7 +138,7 @@ for comp in "${COMPONENTS[@]}"; do
   COMP_START_TIME=$(date +%s)
   
   # Build arguments
-  BUILD_ARGS="-c $comp -v $VERSION -t $TAG"
+  BUILD_ARGS="-c $comp -v $VERSION -t $TAG -u $DOCKER_USERNAME"
   
   if [[ -n "$BINARIES_ROOT" ]]; then
     BUILD_ARGS="$BUILD_ARGS -b $BINARIES_ROOT"
@@ -229,13 +232,13 @@ else
   
   echo ""
   echo -e "\033[0;36mBuilt images:\033[0m"
-  echo "  - rdroge/oe_compiler:$TAG"
+  echo "  - $DOCKER_USERNAME/oe_compiler:$TAG"
   if [[ $BUILD_DEVCONTAINER -eq 1 ]]; then
-    echo "  - rdroge/oe_devcontainer:$TAG"
+    echo "  - $DOCKER_USERNAME/oe_devcontainer:$TAG"
   fi
-  echo "  - rdroge/oe_pas_dev:$TAG"
-  echo "  - rdroge/oe_db_adv:$TAG"
+  echo "  - $DOCKER_USERNAME/oe_pas_dev:$TAG"
+  echo "  - $DOCKER_USERNAME/oe_db_adv:$TAG"
   if [[ $BUILD_SPORTS -eq 1 ]]; then
-    echo "  - rdroge/oe_sports2020_db:$TAG"
+    echo "  - $DOCKER_USERNAME/oe_sports2020_db:$TAG"
   fi
 fi
