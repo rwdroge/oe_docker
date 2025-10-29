@@ -90,13 +90,15 @@ Once you have the prerequisites ready, simply run the quickstart script:
 ```
 
 The script will:
-1. Ask for your Docker Hub username
+1. **Ask for your Docker Hub username** (required for tagging images)
 2. Present an interactive menu with build options
 3. Validate all prerequisites before starting
 4. Generate response.ini files from your license (if needed)
 5. Build the requested Docker images
 
 > ✅ **Validation:** The quickstart script automatically validates that all required files exist before starting any build process.
+>
+> 🔑 **Docker Username:** A Docker Hub username is **mandatory** for all builds. Images will be tagged as `your-username/oe_compiler`, `your-username/oe_pas_dev`, etc.
 
 ## Available Images
 
@@ -121,13 +123,15 @@ This provides a complete containerized OpenEdge development environment with VS 
 
 ## Advanced Usage
 
-For advanced users who prefer command-line automation over the interactive quickstart script:
+For advanced users who prefer command-line automation over the interactive quickstart script.
+
+> ⚠️ **Important:** All commands require the `-DockerUsername` (PowerShell) or `-u` (bash) parameter. This is **mandatory** for tagging the built images.
 
 ### Quickstart Script - Batch Mode
 
 **Generate response.ini files only:**
 ```powershell
-# Windows
+# Windows (DockerUsername required)
 .\oe_container_build_quickstart.ps1 -Action generate -Version 12.8.9 -DockerUsername your-username -Batch
 
 # Linux/macOS  
@@ -136,7 +140,7 @@ For advanced users who prefer command-line automation over the interactive quick
 
 **Build specific components:**
 ```powershell
-# Windows - Single component
+# Windows - Single component (DockerUsername required)
 .\oe_container_build_quickstart.ps1 -Action build -Version 12.8.9 -DockerUsername your-username -Component compiler -Batch
 
 # Windows - Multiple components
@@ -151,7 +155,7 @@ For advanced users who prefer command-line automation over the interactive quick
 
 **Build all DevContainer images:**
 ```powershell
-# Windows - All images
+# Windows - All images (DockerUsername required)
 .\oe_container_build_quickstart.ps1 -Action build -Version 12.8.9 -DockerUsername your-username -Component all -Batch
 
 # Linux/macOS - All images  
@@ -160,7 +164,7 @@ For advanced users who prefer command-line automation over the interactive quick
 
 **Generate and build in one command:**
 ```powershell
-# Windows - Complete workflow
+# Windows - Complete workflow (DockerUsername required)
 .\oe_container_build_quickstart.ps1 -Action both -Version 12.8.9 -DockerUsername your-username -Component all -Batch
 
 # Linux/macOS - Complete workflow
@@ -180,7 +184,7 @@ For advanced users who prefer command-line automation over the interactive quick
 
 **Build specific images:**
 ```powershell
-# Windows - Single component
+# Windows - Single component (DockerUsername required)
 .\tools\build-image.ps1 -Component compiler -Version 12.8.9 -DockerUsername your-username
 
 # Linux/macOS - Single component
@@ -189,7 +193,7 @@ For advanced users who prefer command-line automation over the interactive quick
 
 **Build all images:**
 ```powershell
-# Windows - All images
+# Windows - All images (DockerUsername required)
 .\tools\build-all-images.ps1 -Version 12.8.9 -DockerUsername your-username
 
 # Linux/macOS - All images  
