@@ -6,13 +6,13 @@ set -euo pipefail
 
 usage() {
   cat >&2 <<EOF
-Usage: $0 -v <version> -u <username> [options]
+Usage: $0 -v <version> [options]
 
 Required:
   -v <version>       Version in MAJOR.MINOR.PATCH format (e.g., 12.8.6)
-  -u <username>      Docker username for image tagging
 
 Optional:
+  -u <username>      Docker username for image tagging (default: empty, creates local images)
   -t <tag>           Docker image tag (defaults to version)
   -b <binroot>       Custom binaries root directory
   -o <oeversion>     OE version code (default: auto-mapped from series)
@@ -22,10 +22,11 @@ Optional:
   -h                 Show this help
 
 Examples:
-  $0 -v 12.8.6 -t 12.8.6 -u myusername
-  $0 -v 12.8.6 -t 12.8.6 -u myusername -s
-  $0 -v 12.8.6 -t 12.8.6 -u myusername -S
-  $0 -v 12.8.6 -t 12.8.6 -u myusername -D
+  $0 -v 12.8.6 -t 12.8.6                    # Creates local images (oe_compiler, etc.)
+  $0 -v 12.8.6 -t 12.8.6 -u myusername      # Creates myusername/oe_compiler, etc.
+  $0 -v 12.8.6 -t 12.8.6 -s                 # Skip devcontainer build
+  $0 -v 12.8.6 -t 12.8.6 -S                 # Skip sports2020-db build
+  $0 -v 12.8.6 -t 12.8.6 -D                 # Build only devcontainer images
 EOF
 }
 
@@ -55,8 +56,8 @@ while getopts ":v:t:b:u:j:o:sSDh" opt; do
 done
 
 # Validate required arguments
-if [[ -z "$VERSION" || -z "$DOCKER_USERNAME" ]]; then
-  echo "Error: -v and -u are required" >&2
+if [[ -z "$VERSION" ]]; then
+  echo "Error: -v is required" >&2
   usage
   exit 1
 fi
@@ -138,7 +139,11 @@ for comp in "${COMPONENTS[@]}"; do
   COMP_START_TIME=$(date +%s)
   
   # Build arguments
-  BUILD_ARGS="-c $comp -v $VERSION -t $TAG -u $DOCKER_USERNAME"
+  BUILD_ARGS="-c $comp -v $VERSION -t $TAG"
+  
+  if [[ -n "$DOCKER_USERNAME" ]]; then
+    BUILD_ARGS="$BUILD_ARGS -u $DOCKER_USERNAME"
+  fi
   
   if [[ -n "$BINARIES_ROOT" ]]; then
     BUILD_ARGS="$BUILD_ARGS -b $BINARIES_ROOT"
@@ -232,13 +237,21 @@ else
   
   echo ""
   echo -e "\033[0;36mBuilt images:\033[0m"
-  echo "  - $DOCKER_USERNAME/oe_compiler:$TAG"
-  if [[ $BUILD_DEVCONTAINER -eq 1 ]]; then
-    echo "  - $DOCKER_USERNAME/oe_devcontainer:$TAG"
+  
+  # Set image prefix based on username
+  if [[ -n "$DOCKER_USERNAME" ]]; then
+    IMAGE_PREFIX="$DOCKER_USERNAME/"
+  else
+    IMAGE_PREFIX=""
   fi
-  echo "  - $DOCKER_USERNAME/oe_pas_dev:$TAG"
-  echo "  - $DOCKER_USERNAME/oe_db_adv:$TAG"
+  
+  echo "  - ${IMAGE_PREFIX}oe_compiler:$TAG"
+  if [[ $BUILD_DEVCONTAINER -eq 1 ]]; then
+    echo "  - ${IMAGE_PREFIX}oe_devcontainer:$TAG"
+  fi
+  echo "  - ${IMAGE_PREFIX}oe_pas_dev:$TAG"
+  echo "  - ${IMAGE_PREFIX}oe_db_adv:$TAG"
   if [[ $BUILD_SPORTS -eq 1 ]]; then
-    echo "  - $DOCKER_USERNAME/oe_sports2020_db:$TAG"
+    echo "  - ${IMAGE_PREFIX}oe_sports2020_db:$TAG"
   fi
 fi

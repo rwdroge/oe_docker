@@ -90,7 +90,7 @@ Once you have the prerequisites ready, simply run the quickstart script:
 ```
 
 The script will:
-1. **Ask for your Docker Hub username** (required for tagging images)
+1. **Ask for your Docker Hub username** (optional - leave empty for local images)
 2. Present an interactive menu with build options
 3. Validate all prerequisites before starting
 4. Generate response.ini files from your license (if needed)
@@ -98,7 +98,9 @@ The script will:
 
 > ✅ **Validation:** The quickstart script automatically validates that all required files exist before starting any build process.
 >
-> 🔑 **Docker Username:** A Docker Hub username is **mandatory** for all builds. Images will be tagged as `your-username/oe_compiler`, `your-username/oe_pas_dev`, etc.
+> 🔑 **Docker Username (Optional):**
+> - **Leave empty** to create local images (e.g., `oe_compiler:12.8.6`, `oe_db_adv:12.8.6`)
+> - **Provide username** to create tagged images (e.g., `your-username/oe_compiler:12.8.6`)
 
 ## Available Images
 
@@ -125,49 +127,61 @@ This provides a complete containerized OpenEdge development environment with VS 
 
 For advanced users who prefer command-line automation over the interactive quickstart script.
 
-> ⚠️ **Important:** All commands require the `-DockerUsername` (PowerShell) or `-u` (bash) parameter. This is **mandatory** for tagging the built images.
+> 📝 **Note:** The `-DockerUsername` (PowerShell) or `-u` (bash) parameter is **optional**. Omit it to create local images without a username prefix.
 
 ### Quickstart Script - Batch Mode
 
 **Generate response.ini files only:**
 ```powershell
-# Windows (DockerUsername required)
-.\oe_container_build_quickstart.ps1 -Action generate -Version 12.8.9 -DockerUsername your-username -Batch
+# Windows
+.\oe_container_build_quickstart.ps1 -Action generate -Version 12.8.9 -Batch
 
 # Linux/macOS  
-./oe_container_build_quickstart.sh -a generate -v 12.8.9 -u your-username -b
+./oe_container_build_quickstart.sh -a generate -v 12.8.9 -b
 ```
 
 **Build specific components:**
 ```powershell
-# Windows - Single component (DockerUsername required)
+# Windows - Local images (no username)
+.\oe_container_build_quickstart.ps1 -Action build -Version 12.8.9 -Component compiler -Batch
+
+# Windows - Tagged images (with username)
 .\oe_container_build_quickstart.ps1 -Action build -Version 12.8.9 -DockerUsername your-username -Component compiler -Batch
 
-# Windows - Multiple components
-.\oe_container_build_quickstart.ps1 -Action build -Version 12.8.9 -DockerUsername your-username -Component "compiler,pas_dev" -Batch
+# Linux/macOS - Local images
+./oe_container_build_quickstart.sh -a build -v 12.8.9 -c compiler -b
 
-# Linux/macOS - Single component
+# Linux/macOS - Tagged images
 ./oe_container_build_quickstart.sh -a build -v 12.8.9 -u your-username -c compiler -b
-
-# Linux/macOS - Multiple components  
-./oe_container_build_quickstart.sh -a build -v 12.8.9 -u your-username -c "compiler,pas_dev" -b
 ```
 
 **Build all DevContainer images:**
 ```powershell
-# Windows - All images (DockerUsername required)
+# Windows - Local images
+.\oe_container_build_quickstart.ps1 -Action build -Version 12.8.9 -Component all -Batch
+
+# Windows - Tagged images
 .\oe_container_build_quickstart.ps1 -Action build -Version 12.8.9 -DockerUsername your-username -Component all -Batch
 
-# Linux/macOS - All images  
+# Linux/macOS - Local images
+./oe_container_build_quickstart.sh -a build -v 12.8.9 -c all -b
+
+# Linux/macOS - Tagged images
 ./oe_container_build_quickstart.sh -a build -v 12.8.9 -u your-username -c all -b
 ```
 
 **Generate and build in one command:**
 ```powershell
-# Windows - Complete workflow (DockerUsername required)
+# Windows - Local images
+.\oe_container_build_quickstart.ps1 -Action both -Version 12.8.9 -Component all -Batch
+
+# Windows - Tagged images
 .\oe_container_build_quickstart.ps1 -Action both -Version 12.8.9 -DockerUsername your-username -Component all -Batch
 
-# Linux/macOS - Complete workflow
+# Linux/macOS - Local images
+./oe_container_build_quickstart.sh -a both -v 12.8.9 -c all -b
+
+# Linux/macOS - Tagged images
 ./oe_container_build_quickstart.sh -a both -v 12.8.9 -u your-username -c all -b
 ```
 
@@ -184,19 +198,31 @@ For advanced users who prefer command-line automation over the interactive quick
 
 **Build specific images:**
 ```powershell
-# Windows - Single component (DockerUsername required)
+# Windows - Local image
+.\tools\build-image.ps1 -Component compiler -Version 12.8.9
+
+# Windows - Tagged image
 .\tools\build-image.ps1 -Component compiler -Version 12.8.9 -DockerUsername your-username
 
-# Linux/macOS - Single component
+# Linux/macOS - Local image
+./tools/build-image.sh -c compiler -v 12.8.9
+
+# Linux/macOS - Tagged image
 ./tools/build-image.sh -c compiler -v 12.8.9 -u your-username
 ```
 
 **Build all images:**
 ```powershell
-# Windows - All images (DockerUsername required)
+# Windows - Local images
+.\tools\build-all-images.ps1 -Version 12.8.9
+
+# Windows - Tagged images
 .\tools\build-all-images.ps1 -Version 12.8.9 -DockerUsername your-username
 
-# Linux/macOS - All images  
+# Linux/macOS - Local images
+./tools/build-all-images.sh -v 12.8.9
+
+# Linux/macOS - Tagged images
 ./tools/build-all-images.sh -v 12.8.9 -u your-username
 ```
 
