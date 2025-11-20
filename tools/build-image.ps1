@@ -14,8 +14,8 @@ param(
   [Parameter(Position=4)]
   [string]$BinariesRoot = $null,
 
-  [Parameter(Mandatory=$true, Position=5)]
-  [string]$DockerUsername,
+  [Parameter(Position=5)]
+  [string]$DockerUsername = "",
 
   [string]$OEVERSION = $null,
   [switch]$BuildDevcontainer = $false,
@@ -64,11 +64,14 @@ $ver = Convert-ToVersionParts $Version
 $series = "$($ver.Major).$($ver.Minor)"
 if(-not $Tag){ $Tag = $Version }
 
+# Set image prefix based on username
+$imagePrefix = if ($DockerUsername) { "$DockerUsername/" } else { "" }
+
 # Defaults per component
 switch ($Component) {
-  'compiler'  { if(-not $ImageName){ $ImageName = "$DockerUsername/oe_compiler" }  ; $CTYPE='compiler' }
-  'db_adv'    { if(-not $ImageName){ $ImageName = "$DockerUsername/oe_db_adv" }    ; $CTYPE='db' }
-  'pas_dev'   { if(-not $ImageName){ $ImageName = "$DockerUsername/oe_pas_dev" }   ; $CTYPE='pas' }
+  'compiler'  { if(-not $ImageName){ $ImageName = "${imagePrefix}oe_compiler" }  ; $CTYPE='compiler' }
+  'db_adv'    { if(-not $ImageName){ $ImageName = "${imagePrefix}oe_db_adv" }    ; $CTYPE='db' }
+  'pas_dev'   { if(-not $ImageName){ $ImageName = "${imagePrefix}oe_pas_dev" }   ; $CTYPE='pas' }
 }
 
 # Map OEVERSION if not provided (122, 127, 128)
@@ -176,7 +179,7 @@ if ($BuildDevcontainer) {
   $firstLine = (Get-Content $devTempDockerfile -TotalCount 5)[2]
   Write-Host "  Verified: $firstLine"
   
-  $devImageName = "$DockerUsername/oe_devcontainer"
+  $devImageName = "${imagePrefix}oe_devcontainer"
   $devTagRef = "$($devImageName):$Tag"
   
   Write-Host "Building $devTagRef using $devcontainerDockerfile"
@@ -228,7 +231,7 @@ if ($BuildSports2020Db) {
   $firstLine = (Get-Content $sportsTempDockerfile -TotalCount 1)[0]
   Write-Host "  Verified: $firstLine"
   
-  $sportsImageName = "$DockerUsername/oe_sports2020_db"
+  $sportsImageName = "${imagePrefix}oe_sports2020_db"
   $sportsTagRef = "$($sportsImageName):$Tag"
   
   Write-Host "Building $sportsTagRef using $sports2020Dockerfile"

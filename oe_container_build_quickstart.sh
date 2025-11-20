@@ -45,7 +45,11 @@ show_menu() {
     echo -e "${CYAN}      OpenEdge Container Build Quickstart                  ${NC}"
     echo -e "${CYAN}============================================================${NC}"
     echo ""
-    echo -e "  ${GREEN}Docker Username: $docker_username${NC}"
+    if [[ -n "$docker_username" ]]; then
+        echo -e "  ${GREEN}Docker Username: $docker_username${NC}"
+    else
+        echo -e "  ${YELLOW}Docker Username: (none - creating local images)${NC}"
+    fi
     echo ""
     echo -e "  ${YELLOW}1. Generate response.ini files from license addendum${NC}"
     echo -e "  ${YELLOW}2. Create all images for DevContainer configuration${NC}"
@@ -148,13 +152,24 @@ invoke_build_images() {
             echo ""
             echo -e "${CYAN}Building component: $comp${NC}"
             
-            local build_args=("-c" "$comp" "-v" "$version" "-u" "$docker_username")
+            local build_args=("-c" "$comp" "-v" "$version")
+            if [[ -n "$docker_username" ]]; then
+                build_args+=("-u" "$docker_username")
+            fi
             
             # Special handling for devcontainer and sports2020-db
             if [[ "$comp" == "devcontainer" ]]; then
-                build_args=("-c" "compiler" "-v" "$version" "-u" "$docker_username" "-d")
+                build_args=("-c" "compiler" "-v" "$version")
+                if [[ -n "$docker_username" ]]; then
+                    build_args+=("-u" "$docker_username")
+                fi
+                build_args+=("-d")
             elif [[ "$comp" == "sports2020-db" ]]; then
-                build_args=("-c" "db_adv" "-v" "$version" "-u" "$docker_username" "-s")
+                build_args=("-c" "db_adv" "-v" "$version")
+                if [[ -n "$docker_username" ]]; then
+                    build_args+=("-u" "$docker_username")
+                fi
+                build_args+=("-s")
             fi
             
             if ! "$build_script" "${build_args[@]}"; then
@@ -171,7 +186,11 @@ invoke_build_images() {
     elif [[ "$component" == "all" || -z "$component" ]]; then
         # Build all images
         local build_script="$TOOLS_DIR/build-all-images.sh"
-        local build_args=("-v" "$version" "-u" "$docker_username")
+        local build_args=("-v" "$version")
+        
+        if [[ -n "$docker_username" ]]; then
+            build_args+=("-u" "$docker_username")
+        fi
         
         if [[ "$devcontainer_only" == "true" ]]; then
             build_args+=("-D")
@@ -189,7 +208,11 @@ invoke_build_images() {
     else
         # Build single component
         local build_script="$TOOLS_DIR/build-image.sh"
-        local build_args=("-c" "$component" "-v" "$version" "-u" "$docker_username")
+        local build_args=("-c" "$component" "-v" "$version")
+        
+        if [[ -n "$docker_username" ]]; then
+            build_args+=("-u" "$docker_username")
+        fi
         
         if "$build_script" "${build_args[@]}"; then
             echo ""
@@ -472,23 +495,23 @@ get_component_selection() {
 
 # Main interactive mode
 run_interactive() {
-    # Get Docker username first if not provided
+    # Optionally get Docker username
     if [[ -z "$DOCKER_USERNAME" ]]; then
         clear
         echo -e "${CYAN}============================================================${NC}"
         echo -e "${CYAN}      OpenEdge Container Build Quickstart                  ${NC}"
         echo -e "${CYAN}============================================================${NC}"
         echo ""
-        echo -e "${WHITE}Please enter your Docker Hub username to continue.${NC}"
-        echo -e "${GRAY}This will be used to tag the built images.${NC}"
+        echo -e "${WHITE}Docker Hub username (optional):${NC}"
+        echo -e "${GRAY}  - Leave empty to create local images (e.g., oe_compiler:12.8.6)${NC}"
+        echo -e "${GRAY}  - Enter username to create tagged images (e.g., username/oe_compiler:12.8.6)${NC}"
         echo ""
         
-        while [[ -z "$DOCKER_USERNAME" ]]; do
-            read -p "Docker Username: " DOCKER_USERNAME
-            if [[ -z "$DOCKER_USERNAME" ]]; then
-                echo -e "${RED}Docker username is required.${NC}"
-            fi
-        done
+        read -p "Docker Username (press Enter to skip): " DOCKER_USERNAME
+        if [[ -z "$DOCKER_USERNAME" ]]; then
+            echo -e "${YELLOW}Creating local images without username prefix.${NC}"
+            sleep 1
+        fi
     fi
     
     while true; do

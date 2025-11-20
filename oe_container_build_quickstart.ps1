@@ -24,7 +24,7 @@
     Component to build (for build action): compiler, db_adv, pas_dev, sports2020-db, or all
 
 .PARAMETER DockerUsername
-    Docker Hub username (default: empty)
+    Docker Hub username (optional, default: empty for local images)
 
 .PARAMETER BuildDevcontainer
     Build devcontainer image after building components
@@ -94,7 +94,11 @@ function Show-Menu {
     Write-Host '      OpenEdge Container Build Quickstart                  ' -ForegroundColor Cyan
     Write-Host '============================================================' -ForegroundColor Cyan
     Write-Host ''
-    Write-Host "  Docker Username: $DockerUsername" -ForegroundColor Green
+    if ($DockerUsername) {
+        Write-Host "  Docker Username: $DockerUsername" -ForegroundColor Green
+    } else {
+        Write-Host '  Docker Username: (none - creating local images)' -ForegroundColor Yellow
+    }
     Write-Host ''
     Write-Host '  1. Generate response.ini files from license addendum' -ForegroundColor Yellow
     Write-Host '  2. Create all images for DevContainer configuration' -ForegroundColor Yellow
@@ -426,22 +430,23 @@ function Invoke-BuildImages {
 function Invoke-Main {
     # Interactive mode
     if ([string]::IsNullOrEmpty($Action) -and -not $Batch) {
-        # Get Docker username first if not provided
+        # Optionally get Docker username
         if ([string]::IsNullOrEmpty($DockerUsername) -or $DockerUsername -eq "") {
             Clear-Host
             Write-Host '============================================================' -ForegroundColor Cyan
             Write-Host '      OpenEdge Container Build Quickstart                  ' -ForegroundColor Cyan
             Write-Host '============================================================' -ForegroundColor Cyan
             Write-Host ''
-            Write-Host 'Please enter your Docker Hub username to continue.' -ForegroundColor White
-            Write-Host 'This will be used to tag the built images.' -ForegroundColor Gray
+            Write-Host 'Docker Hub username (optional):' -ForegroundColor White
+            Write-Host '  - Leave empty to create local images (e.g., oe_compiler:12.8.6)' -ForegroundColor Gray
+            Write-Host '  - Enter username to create tagged images (e.g., username/oe_compiler:12.8.6)' -ForegroundColor Gray
             Write-Host ''
-            do {
-                $DockerUsername = Read-Host 'Docker Username'
-                if ([string]::IsNullOrEmpty($DockerUsername)) {
-                    Write-Host 'Docker username is required.' -ForegroundColor Red
-                }
-            } while ([string]::IsNullOrEmpty($DockerUsername))
+            $DockerUsername = Read-Host 'Docker Username (press Enter to skip)'
+            if ([string]::IsNullOrEmpty($DockerUsername)) {
+                $DockerUsername = ""
+                Write-Host 'Creating local images without username prefix.' -ForegroundColor Yellow
+                Start-Sleep -Seconds 1
+            }
         }
         
         do {
