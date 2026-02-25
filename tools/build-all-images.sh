@@ -83,7 +83,7 @@ if [[ $DEVCONTAINER_ONLY -eq 1 ]]; then
   BUILD_DEVCONTAINER=1
   BUILD_SPORTS=1
 else
-  COMPONENTS=("compiler" "pas_dev" "db_adv")
+  COMPONENTS=("compiler" "pas_dev" "pas_prod" "db_adv")
   BUILD_DEVCONTAINER=$((1 - SKIP_DEVCONTAINER))
   BUILD_SPORTS=$((1 - SKIP_SPORTS2020))
 fi
@@ -250,6 +250,7 @@ else
     echo "  - ${IMAGE_PREFIX}oe_devcontainer:$TAG"
   fi
   echo "  - ${IMAGE_PREFIX}oe_pas_dev:$TAG"
+  echo "  - ${IMAGE_PREFIX}oe_pas_prod:$TAG"
   echo "  - ${IMAGE_PREFIX}oe_db_adv:$TAG"
   if [[ $BUILD_SPORTS -eq 1 ]]; then
     echo "  - ${IMAGE_PREFIX}oe_sports2020_db:$TAG"

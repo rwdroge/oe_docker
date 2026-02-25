@@ -17,7 +17,7 @@ name=
 serial=
 version=12.8
 control=
-prodname=OE RDBMS Adv Enterprise
+prodname=Progress Prod AS for OE
 
 ;
 ; DESCRIPTION of OpenEdge Explorer
@@ -65,7 +65,7 @@ oem_workpath=/usr/wrk_oemgmt
 ;
 
 [Server Engine]
-UseSqlServerEngine=1
+UseSqlServerEngine=0
 
 ;
 ; DESCRIPTION of Language Default

@@ -21,7 +21,7 @@
     Path to the license addendum file (for generate action)
 
 .PARAMETER Component
-    Component to build (for build action): compiler, db_adv, pas_dev, sports2020-db, or all
+    Component to build (for build action): compiler, db_adv, pas_dev, pas_prod, sports2020-db, or all
 
 .PARAMETER DockerUsername
     Docker Hub username (optional, default: empty for local images)
@@ -65,7 +65,7 @@ param(
     [string]$LicenseFile,
     
     [Parameter(Mandatory=$false)]
-    [ValidateSet('compiler', 'db_adv', 'pas_dev', 'sports2020-db', 'all')]
+    [ValidateSet('compiler', 'db_adv', 'pas_dev', 'pas_prod', 'sports2020-db', 'all')]
     [string]$Component,
     
     [Parameter(Mandatory=$false)]
@@ -132,6 +132,7 @@ function Get-ComponentSelection {
     $components = @(
         @{ Name = 'compiler'; Description = 'OpenEdge compiler and development tools'; Type = 'Base' },
         @{ Name = 'pas_dev'; Description = 'OpenEdge PAS for development'; Type = 'Base' },
+        @{ Name = 'pas_prod'; Description = 'OpenEdge PAS for production'; Type = 'Base' },
         @{ Name = 'db_adv'; Description = 'OpenEdge database server'; Type = 'Base' },
         @{ Name = 'devcontainer'; Description = 'DevContainer configuration (requires: compiler)'; Type = 'Dependent' },
         @{ Name = 'sports2020-db'; Description = 'Sports2020 database (requires: db_adv)'; Type = 'Dependent' }
@@ -183,15 +184,16 @@ function Get-ComponentSelection {
         }
         
         Write-Host ""
-        Write-Host "Enter choice (1-5 to toggle, m for manual entry, c to continue, q to quit): " -NoNewline -ForegroundColor Yellow
+        Write-Host "Enter choice (1-6 to toggle, m for manual entry, c to continue, q to quit): " -NoNewline -ForegroundColor Yellow
         $choice = Read-Host
         
         switch ($choice.ToLower()) {
             '1' { $selected['compiler'] = -not $selected['compiler'] }
             '2' { $selected['pas_dev'] = -not $selected['pas_dev'] }
-            '3' { $selected['db_adv'] = -not $selected['db_adv'] }
-            '4' { $selected['devcontainer'] = -not $selected['devcontainer'] }
-            '5' { $selected['sports2020-db'] = -not $selected['sports2020-db'] }
+            '3' { $selected['pas_prod'] = -not $selected['pas_prod'] }
+            '4' { $selected['db_adv'] = -not $selected['db_adv'] }
+            '5' { $selected['devcontainer'] = -not $selected['devcontainer'] }
+            '6' { $selected['sports2020-db'] = -not $selected['sports2020-db'] }
             'm' {
                 Write-Host ""
                 Write-Host 'Enter component(s) to build (comma-separated):' -ForegroundColor Yellow
@@ -200,7 +202,7 @@ function Get-ComponentSelection {
                 
                 if (-not [string]::IsNullOrEmpty($manualInput)) {
                     $manualComponents = $manualInput -split ',' | ForEach-Object { $_.Trim() }
-                    $validComponents = @('compiler', 'pas_dev', 'db_adv', 'devcontainer', 'sports2020-db')
+                    $validComponents = @('compiler', 'pas_dev', 'pas_prod', 'db_adv', 'devcontainer', 'sports2020-db')
                     $invalidComponents = $manualComponents | Where-Object { $validComponents -notcontains $_ }
                     
                     if ($invalidComponents.Count -eq 0) {
@@ -328,9 +330,9 @@ function Invoke-BuildImages {
         $buildScript = Join-Path $toolsDir "build-image.ps1"
         
         foreach ($comp in $components) {
-            if (@('compiler','db_adv','pas_dev','devcontainer','sports2020-db') -notcontains $comp) {
+            if (@('compiler','db_adv','pas_dev','pas_prod','devcontainer','sports2020-db') -notcontains $comp) {
                 Write-Host 'Invalid component: ' -NoNewline -ForegroundColor Red; Write-Host $comp -ForegroundColor Red
-                Write-Host 'Valid components: compiler, db_adv, pas_dev, devcontainer, sports2020-db' -ForegroundColor Yellow
+                Write-Host 'Valid components: compiler, db_adv, pas_dev, pas_prod, devcontainer, sports2020-db' -ForegroundColor Yellow
                 return $false
             }
             

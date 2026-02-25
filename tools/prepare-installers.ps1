@@ -16,7 +16,7 @@ function New-VersionObject([string]$v){
 
 function New-EmptyDir([string]$path){ if(Test-Path $path){ Remove-Item -Recurse -Force $path } ; New-Item -ItemType Directory -Path $path | Out-Null }
 
-$allowedComponents = @('compiler','db_adv','pas_dev','pas_base','pas_orads')
+$allowedComponents = @('compiler','db_adv','pas_dev','pas_prod','pas_base','pas_orads')
 if ($allowedComponents -notcontains $Component) { throw "Invalid -Component '$Component'. Allowed: $($allowedComponents -join ', ')" }
 
 # pas_orads doesn't need installer preparation (uses pas_base as base image)

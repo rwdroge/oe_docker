@@ -43,8 +43,8 @@ if ($Component -like '-*') {
   }
 }
 
-if (@('compiler','db_adv','pas_dev') -notcontains $Component) {
-  throw "Invalid -Component '$Component'. Allowed: compiler, db_adv, pas_dev"
+if (@('compiler','db_adv','pas_dev','pas_prod') -notcontains $Component) {
+  throw "Invalid -Component '$Component'. Allowed: compiler, db_adv, pas_dev, pas_prod"
 }
 
 if ($BuildDevcontainer -and $Component -ne 'compiler') {
@@ -72,6 +72,7 @@ switch ($Component) {
   'compiler'  { if(-not $ImageName){ $ImageName = "${imagePrefix}oe_compiler" }  ; $CTYPE='compiler' }
   'db_adv'    { if(-not $ImageName){ $ImageName = "${imagePrefix}oe_db_adv" }    ; $CTYPE='db' }
   'pas_dev'   { if(-not $ImageName){ $ImageName = "${imagePrefix}oe_pas_dev" }   ; $CTYPE='pas' }
+  'pas_prod'  { if(-not $ImageName){ $ImageName = "${imagePrefix}oe_pas_prod" }  ; $CTYPE='pas' }
 }
 
 # Map OEVERSION if not provided (122, 127, 128)

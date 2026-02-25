@@ -45,7 +45,7 @@ if ($DevcontainerOnly) {
   $buildDevcontainer = $true
   $buildSports2020 = $true
 } else {
-  $components = @('compiler', 'pas_dev', 'db_adv')
+  $components = @('compiler', 'pas_dev', 'pas_prod', 'db_adv')
   $buildDevcontainer = -not $SkipDevcontainer
   $buildSports2020 = -not $SkipSports2020Db
 }
@@ -207,6 +207,7 @@ if ($failCount -gt 0) {
     Write-Host "  - ${imagePrefix}oe_devcontainer:$Tag" -ForegroundColor White
   }
   Write-Host "  - ${imagePrefix}oe_pas_dev:$Tag" -ForegroundColor White
+  Write-Host "  - ${imagePrefix}oe_pas_prod:$Tag" -ForegroundColor White
   Write-Host "  - ${imagePrefix}oe_db_adv:$Tag" -ForegroundColor White
   if ($buildSports2020) {
     Write-Host "  - ${imagePrefix}oe_sports2020_db:$Tag" -ForegroundColor White

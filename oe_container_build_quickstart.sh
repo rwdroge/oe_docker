@@ -143,9 +143,9 @@ invoke_build_images() {
             comp=$(echo "$comp" | xargs) # trim whitespace
             
             # Validate component
-            if [[ ! "$comp" =~ ^(compiler|db_adv|pas_dev|devcontainer|sports2020-db)$ ]]; then
+            if [[ ! "$comp" =~ ^(compiler|db_adv|pas_dev|pas_prod|devcontainer|sports2020-db)$ ]]; then
                 echo -e "${RED}Invalid component: $comp${NC}"
-                echo -e "${YELLOW}Valid components: compiler, db_adv, pas_dev, devcontainer, sports2020-db${NC}"
+                echo -e "${YELLOW}Valid components: compiler, db_adv, pas_dev, pas_prod, devcontainer, sports2020-db${NC}"
                 return 1
             fi
             
@@ -271,9 +271,10 @@ get_component_name() {
     case "$1" in
         1) echo "compiler" ;;
         2) echo "pas_dev" ;;
-        3) echo "db_adv" ;;
-        4) echo "devcontainer" ;;
-        5) echo "sports2020-db" ;;
+        3) echo "pas_prod" ;;
+        4) echo "db_adv" ;;
+        5) echo "devcontainer" ;;
+        6) echo "sports2020-db" ;;
         *) echo "" ;;
     esac
 }
@@ -282,17 +283,18 @@ get_component_description() {
     case "$1" in
         1) echo "OpenEdge compiler and development tools" ;;
         2) echo "OpenEdge PAS for development" ;;
-        3) echo "OpenEdge database server" ;;
-        4) echo "DevContainer configuration (requires: compiler)" ;;
-        5) echo "Sports2020 database (requires: db_adv)" ;;
+        3) echo "OpenEdge PAS for production" ;;
+        4) echo "OpenEdge database server" ;;
+        5) echo "DevContainer configuration (requires: compiler)" ;;
+        6) echo "Sports2020 database (requires: db_adv)" ;;
         *) echo "" ;;
     esac
 }
 
 get_component_type() {
     case "$1" in
-        1|2|3) echo "Base" ;;
-        4|5) echo "Dependent" ;;
+        1|2|3|4) echo "Base" ;;
+        5|6) echo "Dependent" ;;
         *) echo "" ;;
     esac
 }
@@ -307,6 +309,7 @@ get_component_selection() {
     local selected_3=false
     local selected_4=false
     local selected_5=false
+    local selected_6=false
     
     # Helper functions to get/set selection state
     get_selected() {
@@ -316,6 +319,7 @@ get_component_selection() {
             3) echo "$selected_3" ;;
             4) echo "$selected_4" ;;
             5) echo "$selected_5" ;;
+            6) echo "$selected_6" ;;
             *) echo "false" ;;
         esac
     }
@@ -327,6 +331,7 @@ get_component_selection() {
             3) selected_3="$2" ;;
             4) selected_4="$2" ;;
             5) selected_5="$2" ;;
+            6) selected_6="$2" ;;
         esac
     }
     
@@ -342,7 +347,7 @@ get_component_selection() {
         
         # Display base components
         echo -e "${WHITE}Base Images (can be built independently):${NC}" >&2
-        for i in 1 2 3; do
+        for i in 1 2 3 4; do
             local checkbox="[ ]"
             local color="${GRAY}"
             if [[ "$(get_selected $i)" == "true" ]]; then
@@ -354,7 +359,7 @@ get_component_selection() {
         
         echo "" >&2
         echo -e "${WHITE}Dependent Images (require parent images):${NC}" >&2
-        for i in 4 5; do
+        for i in 5 6; do
             local checkbox="[ ]"
             local color="${GRAY}"
             if [[ "$(get_selected $i)" == "true" ]]; then
@@ -367,7 +372,7 @@ get_component_selection() {
         echo "" >&2
         echo -e -n "${YELLOW}Selected: ${NC}" >&2
         local selected_names=()
-        for i in {1..5}; do
+        for i in {1..6}; do
             if [[ "$(get_selected $i)" == "true" ]]; then
                 selected_names+=("$(get_component_name $i)")
             fi
@@ -380,11 +385,11 @@ get_component_selection() {
         fi
         
         echo "" >&2
-        echo -e -n "${YELLOW}Enter choice (1-5 to toggle, 'm' for manual entry, 'c' to continue, 'q' to quit): ${NC}" >&2
+        echo -e -n "${YELLOW}Enter choice (1-6 to toggle, 'm' for manual entry, 'c' to continue, 'q' to quit): ${NC}" >&2
         read -r choice
         
         case "$choice" in
-            1|2|3|4|5)
+            1|2|3|4|5|6)
                 if [[ "$(get_selected $choice)" == "true" ]]; then
                     set_selected $choice false
                 else
@@ -399,13 +404,13 @@ get_component_selection() {
                 
                 if [[ -n "$manual_input" ]]; then
                     # Reset all selections
-                    for i in {1..5}; do
+                    for i in {1..6}; do
                         set_selected $i false
                     done
                     
                     # Parse manual input
                     IFS=',' read -ra manual_components <<< "$manual_input"
-                    local valid_components=("compiler" "pas_dev" "db_adv" "devcontainer" "sports2020-db")
+                    local valid_components=("compiler" "pas_dev" "pas_prod" "db_adv" "devcontainer" "sports2020-db")
                     local invalid_components=()
                     local valid_input=true
                     
@@ -421,7 +426,7 @@ get_component_selection() {
                         # Set selected components
                         for comp in "${manual_components[@]}"; do
                             comp=$(echo "$comp" | xargs)
-                            for i in {1..5}; do
+                            for i in {1..6}; do
                                 if [[ "$(get_component_name $i)" == "$comp" ]]; then
                                     set_selected $i true
                                     break
@@ -439,7 +444,7 @@ get_component_selection() {
             c|C)
                 # Check if any components are selected
                 local selected_count=0
-                for i in {1..5}; do
+                for i in {1..6}; do
                     if [[ "$(get_selected $i)" == "true" ]]; then
                         ((selected_count++))
                     fi
@@ -453,10 +458,10 @@ get_component_selection() {
                 
                 # Check dependencies
                 local dependency_errors=()
-                if [[ "$(get_selected 4)" == "true" && "$(get_selected 1)" == "false" ]]; then
+                if [[ "$(get_selected 5)" == "true" && "$(get_selected 1)" == "false" ]]; then
                     dependency_errors+=("devcontainer requires compiler to be built first or included in the same build")
                 fi
-                if [[ "$(get_selected 5)" == "true" && "$(get_selected 3)" == "false" ]]; then
+                if [[ "$(get_selected 6)" == "true" && "$(get_selected 4)" == "false" ]]; then
                     dependency_errors+=("sports2020-db requires db_adv to be built first or included in the same build")
                 fi
                 
@@ -474,7 +479,7 @@ get_component_selection() {
                 
                 # Return selected components as comma-separated string
                 local result_components=()
-                for i in {1..5}; do
+                for i in {1..6}; do
                     if [[ "$(get_selected $i)" == "true" ]]; then
                         result_components+=("$(get_component_name $i)")
                     fi

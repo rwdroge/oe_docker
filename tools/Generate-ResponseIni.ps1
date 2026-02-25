@@ -381,8 +381,9 @@ function New-ResponseIni {
         $configNum++
     }
     
-    # Write output
-    $content | Out-File -FilePath $outputFile -Encoding UTF8 -NoNewline
+    # Write output with LF line endings (convert CRLF to LF)
+    $content = $content -replace "`r`n", "`n"
+    [System.IO.File]::WriteAllText($outputFile, $content, [System.Text.UTF8Encoding]::new($false))
     Write-Host "Generated: $outputFile" -ForegroundColor Green
 }
 
@@ -427,8 +428,9 @@ function New-ResponseUpdateIni {
         }
     }
     
-    # Write output
-    $template | Out-File -FilePath $outputFile -Encoding UTF8 -NoNewline
+    # Write output with LF line endings (convert CRLF to LF)
+    $template = $template -replace "`r`n", "`n"
+    [System.IO.File]::WriteAllText($outputFile, $template, [System.Text.UTF8Encoding]::new($false))
     Write-Host "Generated: $outputFile" -ForegroundColor Green
 }
 

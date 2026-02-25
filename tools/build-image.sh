@@ -9,7 +9,7 @@ usage() {
 Usage: $0 -c <component> -v <version> [options]
 
 Required:
-  -c <component>     Component to build: compiler, db_adv, or pas_dev
+  -c <component>     Component to build: compiler, db_adv, pas_dev, or pas_prod
   -v <version>       Version in MAJOR.MINOR.PATCH format (e.g., 12.8.6)
 
 Optional:
@@ -65,8 +65,8 @@ if [[ -z "$COMPONENT" || -z "$VERSION" ]]; then
 fi
 
 # Validate component
-if [[ "$COMPONENT" != "compiler" && "$COMPONENT" != "db_adv" && "$COMPONENT" != "pas_dev" && "$COMPONENT" != "pas_base" && "$COMPONENT" != "pas_orads" ]]; then
-  echo "Error: Invalid component '$COMPONENT'. Allowed: compiler, db_adv, pas_dev, pas_base, pas_orads" >&2
+if [[ "$COMPONENT" != "compiler" && "$COMPONENT" != "db_adv" && "$COMPONENT" != "pas_dev" && "$COMPONENT" != "pas_base" && "$COMPONENT" != "pas_orads" && "$COMPONENT" != "pas_prod" ]]; then
+  echo "Error: Invalid component '$COMPONENT'. Allowed: compiler, db_adv, pas_dev, pas_base, pas_orads, pas_prod" >&2
   exit 1
 fi
 
@@ -124,6 +124,10 @@ case "$COMPONENT" in
     ;;
   pas_orads)
     [[ -z "$IMAGE_NAME" ]] && IMAGE_NAME="${IMAGE_PREFIX}oe_pas_orads"
+    CTYPE="pas"
+    ;;
+  pas_prod)
+    [[ -z "$IMAGE_NAME" ]] && IMAGE_NAME="${IMAGE_PREFIX}oe_pas_prod"
     CTYPE="pas"
     ;;
 esac
