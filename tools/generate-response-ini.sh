@@ -424,8 +424,9 @@ generate_response_ini() {
         ((config_num++))
     done
     
-    # Write output
-    echo "$content" > "$output_file"
+    # Write output with LF line endings (strip any CRLF)
+    content=$(echo "$content" | sed 's/\r$//')
+    printf '%s' "$content" > "$output_file"
     echo -e "${GREEN}Generated: $output_file${NC}"
 }
 
@@ -472,8 +473,9 @@ generate_response_update_ini() {
         fi
     fi
     
-    # Write output
-    echo "$template" > "$output_file"
+    # Write output with LF line endings (strip any CRLF)
+    template=$(echo "$template" | sed 's/\r$//')
+    printf '%s' "$template" > "$output_file"
     echo -e "${GREEN}Generated: $output_file${NC}"
 }
 

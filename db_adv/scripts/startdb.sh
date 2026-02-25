@@ -178,6 +178,37 @@ pidfile=/app/db/${DBNAME}.lk
 
 sleep 2
 
+# Initialize CDC if CDC_TABLES is set
+if [[ -n "${CDC_TABLES}" ]]; then
+    echo "CDC_TABLES environment variable found: ${CDC_TABLES}"
+    echo "Initializing CDC for specified tables..."
+    
+    # CDC_TABLES format: "table1:level1,table2:level2" or just "table1,table2" (defaults to level 3)
+    IFS=',' read -ra TABLES <<< "$CDC_TABLES"
+    for table_spec in "${TABLES[@]}"; do
+        if [[ $table_spec == *":"* ]]; then
+            # Table with level specified
+            table_name=$(echo $table_spec | cut -d':' -f1)
+            cdc_level=$(echo $table_spec | cut -d':' -f2)
+        else
+            # Table without level, use default (3)
+            table_name=$table_spec
+            cdc_level=3
+        fi
+        
+        echo "Enabling CDC for table: ${table_name} (level ${cdc_level})"
+        /app/scripts/init-cdc.sh ${DBNAME} ${table_name} ${cdc_level}
+        
+        if [ $? -eq 0 ]; then
+            echo "  ✓ CDC enabled for ${table_name}"
+        else
+            echo "  ✗ Failed to enable CDC for ${table_name}"
+        fi
+    done
+    
+    echo "CDC initialization complete"
+fi
+
 # make sure the logs are visible
 tail -f /app/db/${DBNAME}.lg &
 
