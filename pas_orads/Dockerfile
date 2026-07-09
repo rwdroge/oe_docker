@@ -26,7 +26,7 @@ RUN rm -rf libexpat.so.1 && \
     ldconfig /opt/oracle/client/lib
 
 # Build on top of pas_base and add Oracle client
-FROM rdroge/oe_pas_base:latest
+FROM progressofficial/oe_pas_base:12.8.11
 
 LABEL maintainer="Ruben Dröge <rdroge@progress.com>"
 
