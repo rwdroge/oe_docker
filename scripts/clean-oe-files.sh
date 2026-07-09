@@ -3,7 +3,7 @@
 CONTAINERTYPE=$1
 
 case "$CONTAINERTYPE" in
-    PAS*)
+    PAS_DEV)
         rm -rf /usr/dlc/*OpenEdge*
         rm -rf /usr/dlc/*sports*
         rm -f /usr/dlc/bin/*sql*
