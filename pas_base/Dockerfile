@@ -49,8 +49,8 @@ ENV TERM=xterm
 ENV PATH="${DLC}:${DLC}/bin:${JAVA_HOME}/bin:${PATH}"
 
 COPY --from=install $JAVA_HOME $JAVA_HOME
-COPY --from=install --chown=root:openedge $DLC $DLC
-COPY --from=install --chown=root:openedge $WRKDIR $WRKDIR
+COPY --from=install --chown=openedge:openedge $DLC $DLC
+COPY --from=install --chown=openedge:openedge $WRKDIR $WRKDIR
 COPY --from=install /etc/openedge.d /etc/openedge.d
 COPY --from=install /etc/openedge /etc/openedge
 COPY --from=install /etc/progress /etc/progress
