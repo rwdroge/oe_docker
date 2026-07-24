@@ -5,7 +5,7 @@
 
 .DESCRIPTION
     This script parses a Progress Software License Addendum file and generates tailored
-    response.ini files for each required container build (compiler, db_adv, pas_dev, pas_base).
+    response.ini files for each required container build (compiler, db_adv, pas_dev, pas_base, pas_orads).
     It extracts company name, serial numbers, and control codes for each product.
     For versions 12.2.17-12.2.18 and 12.8.4-12.8.8, it also generates response_update.ini files.
 
@@ -75,6 +75,10 @@ $buildConfigs = @{
     "pas_base" = @{
         "Products" = @("Progress App Server for OE", "Progress Prod AppServer for OE")
         "Path" = Join-Path $rootDir "pas_base"
+    }
+    "pas_orads" = @{
+        "Products" = @("Progress App Server for OE", "Progress Prod AppServer for OE")
+        "Path" = Join-Path $rootDir "pas_orads"
     }
 }
 

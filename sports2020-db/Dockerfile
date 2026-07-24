@@ -10,4 +10,5 @@ VOLUME /app/schema
 
 WORKDIR /app/db
 
+
 CMD [ "bash", "-c", "/app/scripts/startdb.sh" ]
