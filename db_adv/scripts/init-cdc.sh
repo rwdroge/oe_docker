@@ -43,13 +43,10 @@ MESSAGE "CDC Level:" iLevel.
 oService = NEW DataAdminService(cDbName).
 
 /* Get the table */
-FIND FIRST oTable WHERE oTable:Name = cTableName NO-ERROR.
-IF NOT AVAILABLE oTable THEN DO:
-    oTable = oService:GetTable(cTableName) NO-ERROR.
-    IF NOT VALID-OBJECT(oTable) THEN DO:
-        MESSAGE "ERROR: Table" cTableName "not found in database" cDbName.
-        RETURN ERROR.
-    END.
+oTable = oService:GetTable(cTableName) NO-ERROR.
+IF NOT VALID-OBJECT(oTable) THEN DO:
+    MESSAGE "ERROR: Table" cTableName "not found in database" cDbName.
+    RETURN ERROR.
 END.
 
 MESSAGE "Table found:" oTable:Name.
