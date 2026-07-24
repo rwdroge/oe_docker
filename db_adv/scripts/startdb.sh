@@ -181,6 +181,13 @@ sleep 2
 # Initialize CDC if CDC_TABLES is set
 if [[ -n "${CDC_TABLES}" ]]; then
     echo "CDC_TABLES environment variable found: ${CDC_TABLES}"
+    echo "Enabling CDC for the database"
+    ${DLC}/bin/proutil /app/db/${DBNAME} -C enablecdc area "Change Data Area" indexarea "Change Index Area"
+    if [ $? -eq 0 ]; then
+        echo "[INFO] CDC enabled for ${DBNAME}"
+    else
+        echo "[ERROR] Failed to enable CDC for ${DBNAME}"
+    fi
     echo "Initializing CDC for specified tables..."
     
     # CDC_TABLES format: "table1:level1,table2:level2" or just "table1,table2" (defaults to level 3)
@@ -200,9 +207,9 @@ if [[ -n "${CDC_TABLES}" ]]; then
         /app/scripts/init-cdc.sh ${DBNAME} ${table_name} ${cdc_level}
         
         if [ $? -eq 0 ]; then
-            echo "  ✓ CDC enabled for ${table_name}"
+            echo "[INFO] CDC enabled for ${table_name}"
         else
-            echo "  ✗ Failed to enable CDC for ${table_name}"
+            echo "[ERROR] Failed to enable CDC for ${table_name}"
         fi
     done
     

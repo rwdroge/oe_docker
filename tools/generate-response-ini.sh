@@ -4,7 +4,7 @@
 # Native Linux/macOS implementation (no PowerShell required)
 #
 # This script parses a Progress Software License Addendum file and generates tailored
-# response.ini files for each required container build (compiler, db_adv, pas_dev, pas_base).
+# response.ini files for each required container build (compiler, db_adv, pas_dev, pas_base, pas_orads).
 # It extracts company name, serial numbers, and control codes for each product.
 # For versions 12.2.17-12.2.18 and 12.8.4-12.8.8, it also generates response_update.ini files.
 #
@@ -47,6 +47,9 @@ get_build_config() {
         "pas_base")
             echo "Progress App Server for OE|Progress Prod AppServer for OE"
             ;;
+        "pas_orads")
+            echo "Progress App Server for OE|Progress Prod AppServer for OE"
+            ;;
         *)
             echo ""
             ;;
@@ -55,7 +58,7 @@ get_build_config() {
 
 # Get list of all build configurations
 get_build_names() {
-    echo "compiler db_adv pas_dev pas_base"
+    echo "compiler db_adv pas_dev pas_base pas_orads"
 }
 
 # Usage function
