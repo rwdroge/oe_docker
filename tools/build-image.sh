@@ -146,16 +146,14 @@ fi
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-# Validate response.ini exists before building (skip for pas_orads - it uses base image)
-if [[ "$COMPONENT" != "pas_orads" ]]; then
-  RESPONSE_INI="$ROOT/$COMPONENT/response.ini"
-  if [[ ! -f "$RESPONSE_INI" ]]; then
-    echo "Error: response.ini not found at: $RESPONSE_INI" >&2
-    echo "" >&2
-    echo "Please configure OpenEdge control codes in the response.ini file before building." >&2
-    echo "See the 'Configure control codes' section in README.md for details." >&2
-    exit 1
-  fi
+# Validate response.ini exists before building
+RESPONSE_INI="$ROOT/$COMPONENT/response.ini"
+if [[ ! -f "$RESPONSE_INI" ]]; then
+  echo "Error: response.ini not found at: $RESPONSE_INI" >&2
+  echo "" >&2
+  echo "Please configure OpenEdge control codes in the response.ini file before building." >&2
+  echo "See the 'Configure control codes' section in README.md for details." >&2
+  exit 1
 fi
 
 # Prepare installers

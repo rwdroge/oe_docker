@@ -1,12 +1,28 @@
 # PASOE with Oracle DataServer (pas_orads)
 
-This image extends `pas_base` by adding Oracle DataServer support and the Oracle Instant Client. It follows a layered architecture similar to `devcontainer` (which extends `compiler`) and `sports2020-db` (which extends `db_adv`).
+This image provides a complete OpenEdge PASOE installation with Oracle DataServer support and Oracle Instant Client. It uses a multi-stage build approach similar to `pas_base` for optimal image size, installing OpenEdge from scratch rather than extending an existing image.
 
 ## Prerequisites
 
-### Oracle Instant Client
+### 1. OpenEdge License Configuration
 
-You need to download the Oracle Instant Client and place it in the `binaries/oracle/` directory:
+Generate `response.ini` files with your OpenEdge control codes:
+
+```bash
+# Using the quickstart script (recommended)
+./oe_container_build_quickstart.ps1  # Windows
+./oe_container_build_quickstart.sh   # Linux/macOS
+
+# Or directly
+./tools/Generate-ResponseIni.ps1 -Version 12.8.9  # Windows
+./tools/generate-response-ini.sh -v 12.8.9        # Linux/macOS
+```
+
+This will create `pas_orads/response.ini` (and `response_update.ini` if needed).
+
+### 2. Oracle Instant Client
+
+Download the Oracle Instant Client and place it in the `binaries/oracle/` directory:
 
 1. Download **Oracle Instant Client 19.3 for Linux x86-64** from Oracle's website
    - File: `LINUX.X64_193000_client_home.zip`
@@ -17,14 +33,11 @@ You need to download the Oracle Instant Client and place it in the `binaries/ora
    binaries/oracle/LINUX.X64_193000_client_home.zip
    ```
 
-### Base Image
+### 3. OpenEdge Installer Files
 
-This image requires `pas_base` to be built first:
-
-```powershell
-# Build pas_base first
-pwsh ./tools/build-image.ps1 -Component pas_base -Version 12.8.7 -Tag 12.8.7
-```
+Place OpenEdge installer files in `binaries/oe/<version>/`:
+- `PROGRESS_OE_<version>_LNX_64.tar.gz`
+- `PROGRESS_OE_<version>_LNX_64_PATCH.tar.gz` (if applicable)
 
 ## Building
 
@@ -73,19 +86,40 @@ docker run -d \
 
 ## Image Details
 
-- **Base Image**: `rdroge/oe_pas_base` (inherits all pas_base features)
-- **Additional User**: oracle (for Oracle client files)
-- **Additional Groups**: oinstall, dba, oper
-- **Oracle Client**: 19.3 installed in `/opt/oracle/client`
-- **Inherited from pas_base**:
-  - User: openedge (UID 1000)
-  - PASOE Instance: prodpas (production profile)
-  - Exposed Ports: 8220 (HTTP), 8221 (HTTPS), 8899 (Health Check)
-  - Environment variables (DLC, WRKDIR, JAVA_HOME, PATH)
+### Build Architecture
+- **Multi-stage build** with 3 stages for optimal size:
+  1. **Install stage**: OpenEdge installation and cleanup
+  2. **Oracle stage**: Oracle Instant Client extraction
+  3. **Runtime stage**: Minimal final image with only runtime dependencies
 
-## Notes
+### Users and Groups
+- **openedge** (UID 1000, GID 1000): Primary user for OpenEdge processes
+- **oracle** (oinstall group): For Oracle client files
+- **Additional groups**: oinstall (54321), dba (54322), oper (54323)
 
-- The Oracle client libraries are installed in `/opt/oracle/client`
-- Oracle-related users and groups (oracle, oinstall, dba, oper) are created
-- The `libaio` libraries required by Oracle client are installed
-- Health check is enabled on the PASOE instance
+### Installed Components
+- **OpenEdge PASOE**: Full installation in `/usr/dlc`
+- **Oracle Client**: 19.3 in `/opt/oracle/client`
+- **Java**: Eclipse Temurin JDK (version based on OpenEdge version)
+- **Runtime libraries**: net-tools, netbase, libaio1, libaio-dev
+
+### Environment Variables
+- `DLC=/usr/dlc`
+- `WRKDIR=/usr/wrk`
+- `JAVA_HOME=/opt/java/openjdk`
+- `ORACLE_HOME=/opt/oracle/client`
+- `LD_LIBRARY_PATH=/opt/oracle/client/lib`
+- `PATH` includes DLC, Java, and Oracle paths
+
+### Key Differences from pas_base
+- **No PASOE instance created**: Unlike `pas_base`, this image does not create a PASOE instance during build. The Pro2 installer or your application should create the instance as needed.
+- **Oracle DataServer support**: Includes Oracle client libraries and configuration
+- **Optimized for size**: Multi-stage build removes installation artifacts
+
+## Size Optimization
+
+This image uses several techniques to minimize size:
+- Multi-stage build discards installation files
+- `clean-oe-files.sh` removes unnecessary OpenEdge components
+- Only runtime dependencies in final image
+- No intermediate build tools or installers in final layer
