@@ -209,6 +209,6 @@ else
 fi
 
 # Clean up
-rm -f /tmp/enable-cdc.p
+rm -f /tmp/enable-cdc.p 
 
 echo "CDC initialization script completed"

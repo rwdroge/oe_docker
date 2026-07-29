@@ -6,7 +6,8 @@ on:
       - oeinstaller/**
       - compiler/**
       - scripts/**
-      - pas_dev/**  
+      - pas_dev/**
+      - db_adv/**
       - .github/workflows/containers.yml
 
 jobs:
@@ -82,9 +83,11 @@ jobs:
                     file: "${{ github.workspace }}/build/${{ env.CTLOW }}/Dockerfile"
                     push: true
                     tags: progressofficial/oe_${{ env.CTLOW }}:${{ env.OE_VERSION }}
+                    no-cache: true
                     build-args: |
                         CTYPE=${{ env.CONTAINERTYPE }}
                         OEVERSION=${{ env.OE_VERSION_FLAT }}
+                        
 
             -   name: Remove files used by installer
                 run: |
