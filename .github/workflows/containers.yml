@@ -94,13 +94,13 @@ jobs:
                         CTYPE=${{ env.CONTAINERTYPE }}
                         OEVERSION=${{ env.OE_VERSION_FLAT }}
                         
-            -   name: Generate artifact attestation
-                uses: actions/attest@v4
-                with:
-                    subject-path: ghcr.io/rwdroge/oe_${{ env.CTLOW }}
-                    subject-name: ghcr.io/rwdroge/oe_${{ env.CTLOW }}
-                    subject-digest: ${{ steps.push.outputs.digest }}
-                    push-to-registry: true
+            #-   name: Generate artifact attestation
+            #    uses: actions/attest@v4
+            #    with:
+            #        subject-path: ghcr.io/rwdroge/oe_${{ env.CTLOW }}
+            #        subject-name: ghcr.io/rwdroge/oe_${{ env.CTLOW }}
+            #        subject-digest: ${{ steps.push.outputs.digest }}
+            #        push-to-registry: true
 
             -   name: Remove files used by installer
                 run: |
