@@ -97,6 +97,7 @@ jobs:
             -   name: Generate artifact attestation
                 uses: actions/attest@v4
                 with:
+                    subject-path: ghcr.io/rwdroge/oe_${{ env.CTLOW }}
                     subject-name: ghcr.io/rwdroge/oe_${{ env.CTLOW }}
                     subject-digest: ${{ steps.push.outputs.digest }}
                     push-to-registry: true
