@@ -1,6 +1,6 @@
 # the Dockerfile for the actual devcontainer
 
-FROM docker.io/progressofficial/oe_compiler:latest
+FROM ghcr.io/rwdroge/oe_compiler:12.8.12
 USER root
 
 # Install system packages and configure sudo in a single layer

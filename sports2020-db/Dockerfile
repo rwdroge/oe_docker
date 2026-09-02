@@ -1,4 +1,4 @@
-FROM rdroge/oe_db_adv:12.8.12 AS install
+FROM ghcr.io/rwdroge/oe_db_adv:12.8.12 AS install
 
 COPY schema/* /app/schema/
 COPY schema/ /app/db/   
