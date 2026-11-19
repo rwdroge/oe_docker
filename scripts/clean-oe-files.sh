@@ -3,7 +3,7 @@
 CONTAINERTYPE=$1
 
 case "$CONTAINERTYPE" in
-    PAS_DEV)
+    pas_dev)
         rm -rf /usr/dlc/*OpenEdge*
         rm -rf /usr/dlc/*sports*
         rm -f /usr/dlc/bin/*sql*
@@ -33,7 +33,7 @@ case "$CONTAINERTYPE" in
         # other
         rm -rf /var/cache
         ;;
-    DB)
+    db)
         rm -rf /usr/dlc/ora
         rm -rf /usr/dlc/dotnet
         rm -rf /usr/dlc/sonic
@@ -65,7 +65,7 @@ case "$CONTAINERTYPE" in
         # other
         rm -rf /var/cache
         ;;
-    COMPILER)
+    compiler)
         # rm -rf /usr/dlc/*OpenEdge*
         rm -f /usr/dlc/bin/*sql*
         rm -f /usr/dlc/bin/_mprosrv
